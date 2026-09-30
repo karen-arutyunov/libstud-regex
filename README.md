@@ -1,2 +1,3 @@
 # libstud-regex
-std::regex library for C++14
+
+std::regex library for C++14.

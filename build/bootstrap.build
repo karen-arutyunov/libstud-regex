@@ -1,0 +1,7 @@
+project = libstud-regex
+
+using version
+using config
+using test
+using install
+using dist
