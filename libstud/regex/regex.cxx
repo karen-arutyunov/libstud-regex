@@ -9,10 +9,20 @@
 #include <algorithm>
 #include <iterator>
 
+#include <locale>
+#include <string>
+#include <cstring>
+
 #include <libstud/regex.hxx>
 
 LIBSTUD_REGEX_BEGIN_NAMESPACE_STD
 LIBSTUD_REGEX_BEGIN_EXPLICIT_ABI_ANNOTATIONS
+
+using std::ctype_base;
+using std::strcmp;
+using std::string;
+using std::begin;
+using std::end;
 
 static const char* make_error_type_string(regex_constants::error_type ecode) {
   switch (ecode) {
