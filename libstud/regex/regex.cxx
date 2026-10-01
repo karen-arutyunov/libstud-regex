@@ -8,7 +8,8 @@
 
 #include <algorithm>
 #include <iterator>
-#include <regex>
+
+#include <libstud/regex.hxx>
 
 LIBSTUD_REGEX_BEGIN_NAMESPACE_STD
 LIBSTUD_REGEX_BEGIN_EXPLICIT_ABI_ANNOTATIONS
