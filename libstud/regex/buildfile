@@ -1,4 +1,4 @@
-lib{stud-regex}: {hxx ixx txx cxx}{** -version} hxx{version}
+lib{stud-regex}: {hxx ixx txx cxx}{** -version} hxx{version} ../hxx{regex}
 
 # Include the generated version header into the distribution (so that we don't
 # pick up an installed one) and don't remove it when cleaning in src (so that
