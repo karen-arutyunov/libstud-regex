@@ -1,0 +1,9 @@
+import libs = libstud-regex%lib{stud-regex}
+
+for t: re/cxx{**}
+{
+  d = $directory($t)
+  n = $name($t)...
+
+  ./: $d/exe{$n}: $t $libs
+}

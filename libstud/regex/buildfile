@@ -36,8 +36,8 @@ else
 # Install into the libstud/regex/ subdirectory of, say, /usr/include/
 # recreating subdirectories.
 #
-{hxx ixx txx}{*}:
+../{hxx ixx txx}{*}:
 {
-  install         = include/libstud/regex/
+  install         = include/libstud/
   install.subdirs = true
 }
