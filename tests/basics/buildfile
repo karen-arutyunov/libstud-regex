@@ -1,3 +1,0 @@
-import libs = libstud-regex%lib{stud-regex}
-
-exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}

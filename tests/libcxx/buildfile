@@ -1,0 +1,12 @@
+import libs = libstud-regex%lib{stud-regex}
+
+# Note that the test source files are copied from the upstream
+# libcxx/test/std/re/ directory, preserving the sub-directory structure.
+#
+for t: re/cxx{**}
+{
+  d = $directory($t)
+  n = $name($t)...
+
+  ./: $d/exe{$n}: $t $libs
+}
