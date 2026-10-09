@@ -69,3 +69,27 @@
 #if defined(__NEWLIB__) || defined(_NEWLIB_VERSION)
 #  define LIBSTUD_REGEX_LIBC_NEWLIB                  1
 #endif
+
+// Note that Clang 3.7 doesn't provide complete support for C++17. In
+// particular, it doesn't support the nodiscard and fallthrough attributes.
+//
+#if LIBSTUD_REGEX_STD_VER >= 17
+#  ifdef __has_cpp_attribute
+#    if __has_cpp_attribute(nodiscard)
+#      define LIBSTUD_REGEX_NODISCARD [[nodiscard]]
+#    else
+#      define LIBSTUD_REGEX_NODISCARD
+#    endif
+#    if __has_cpp_attribute(fallthrough)
+#      define LIBSTUD_REGEX_FALLTHROUGH [[fallthrough]]
+#    else
+#      define LIBSTUD_REGEX_FALLTHROUGH
+#    endif
+#  else
+#    define LIBSTUD_REGEX_NODISCARD
+#    define LIBSTUD_REGEX_FALLTHROUGH
+#  endif
+#else
+#  define LIBSTUD_REGEX_NODISCARD
+#  define LIBSTUD_REGEX_FALLTHROUGH
+#endif
