@@ -813,9 +813,6 @@ typedef regex_token_iterator<wstring::const_iterator> wsregex_token_iterator;
 #  include <__iterator/size.h>
 #  else
 #  include <iterator>
-#  if LIBSTUD_REGEX_STD_VER >= 20
-#    include <version>
-#  endif
 #  endif
 
 // [re.syn]
@@ -4819,7 +4816,7 @@ public:
   LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
 
   LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable_v<_BidirectionalIterator>) {
-    this->template pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
+    std::pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #endif
     std::swap(matched, __s.matched);
   }
@@ -6361,16 +6358,20 @@ public:
 #    endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(const regex_iterator& __x) const;
+#  if 0
 #    if LIBSTUD_REGEX_STD_VER >= 20
-#      if 0
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(default_sentinel_t) const { return *this == regex_iterator(); }
-#      else
-  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(std::default_sentinel_t) const { return *this == regex_iterator(); }
-#      endif
 #    endif
 #    if LIBSTUD_REGEX_STD_VER < 20
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_iterator& __x) const { return !(*this == __x); }
 #    endif
+#  else
+#    ifdef __cpp_lib_ranges
+  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(std::default_sentinel_t) const { return *this == regex_iterator(); }
+#    else
+  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_iterator& __x) const { return !(*this == __x); }
+#    endif
+#  endif
 
 #if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI reference operator*() const { return __match_; }
@@ -6587,16 +6588,20 @@ public:
   regex_token_iterator& operator=(const regex_token_iterator&);
 
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(const regex_token_iterator& __x) const;
+#  if 0
 #    if LIBSTUD_REGEX_STD_VER >= 20
-#      if 0
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(default_sentinel_t) const { return *this == regex_token_iterator(); }
-#      else
-  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(std::default_sentinel_t) const { return *this == regex_token_iterator(); }
-#      endif
 #    endif
 #    if LIBSTUD_REGEX_STD_VER < 20
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_token_iterator& __x) const { return !(*this == __x); }
 #    endif
+#  else
+#    ifdef __cpp_lib_ranges
+  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(std::default_sentinel_t) const { return *this == regex_token_iterator(); }
+#    else
+  LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_token_iterator& __x) const { return !(*this == __x); }
+#    endif
+#  endif
 
 #if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const value_type& operator*() const { return *__result_; }

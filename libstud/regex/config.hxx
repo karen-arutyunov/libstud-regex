@@ -25,6 +25,11 @@
 
 #undef LIBSTUD_REGEX_CXX03_LANG
 
+#if LIBSTUD_REGEX_STD_VER >= 20 && \
+    (!defined(__GLIBCXX__) || __has_include(<version>))
+#  include <version>
+#endif
+
 // Avoid using `#pragma GCC system_header` which reduces noise, disabling
 // warnings, etc.
 //

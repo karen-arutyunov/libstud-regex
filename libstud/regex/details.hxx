@@ -7,15 +7,11 @@
 #include <iterator>
 #include <type_traits>
 
-#if LIBSTUD_REGEX_STD_VER >= 20
-#  include <version>
-#endif
+#include <libstud/regex/config.hxx>
 
 #ifdef __cpp_lib_three_way_comparison
 #  include <compare>
 #endif
-
-#include <libstud/regex/config.hxx>
 
 namespace stud { namespace details { namespace regex {
 
@@ -178,7 +174,7 @@ public:
   typedef typename std::iterator_traits<_Iter>::pointer pointer;
   typedef typename std::iterator_traits<_Iter>::reference reference;
   typedef typename std::iterator_traits<_Iter>::iterator_category iterator_category;
-#if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_ranges
   typedef std::contiguous_iterator_tag iterator_concept;
 #endif
 
