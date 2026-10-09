@@ -1029,8 +1029,8 @@ class LIBSTUD_REGEX_EXPORTED_FROM_ABI regex_error : public std::runtime_error {
 
 public:
   explicit regex_error(regex_constants::error_type __ecode);
-  LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error&) _NOEXCEPT = default;
-  ~regex_error() _NOEXCEPT override;
+  LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error&) LIBSTUD_REGEX_NOEXCEPT = default;
+  ~regex_error() LIBSTUD_REGEX_NOEXCEPT override;
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI regex_constants::error_type code() const { return __code_; }
 };
 
@@ -2662,7 +2662,7 @@ public:
   // assign:
   LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex& assign(const basic_regex& __that) { return *this = __that; }
 #    ifndef LIBSTUD_REGEX_CXX03_LANG
-  LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex& assign(basic_regex&& __that) _NOEXCEPT { return *this = std::move(__that); }
+  LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex& assign(basic_regex&& __that) LIBSTUD_REGEX_NOEXCEPT { return *this = std::move(__that); }
 #    endif
   LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex& assign(const value_type* __p, flag_type __f = regex_constants::ECMAScript) {
     return assign(__p, __p + __traits_.length(__p), __f);
@@ -4771,10 +4771,10 @@ public:
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
 
 #if 0
-  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) _NOEXCEPT_(__is_nothrow_swappable_v<_BidirectionalIterator>) {
+  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(__is_nothrow_swappable_v<_BidirectionalIterator>) {
     this->pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #else
-  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) _NOEXCEPT_(details::regex::__is_nothrow_swappable_v<_BidirectionalIterator>) {
+  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable_v<_BidirectionalIterator>) {
     this->template pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #endif
     std::swap(matched, __s.matched);
@@ -5336,9 +5336,9 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI bool ready() const { return __ready_; }
 
   // size:
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type size() const _NOEXCEPT { return __matches_.size(); }
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type max_size() const _NOEXCEPT { return __matches_.max_size(); }
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI bool empty() const _NOEXCEPT { return size() == 0; }
+  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.size(); }
+  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type max_size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.max_size(); }
+  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI bool empty() const LIBSTUD_REGEX_NOEXCEPT { return size() == 0; }
 
   // element access:
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI difference_type length(size_type __sub = 0) const {

@@ -62,17 +62,9 @@
 
 #define LIBSTUD_REGEX_WARN_UNUSED
 
+#define LIBSTUD_REGEX_NOEXCEPT       noexcept
+#define LIBSTUD_REGEX_NOEXCEPT_(...) noexcept(__VA_ARGS__)
+
 #if defined(__NEWLIB__) || defined(_NEWLIB_VERSION)
 #  define LIBSTUD_REGEX_LIBC_NEWLIB                  1
-#endif
-
-// @@ Rename the below macros to LIBSTUD_REGEX_NOEXCEPT and
-//    LIBSTUD_REGEX_NOEXCEPT_, respectively, in the dedicated commit.
-//
-#ifndef _NOEXCEPT
-#  define _NOEXCEPT noexcept
-#endif
-
-#ifndef _NOEXCEPT_
-#  define _NOEXCEPT_(...) noexcept(__VA_ARGS__)
 #endif
