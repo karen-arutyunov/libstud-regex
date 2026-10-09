@@ -813,10 +813,13 @@ typedef regex_token_iterator<wstring::const_iterator> wsregex_token_iterator;
 #  include <__iterator/size.h>
 #  else
 #  include <iterator>
+#  if LIBSTUD_REGEX_STD_VER >= 20
+#    include <version>
+#  endif
 #  endif
 
 // [re.syn]
-#if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 #  include <compare>
 #endif
 #  include <initializer_list>
@@ -864,7 +867,7 @@ typedef regex_token_iterator<wstring::const_iterator> wsregex_token_iterator;
 #    include <stdexcept>
 #    include <string>
 #    include <vector>
-#    if LIBSTUD_REGEX_STD_VER >= 20
+#    if 0
 #    include <version>
 #    endif
 
@@ -4827,7 +4830,7 @@ inline LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(const sub_match<_BiIter>& __x
   return __x.compare(__y) == 0;
 }
 
-#    if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 template <class _BiIter>
 using __sub_match_cat LIBSTUD_REGEX_NODEBUG =
 #if 0
@@ -4944,7 +4947,7 @@ operator==(const sub_match<_BiIter>& __x,
   return __x.compare(typename sub_match<_BiIter>::string_type(__y.data(), __y.size())) == 0;
 }
 
-#    if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 template <class _BiIter, class _ST, class _SA>
 LIBSTUD_REGEX_HIDE_FROM_ABI auto
 operator<=>(const sub_match<_BiIter>& __x,
@@ -5083,7 +5086,7 @@ operator==(const sub_match<_BiIter>& __x, typename std::iterator_traits<_BiIter>
   return __x.compare(__y) == 0;
 }
 
-#    if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 template <class _BiIter>
 LIBSTUD_REGEX_HIDE_FROM_ABI auto
 #if 0
@@ -5221,7 +5224,7 @@ operator==(const sub_match<_BiIter>& __x, typename std::iterator_traits<_BiIter>
   return __x.compare(string_type(1, __y)) == 0;
 }
 
-#    if LIBSTUD_REGEX_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 template <class _BiIter>
 LIBSTUD_REGEX_HIDE_FROM_ABI auto
 #if 0

@@ -8,6 +8,10 @@
 #include <type_traits>
 
 #if LIBSTUD_REGEX_STD_VER >= 20
+#  include <version>
+#endif
+
+#ifdef __cpp_lib_three_way_comparison
 #  include <compare>
 #endif
 
@@ -257,7 +261,7 @@ private:
   friend struct array;
 #endif
 
-#if LIBSTUD_REGEX_STD_VER <= 17
+#ifndef __cpp_lib_three_way_comparison
   LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR bool
   operator==(const __wrap_iter& __x, const __wrap_iter& __y) LIBSTUD_REGEX_NOEXCEPT {
     return __x.__i_ == __y.__i_;
