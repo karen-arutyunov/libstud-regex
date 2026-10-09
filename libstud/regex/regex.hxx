@@ -2874,8 +2874,13 @@ private:
   void __push_loop(size_t __min,
                    size_t __max,
                    __owns_one_state<_CharT>* __s,
+#if 0
                    size_t __mexp_begin = 0,
                    size_t __mexp_end   = 0,
+#else
+                   unsigned __mexp_begin = 0,
+                   unsigned __mexp_end   = 0,
+#endif
                    bool __greedy       = true);
   __bracket_expression<_CharT, _Traits>* __start_matching_list(bool __negate);
   void __push_char(value_type __c);
@@ -4620,7 +4625,11 @@ bool basic_regex<_CharT, _Traits>::__test_back_ref(_CharT __c) {
 
 template <class _CharT, class _Traits>
 void basic_regex<_CharT, _Traits>::__push_loop(
+#if 0
     size_t __min, size_t __max, __owns_one_state<_CharT>* __s, size_t __mexp_begin, size_t __mexp_end, bool __greedy) {
+#else
+    size_t __min, size_t __max, __owns_one_state<_CharT>* __s, unsigned __mexp_begin, unsigned __mexp_end, bool __greedy) {
+#endif
   unique_ptr<__empty_state<_CharT> > __e1(new __empty_state<_CharT>(__end_->first()));
   __end_->first() = nullptr;
   unique_ptr<__loop<_CharT> > __e2(
@@ -5709,8 +5718,13 @@ bool basic_regex<_CharT, _Traits>::__match_at_start_ecma(
     __states.back().__node_     = __st;
     __states.back().__flags_    = __flags;
     __states.back().__at_first_ = __at_first;
+#if 0
     int __counter               = 0;
     int __length                = __last - __first;
+#else
+    size_t __counter            = 0;
+    size_t __length             = __last - __first;
+#endif
     do {
       ++__counter;
       if (__counter % LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR == 0 && __counter / LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR >= __length)
@@ -5787,8 +5801,13 @@ bool basic_regex<_CharT, _Traits>::__match_at_start_posix_nosubs(
     __states.back().__flags_    = __flags;
     __states.back().__at_first_ = __at_first;
     bool __matched              = false;
+#if 0
     int __counter               = 0;
     int __length                = __last - __first;
+#else
+    size_t __counter            = 0;
+    size_t __length             = __last - __first;
+#endif
     do {
       ++__counter;
       if (__counter % LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR == 0 && __counter / LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR >= __length)
@@ -5885,8 +5904,13 @@ bool basic_regex<_CharT, _Traits>::__match_at_start_posix_subs(
     __states.back().__flags_    = __flags;
     __states.back().__at_first_ = __at_first;
     bool __matched              = false;
+#if 0
     int __counter               = 0;
     int __length                = __last - __first;
+#else
+    size_t __counter            = 0;
+    size_t __length             = __last - __first;
+#endif
     do {
       ++__counter;
       if (__counter % LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR == 0 && __counter / LIBSTUD_REGEX_REGEX_COMPLEXITY_FACTOR >= __length)
