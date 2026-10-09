@@ -191,7 +191,7 @@ public:
               int> = 0>
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter(const __wrap_iter<_OtherIter>& __u) LIBSTUD_REGEX_NOEXCEPT
       : __i_(__u.__i_) {}
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 reference operator*() const LIBSTUD_REGEX_NOEXCEPT {
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 reference operator*() const LIBSTUD_REGEX_NOEXCEPT {
     return *__i_;
   }
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 pointer operator->() const LIBSTUD_REGEX_NOEXCEPT {
@@ -216,7 +216,7 @@ public:
     --(*this);
     return __tmp;
   }
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
   operator+(difference_type __n) const LIBSTUD_REGEX_NOEXCEPT {
     __wrap_iter __w(*this);
     __w += __n;
@@ -226,7 +226,7 @@ public:
     __i_ += __n;
     return *this;
   }
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
   operator-(difference_type __n) const LIBSTUD_REGEX_NOEXCEPT {
     return *this + (-__n);
   }
@@ -234,7 +234,7 @@ public:
     *this += -__n;
     return *this;
   }
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 reference
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 reference
   operator[](difference_type __n) const LIBSTUD_REGEX_NOEXCEPT {
     return __i_[__n];
   }
@@ -352,18 +352,18 @@ private:
 
 #ifndef LIBSTUD_REGEX_CXX03_LANG
   template <class _Iter2>
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 auto
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 auto
   operator-(const __wrap_iter& __x, const __wrap_iter<_Iter2>& __y) LIBSTUD_REGEX_NOEXCEPT->decltype(__x.__i_ - __y.__i_)
 #else
   template <class _Iter2>
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14
   typename __wrap_iter::difference_type operator-(const __wrap_iter& __x, const __wrap_iter<_Iter2>& __y) LIBSTUD_REGEX_NOEXCEPT
 #endif // C++03
   {
     return __x.__i_ - __y.__i_;
   }
 
-  [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI friend LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter
   operator+(typename __wrap_iter::difference_type __n, __wrap_iter __x) LIBSTUD_REGEX_NOEXCEPT {
     __x += __n;
     return __x;

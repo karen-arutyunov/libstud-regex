@@ -1031,7 +1031,12 @@ public:
   explicit regex_error(regex_constants::error_type __ecode);
   LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error&) LIBSTUD_REGEX_NOEXCEPT = default;
   ~regex_error() LIBSTUD_REGEX_NOEXCEPT override;
+
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI regex_constants::error_type code() const { return __code_; }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI regex_constants::error_type code() const { return __code_; }
+#endif
 };
 
 template <regex_constants::error_type _Ev>
@@ -2714,8 +2719,13 @@ public:
 #    endif // LIBSTUD_REGEX_CXX03_LANG
 
   // const operations:
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI unsigned mark_count() const { return __marked_count_; }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI flag_type flags() const { return __flags_; }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI unsigned mark_count() const { return __marked_count_; }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI flag_type flags() const { return __flags_; }
+#endif
 
   // locale:
   LIBSTUD_REGEX_HIDE_FROM_ABI locale_type imbue(locale_type __loc) {
@@ -2723,7 +2733,11 @@ public:
     __start_.reset();
     return __traits_.imbue(__loc);
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI locale_type getloc() const { return __traits_.getloc(); }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI locale_type getloc() const { return __traits_.getloc(); }
+#endif
 
   // swap:
   void swap(basic_regex& __r);
@@ -4762,22 +4776,34 @@ public:
 
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR sub_match() : matched() {}
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI difference_type length() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI difference_type length() const {
+#endif
     return matched ? std::distance(this->first, this->second) : 0;
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI string_type str() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI string_type str() const {
+#endif
     return matched ? string_type(this->first, this->second) : string_type();
   }
   LIBSTUD_REGEX_HIDE_FROM_ABI operator string_type() const { return str(); }
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const sub_match& __s) const { return str().compare(__s.str()); }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const string_type& __s) const { return str().compare(__s); }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
 
-#if 0
   LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(__is_nothrow_swappable_v<_BidirectionalIterator>) {
     this->pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const sub_match& __s) const { return str().compare(__s.str()); }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const string_type& __s) const { return str().compare(__s); }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
+
   LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable_v<_BidirectionalIterator>) {
     this->template pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #endif
@@ -5340,53 +5366,95 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI bool ready() const { return __ready_; }
 
   // size:
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.size(); }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI size_type max_size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.max_size(); }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI bool empty() const LIBSTUD_REGEX_NOEXCEPT { return size() == 0; }
 
   // element access:
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI difference_type length(size_type __sub = 0) const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI size_type size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.size(); }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI size_type max_size() const LIBSTUD_REGEX_NOEXCEPT { return __matches_.max_size(); }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI bool empty() const LIBSTUD_REGEX_NOEXCEPT { return size() == 0; }
+
+  // element access:
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI difference_type length(size_type __sub = 0) const {
+#endif
     // If the match results are not ready, this will return `0`.
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::length() called when not ready");
     return (*this)[__sub].length();
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI difference_type position(size_type __sub = 0) const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI difference_type position(size_type __sub = 0) const {
+#endif
     // If the match results are not ready, this will return the result of subtracting two default-constructed iterators
     // (which is typically a well-defined operation).
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::position() called when not ready");
     return std::distance(__position_start_, (*this)[__sub].first);
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI string_type str(size_type __sub = 0) const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI string_type str(size_type __sub = 0) const {
+#endif
     // If the match results are not ready, this will return an empty string.
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::str() called when not ready");
     return (*this)[__sub].str();
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_reference operator[](size_type __n) const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_reference operator[](size_type __n) const {
+#endif
     // If the match results are not ready, this call will be equivalent to calling this function with `__n >= size()`,
     // returning an empty subrange.
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::operator[]() called when not ready");
     return __n < __matches_.size() ? __matches_[__n] : __unmatched_;
   }
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_reference prefix() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_reference prefix() const {
+#endif
     // If the match results are not ready, this will return a default-constructed empty `__suffix_`.
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::prefix() called when not ready");
     return __prefix_;
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_reference suffix() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_reference suffix() const {
+#endif
     // If the match results are not ready, this will return a default-constructed empty `__suffix_`.
     LIBSTUD_REGEX_ASSERT_PEDANTIC(ready(), "match_results::suffix() called when not ready");
     return __suffix_;
   }
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator begin() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator begin() const {
+#endif
     return empty() ? __matches_.end() : __matches_.begin();
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator end() const { return __matches_.end(); }
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator cbegin() const {
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator end() const { return __matches_.end(); }
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator cbegin() const {
+#endif
     return empty() ? __matches_.end() : __matches_.begin();
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator cend() const { return __matches_.end(); }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const_iterator cend() const { return __matches_.end(); }
+#endif
 
   // format:
   template <class _OutputIter>
@@ -5402,14 +5470,22 @@ public:
     return format(__output_iter, __fmt.data(), __fmt.data() + __fmt.size(), __flags);
   }
   template <class _ST, class _SA>
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI basic_string<char_type, _ST, _SA>
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI basic_string<char_type, _ST, _SA>
+#endif
   format(const basic_string<char_type, _ST, _SA>& __fmt,
          regex_constants::match_flag_type __flags = regex_constants::format_default) const {
     basic_string<char_type, _ST, _SA> __r;
     format(std::back_inserter(__r), __fmt.data(), __fmt.data() + __fmt.size(), __flags);
     return __r;
   }
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI string_type
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI string_type
+#endif
   format(const char_type* __fmt, regex_constants::match_flag_type __flags = regex_constants::format_default) const {
     string_type __r;
     format(std::back_inserter(__r), __fmt, __fmt + char_traits<char_type>::length(__fmt), __flags);
@@ -5417,7 +5493,11 @@ public:
   }
 
   // allocator:
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI allocator_type get_allocator() const { return __matches_.get_allocator(); }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI allocator_type get_allocator() const { return __matches_.get_allocator(); }
+#endif
 
   // swap:
   void swap(match_results& __m);
@@ -6263,7 +6343,11 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_iterator& __x) const { return !(*this == __x); }
 #    endif
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI reference operator*() const { return __match_; }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI reference operator*() const { return __match_; }
+#endif
   LIBSTUD_REGEX_HIDE_FROM_ABI pointer operator->() const { return std::addressof(__match_); }
 
   regex_iterator& operator++();
@@ -6485,7 +6569,11 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const regex_token_iterator& __x) const { return !(*this == __x); }
 #    endif
 
+#if 0
   [[__nodiscard__]] LIBSTUD_REGEX_HIDE_FROM_ABI const value_type& operator*() const { return *__result_; }
+#else
+  LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI const value_type& operator*() const { return *__result_; }
+#endif
   LIBSTUD_REGEX_HIDE_FROM_ABI const value_type* operator->() const { return __result_; }
 
   regex_token_iterator& operator++();

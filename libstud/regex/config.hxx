@@ -68,3 +68,9 @@
 #if defined(__NEWLIB__) || defined(_NEWLIB_VERSION)
 #  define LIBSTUD_REGEX_LIBC_NEWLIB                  1
 #endif
+
+#if LIBSTUD_REGEX_STD_VER >= 17
+# define LIBSTUD_REGEX_NODISCARD [[nodiscard]]
+#else
+# define LIBSTUD_REGEX_NODISCARD
+#endif
