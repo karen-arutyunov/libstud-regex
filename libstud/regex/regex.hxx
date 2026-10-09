@@ -856,7 +856,7 @@ typedef regex_token_iterator<wstring::const_iterator> wsregex_token_iterator;
 #    include <algorithm>   // find()
 #    include <type_traits>
 
-#    if LIBSTUD_REGEX_STD_VER >= 17
+#    ifdef __cpp_lib_polymorphic_allocator
 #      include <memory_resource>
 #    endif
 #    endif
@@ -6900,7 +6900,7 @@ regex_replace(const _CharT* __s,
 LIBSTUD_REGEX_END_EXPLICIT_ABI_ANNOTATIONS
 LIBSTUD_REGEX_END_NAMESPACE_STD
 
-#    if LIBSTUD_REGEX_STD_VER >= 17
+#    ifdef __cpp_lib_polymorphic_allocator
 LIBSTUD_REGEX_BEGIN_NAMESPACE_STD
 namespace pmr {
 template <class _BidirT>
