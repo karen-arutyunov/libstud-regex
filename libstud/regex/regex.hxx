@@ -1035,7 +1035,11 @@ public:
 };
 
 template <regex_constants::error_type _Ev>
+#if 0
 [[__noreturn__]] inline LIBSTUD_REGEX_HIDE_FROM_ABI void __throw_regex_error() {
+#else
+[[noreturn]] inline LIBSTUD_REGEX_HIDE_FROM_ABI void __throw_regex_error() {
+#endif
 #    if LIBSTUD_REGEX_HAS_EXCEPTIONS
   throw regex_error(_Ev);
 #    else
