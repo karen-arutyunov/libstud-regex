@@ -4454,11 +4454,13 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_character_escape(
       if (__hd == -1)
 #if 0
         std::__throw_regex_error<regex_constants::error_escape>();
-#else
-        __throw_regex_error<regex_constants::error_escape>();
-#endif
       __sum = 16 * __sum + static_cast<unsigned>(__hd);
       [[__fallthrough__]];
+#else
+        __throw_regex_error<regex_constants::error_escape>();
+      __sum = 16 * __sum + static_cast<unsigned>(__hd);
+      LIBSTUD_REGEX_FALLTHROUGH;
+#endif
     case 'x':
       ++__first;
       if (__first == __last)

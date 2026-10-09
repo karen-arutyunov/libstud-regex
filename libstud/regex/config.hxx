@@ -74,3 +74,9 @@
 #else
 # define LIBSTUD_REGEX_NODISCARD
 #endif
+
+#if LIBSTUD_REGEX_STD_VER >= 17
+# define LIBSTUD_REGEX_FALLTHROUGH [[fallthrough]]
+#else
+# define LIBSTUD_REGEX_FALLTHROUGH
+#endif
