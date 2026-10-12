@@ -2969,17 +2969,22 @@ private:
   friend class __lookahead;
 };
 
+// Note that Clang 3.7 doesn't provide complete support for C++17. In
+// particular, it doesn't support the deduction guides.
+//
+#  if 0
 #    if LIBSTUD_REGEX_STD_VER >= 17
-#      if 0
 template <class _ForwardIterator, __enable_if_t<__has_forward_iterator_category<_ForwardIterator>::value, int> = 0>
 basic_regex(_ForwardIterator, _ForwardIterator, regex_constants::syntax_option_type = regex_constants::ECMAScript)
     -> basic_regex<typename iterator_traits<_ForwardIterator>::value_type>;
-#      else
+#    endif
+#  else
+#    ifdef __cpp_deduction_guides
 template <class _ForwardIterator, details::regex::__enable_if_t<details::regex::__has_forward_iterator_category<_ForwardIterator>::value, int> = 0>
 basic_regex(_ForwardIterator, _ForwardIterator, regex_constants::syntax_option_type = regex_constants::ECMAScript)
     -> basic_regex<typename std::iterator_traits<_ForwardIterator>::value_type>;
-#      endif
 #    endif
+#  endif
 
 template <class _CharT, class _Traits>
 const regex_constants::syntax_option_type basic_regex<_CharT, _Traits>::icase;
