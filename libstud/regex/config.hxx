@@ -36,8 +36,19 @@
 #undef LIBSTUD_REGEX_CXX03_LANG
 #undef LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS
 
+// Note that some early implementations of C++20 standard libraries didn't
+// provide the <version> header (libstdc++ < 9.0, MSVC < 16.2, etc; see the
+// "Microsoft C/C++ language conformance by Visual Studio version"
+// documentation for details). So let's always check the header presence for
+// libstdc++ and MSVC runtimes for C++20.
+//
+// Also note that the __has_include() preprocessor operator was introduced in
+// C++17.
+//
 #if LIBSTUD_REGEX_STD_VER >= 20
-#  if (!defined(__GLIBCXX__) || __has_include(<version>))
+#  if LIBSTUD_REGEX_STD_VER > 20                    || \
+      (!defined(__GLIBCXX__) && !defined(_MSC_VER)) || \
+      __has_include(<version>)
 #    include <version>
 #  endif
 #endif
