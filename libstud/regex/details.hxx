@@ -188,6 +188,13 @@ private:
   _Iter __i_;
 
 public:
+// Suppress the bogus 'in C++14 constexpr will not imply const' warning, which
+// MSVC annoys with until the version 15.0 (VS 2017).
+//
+#if defined(_MSC_VER) && _MSC_VER < 1910 // MSVC < 15.0
+#  pragma warning (push)
+#  pragma warning (disable:4814)
+#endif
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter() LIBSTUD_REGEX_NOEXCEPT : __i_() {}
   template <class _OtherIter,
             __enable_if_t<
@@ -244,6 +251,9 @@ public:
   operator[](difference_type __n) const LIBSTUD_REGEX_NOEXCEPT {
     return __i_[__n];
   }
+#if defined(_MSC_VER) && _MSC_VER < 1910
+#  pragma warning (pop)
+#endif
 
 private:
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 explicit __wrap_iter(_Iter __x) LIBSTUD_REGEX_NOEXCEPT : __i_(__x) {}
