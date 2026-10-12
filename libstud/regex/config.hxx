@@ -2,9 +2,19 @@
 
 #include <libstud/regex/export.hxx>
 
+// Note that MSVC 12.0 (VS 2013) added the initial support for C++14 (see the
+// "Microsoft C/C++ language conformance by Visual Studio version"
+// documentation for details). However, until MSVC 15.7 (VS 2017) the
+// __cplusplus value remained at 199711L (C++98 / C++03; see the "MSVC now
+// correctly reports __cplusplus" article for details).
+//
 #ifdef __cplusplus
 #  if __cplusplus <= 201103L
-#    error C++14 compiler required
+#    if defined(_MSC_VER) && _MSC_VER >= 1800 // MSVC >= 12.0
+#      define LIBSTUD_REGEX_STD_VER 14
+#    else
+#      error C++14 compiler required
+#    endif
 #  elif __cplusplus <= 201402L
 #    define LIBSTUD_REGEX_STD_VER 14
 #  elif __cplusplus <= 201703L
