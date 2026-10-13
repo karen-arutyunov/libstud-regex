@@ -320,7 +320,11 @@ struct classnames {
 const classnames ClassNames[] = {
     {"alnum", ctype_base::alnum},
     {"alpha", ctype_base::alpha},
+#if 0
     {"blank", ctype_base::blank},
+#else
+    {"blank", stud::details::regex::ctype_base_blank},
+#endif
     {"cntrl", ctype_base::cntrl},
     {"d", ctype_base::digit},
     {"digit", ctype_base::digit},

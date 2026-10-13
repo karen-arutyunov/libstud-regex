@@ -1027,7 +1027,14 @@ class LIBSTUD_REGEX_EXPORTED_FROM_ABI regex_error : public std::runtime_error {
 
 public:
   explicit regex_error(regex_constants::error_type __ecode);
+
+#if 0
   LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error&) LIBSTUD_REGEX_NOEXCEPT = default;
+#else
+  LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error& e) LIBSTUD_REGEX_NOEXCEPT
+    : runtime_error(e), __code_ (e.__code_) {}
+#endif
+
   ~regex_error() LIBSTUD_REGEX_NOEXCEPT override;
 
 #if 0
@@ -1078,9 +1085,9 @@ public:
 #else
   typedef std::basic_string<char_type> string_type;
   typedef std::locale locale_type;
-  typedef details::regex::__regex_word_type char_class_type;
+  typedef details::regex::ctype_base_mask_numeric_type char_class_type;
 
-  static const char_class_type __regex_word = details::regex::__regex_word;
+  static const char_class_type __regex_word = details::regex::regex_word;
 # endif
 
 private:
@@ -4818,7 +4825,7 @@ public:
   LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const string_type& __s) const { return str().compare(__s); }
   LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
 
-  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable_v<_BidirectionalIterator>) {
+  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable<_BidirectionalIterator>::value) {
     std::pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #endif
     std::swap(matched, __s.matched);

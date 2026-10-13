@@ -13,6 +13,16 @@
 #  include <compare>
 #endif
 
+// Note that using names containing double underscore in our own code is
+// generally a bad idea. However, since libc++ uses such names throughout its
+// implementation, the renaming would make our code incomparable to the
+// original libc++ code and complicate the upgrades dramatically (not to
+// mention the amount of work). Thus, let's keep the original names and see
+// how it goes.
+//
+// @@ Should we use the stud::regex-details namespace instead?
+//    Note: stud::regex name is taken.
+//
 namespace stud { namespace details { namespace regex {
 
 // libcxx/include/__type_traits/void_t.h
@@ -27,6 +37,10 @@ using __enable_if_t LIBSTUD_REGEX_NODEBUG = typename std::enable_if<_Bp, _Tp>::t
 
 // libcxx/include/__type_traits/is_swappable.h
 //
+// Note that GCC 4.9 doesn't support variable templates. Thus, we will use the
+// class templates with static members instead.
+//
+#if 0
 template <class _Tp, class _Up, class = void>
 constexpr bool __is_swappable_with_v = false;
 
@@ -49,6 +63,44 @@ template <class _Tp, class _Up>
 constexpr bool __is_nothrow_swappable_with_v<_Tp, _Up, true> =
     noexcept(std::swap(std::declval<_Tp>(), std::declval<_Up>())) &&
     noexcept(std::swap(std::declval<_Up>(), std::declval<_Tp>()));
+
+#else
+
+template <class _Tp, class _Up, class = void>
+struct __is_swappable_with {
+  static constexpr bool value = false;
+};
+
+template <class _Tp>
+struct __is_swappable {
+  static constexpr bool value = __is_swappable_with<_Tp&, _Tp&>::value;
+};
+
+template <class _Tp, class _Up, bool = __is_swappable_with<_Tp, _Up>::value >
+struct __is_nothrow_swappable_with {
+  static constexpr bool value = false;
+};
+
+template <class _Tp>
+struct __is_nothrow_swappable {
+  static constexpr bool value = __is_nothrow_swappable_with<_Tp&, _Tp&>::value;
+};
+
+template <class _Tp, class _Up>
+struct __is_swappable_with<_Tp,
+                           _Up,
+                           __void_t<decltype(std::swap(std::declval<_Tp>(), std::declval<_Up>())),
+                                    decltype(std::swap(std::declval<_Up>(), std::declval<_Tp>()))> > {
+  static constexpr bool value = true;
+};
+
+template <class _Tp, class _Up>
+struct __is_nothrow_swappable_with<_Tp, _Up, true> {
+  static constexpr bool value =
+    noexcept(std::swap(std::declval<_Tp>(), std::declval<_Up>())) &&
+    noexcept(std::swap(std::declval<_Up>(), std::declval<_Tp>()));
+};
+#endif
 
 // libcxx/include/__type_traits/detected_or.h
 //
@@ -123,6 +175,7 @@ LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR _Tp* __to_address(_Tp* __p) 
   return __p;
 }
 
+#if 0
 template <class _Pointer, class = void>
 constexpr bool __has_to_address_v = false;
 
@@ -136,6 +189,26 @@ LIBSTUD_REGEX_CONSTEXPR __decay_t<decltype(std::pointer_traits<_Pointer>::to_add
 __to_address(const _Pointer& __p) LIBSTUD_REGEX_NOEXCEPT {
   return std::pointer_traits<_Pointer>::to_address(__p);
 }
+
+#else
+
+template <class _Pointer, class = void>
+struct __has_to_address {
+  static constexpr bool value = false;
+};
+
+template <class _Pointer>
+struct __has_to_address<_Pointer,
+                        decltype((void)std::pointer_traits<_Pointer>::to_address(std::declval<const _Pointer&>()))> {
+  static constexpr bool value = true;
+};
+
+template <class _Pointer, __enable_if_t<__has_to_address<_Pointer>::value, int> = 0>
+LIBSTUD_REGEX_CONSTEXPR __decay_t<decltype(std::pointer_traits<_Pointer>::to_address(std::declval<const _Pointer&>()))>
+__to_address(const _Pointer& __p) LIBSTUD_REGEX_NOEXCEPT {
+  return std::pointer_traits<_Pointer>::to_address(__p);
+};
+#endif
 
 // libcxx/include/__iterator/iterator_traits.h
 //
@@ -386,12 +459,29 @@ private:
   }
 };
 
-// Calculate the __regex_word flag by claiming the rightmost not taken bit in
-// std::ctype_base::mask.
+// Provide the regex_traits::__regex_word flag by claiming the rightmost not
+// taken bit in std::ctype_base::mask.
 //
-using __regex_word_type = std::make_unsigned_t<std::ctype_base::mask>;
+// Note that libstdc++ 4.9 doesn't support the std::ctype_base::blank flag.
+// Thus, we also provide the ctype_base_blank flag, which can be used in
+// implementation regardless of the runtime capabilities (see regex.cxx for
+// details).
+//
+using ctype_base_mask_numeric_type = std::make_unsigned_t<std::ctype_base::mask>;
 
-constexpr __regex_word_type ctype_base_mask_all_flags (
+template <typename T, typename = void>
+struct ctype_base_blank_flag
+{
+  static constexpr ctype_base_mask_numeric_type value = 0;
+};
+
+template <typename T>
+struct ctype_base_blank_flag<T, decltype(T::blank)>
+{
+  static constexpr ctype_base_mask_numeric_type value = T::blank;
+};
+
+constexpr ctype_base_mask_numeric_type ctype_base_mask_all_flags (
   std::ctype_base::space  |
   std::ctype_base::print  |
   std::ctype_base::cntrl  |
@@ -401,28 +491,58 @@ constexpr __regex_word_type ctype_base_mask_all_flags (
   std::ctype_base::digit  |
   std::ctype_base::punct  |
   std::ctype_base::xdigit |
-  std::ctype_base::blank);
+  ctype_base_blank_flag<std::ctype_base>::value);
 
-constexpr __regex_word_type __regex_word (
+// Note: '+1' flips the rightmost 0 and '~...&' removes the existing flags.
+//
+constexpr ctype_base_mask_numeric_type regex_word (
   ~ctype_base_mask_all_flags & (ctype_base_mask_all_flags + 1));
+
+static_assert (regex_word != 0,
+               "cannot assign value for regex_word since no "
+               "zero bits left in std::ctype_base::mask");
 
 // Validate, for good measure.
 //
-static_assert (__regex_word != 0,
-               "cannot assign value for regex_traits::__regex_word since no "
-               "zero bits left in std::ctype_base::mask");
+static_assert (
+  regex_word != std::ctype_base::space  &&
+  regex_word != std::ctype_base::print  &&
+  regex_word != std::ctype_base::cntrl  &&
+  regex_word != std::ctype_base::upper  &&
+  regex_word != std::ctype_base::lower  &&
+  regex_word != std::ctype_base::alpha  &&
+  regex_word != std::ctype_base::digit  &&
+  regex_word != std::ctype_base::punct  &&
+  regex_word != std::ctype_base::xdigit &&
+  regex_word != ctype_base_blank_flag<std::ctype_base>::value,
+  "regex_word clashes with std::ctype_base::* constants");
+
+// Calculate the ctype_base_blank flag, similar to the above.
+//
+constexpr ctype_base_mask_numeric_type ctype_base_mask_ext_flags (
+  ctype_base_mask_all_flags | regex_word);
+
+constexpr ctype_base_mask_numeric_type ctype_base_blank (
+  ctype_base_blank_flag<std::ctype_base>::value != 0
+  ? ctype_base_blank_flag<std::ctype_base>::value
+  : (~ctype_base_mask_ext_flags & (ctype_base_mask_ext_flags + 1)));
+
+static_assert (ctype_base_blank != 0,
+               "cannot assign value for ctype_base_blank since no "
+               "zero bits left in ctype_base_mask_ext_flags");
 
 static_assert (
-  __regex_word != std::ctype_base::space  &&
-  __regex_word != std::ctype_base::print  &&
-  __regex_word != std::ctype_base::cntrl  &&
-  __regex_word != std::ctype_base::upper  &&
-  __regex_word != std::ctype_base::lower  &&
-  __regex_word != std::ctype_base::alpha  &&
-  __regex_word != std::ctype_base::digit  &&
-  __regex_word != std::ctype_base::punct  &&
-  __regex_word != std::ctype_base::xdigit &&
-  __regex_word != std::ctype_base::blank,
-  "regex_traits::__regex_word clashes with std::ctype_base::* constants");
+  ctype_base_blank_flag<std::ctype_base>::value != 0 ||
+  (ctype_base_blank != std::ctype_base::space  &&
+   ctype_base_blank != std::ctype_base::print  &&
+   ctype_base_blank != std::ctype_base::cntrl  &&
+   ctype_base_blank != std::ctype_base::upper  &&
+   ctype_base_blank != std::ctype_base::lower  &&
+   ctype_base_blank != std::ctype_base::alpha  &&
+   ctype_base_blank != std::ctype_base::digit  &&
+   ctype_base_blank != std::ctype_base::punct  &&
+   ctype_base_blank != std::ctype_base::xdigit &&
+   ctype_base_blank != regex_word),
+  "ctype_base_blank clashes with std::ctype_base::* constants or regex_word");
 
 } } } // namespace stud { namespace details { namespace regex {
