@@ -23,6 +23,8 @@
 
 #include <string>
 
+#include "test_macros.hxx"
+
 #undef NDEBUG
 #include <cassert>
 

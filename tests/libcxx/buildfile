@@ -8,5 +8,7 @@ for t: re/cxx{**}
   d = $directory($t)
   n = $name($t)...
 
-  ./: $d/exe{$n}: $t $libs
+  ./: $d/exe{$n}: $t support/hxx{**} $libs
 }
+
+cxx.poptions =+ "-I$src_base/support"

@@ -14,6 +14,8 @@
 
 #include <libstud/regex.hxx>
 
+#include "test_macros.hxx"
+
 #undef NDEBUG
 #include <cassert>
 

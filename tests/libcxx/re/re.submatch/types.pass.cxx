@@ -29,6 +29,8 @@
 #include <utility>     // pair
 #include <type_traits>
 
+#include "test_macros.hxx"
+
 #undef NDEBUG
 #include <cassert>
 

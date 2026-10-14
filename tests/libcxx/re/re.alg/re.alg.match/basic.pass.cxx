@@ -21,6 +21,9 @@
 #include <string>  // char_traits
 #include <cstddef> // size_t, ptrdiff_t
 
+#include "test_macros.hxx"
+//#include "test_iterators.h"
+
 #undef NDEBUG
 #include <cassert>
 

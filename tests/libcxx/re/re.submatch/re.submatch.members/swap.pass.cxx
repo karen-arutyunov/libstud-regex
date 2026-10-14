@@ -14,13 +14,10 @@
 
 #include <libstud/regex.hxx>
 
+#include "test_macros.hxx"
+
 #undef NDEBUG
 #include <cassert>
-
-// @@ TMP Remove when start using upstream's test_macros.h.
-//
-#define ASSERT_NOEXCEPT(...) static_assert(noexcept(__VA_ARGS__), "Operation must be noexcept")
-#define ASSERT_NOT_NOEXCEPT(...) static_assert(!noexcept(__VA_ARGS__), "Operation must NOT be noexcept")
 
 using namespace stud::regex;
 
