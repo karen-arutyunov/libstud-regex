@@ -1,6 +1,7 @@
 # Test executables.
 #
 *.pass
+driver
 
 # Testscript output directories (can be symlinks).
 #

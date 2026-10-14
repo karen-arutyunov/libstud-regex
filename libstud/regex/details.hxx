@@ -563,28 +563,52 @@ private:
   }
 };
 
-// Provide the regex_traits::__regex_word flag by claiming the rightmost not
-// taken bit in std::ctype_base::mask.
+// Note that libstdc++ 4.9, which supports C++14, doesn't support the
+// std::ctype_base::blank flag, introduced in C++11. In this, and potentially
+// other similar cases, we fallback to defining the std::ctype_base::blank
+// flag as std::ctype_base::space. Interestingly, MSVC (as of version 18.0)
+// also defines these flags identically.
 //
-// Note that libstdc++ 4.9 doesn't support the std::ctype_base::blank flag.
-// Thus, we also provide the ctype_base_blank flag, which can be used in
-// implementation regardless of the runtime capabilities (see regex.cxx for
-// details).
+// Also note that for C locale the blank character class contains only tab and
+// space (separators of words in a sentence) and the space character class
+// extends blank with \n, \v, \f, \r (whitespaces).
 //
 using ctype_base_mask_numeric_type = std::make_unsigned_t<std::ctype_base::mask>;
 
-template <typename T, typename = void>
-struct ctype_base_blank_flag
+template <typename T>
+constexpr auto
+ctype_base_blank_flag(...) -> decltype(T::space)
 {
-  static constexpr ctype_base_mask_numeric_type value = 0;
-};
+  return T::space;
+}
 
 template <typename T>
-struct ctype_base_blank_flag<T, decltype(T::blank)>
+constexpr auto
+ctype_base_blank_flag (bool) -> decltype(T::blank)
 {
-  static constexpr ctype_base_mask_numeric_type value = T::blank;
-};
+  return T::blank;
+}
 
+constexpr ctype_base_mask_numeric_type ctype_base_blank (
+  static_cast<ctype_base_mask_numeric_type> (
+    ctype_base_blank_flag<std::ctype_base> (true)));
+
+// Validate, for good measure.
+//
+static_assert (
+  (ctype_base_blank != std::ctype_base::print &&
+   ctype_base_blank != std::ctype_base::cntrl &&
+   ctype_base_blank != std::ctype_base::upper &&
+   ctype_base_blank != std::ctype_base::lower &&
+   ctype_base_blank != std::ctype_base::alpha &&
+   ctype_base_blank != std::ctype_base::digit &&
+   ctype_base_blank != std::ctype_base::punct &&
+   ctype_base_blank != std::ctype_base::xdigit),
+  "ctype_base_blank clashes with std::ctype_base::* constants");
+
+// Provide the regex_traits::__regex_word flag by claiming the rightmost not
+// taken bit in std::ctype_base::mask.
+//
 constexpr ctype_base_mask_numeric_type ctype_base_mask_all_flags (
   std::ctype_base::space  |
   std::ctype_base::print  |
@@ -595,7 +619,7 @@ constexpr ctype_base_mask_numeric_type ctype_base_mask_all_flags (
   std::ctype_base::digit  |
   std::ctype_base::punct  |
   std::ctype_base::xdigit |
-  ctype_base_blank_flag<std::ctype_base>::value);
+  ctype_base_blank);
 
 // Note: '+1' flips the rightmost 0 and '~...&' removes the existing flags.
 //
@@ -618,35 +642,7 @@ static_assert (
   regex_word != std::ctype_base::digit  &&
   regex_word != std::ctype_base::punct  &&
   regex_word != std::ctype_base::xdigit &&
-  regex_word != ctype_base_blank_flag<std::ctype_base>::value,
+  regex_word != ctype_base_blank,
   "regex_word clashes with std::ctype_base::* constants");
-
-// Calculate the ctype_base_blank flag, similar to the above.
-//
-constexpr ctype_base_mask_numeric_type ctype_base_mask_ext_flags (
-  ctype_base_mask_all_flags | regex_word);
-
-constexpr ctype_base_mask_numeric_type ctype_base_blank (
-  ctype_base_blank_flag<std::ctype_base>::value != 0
-  ? ctype_base_blank_flag<std::ctype_base>::value
-  : (~ctype_base_mask_ext_flags & (ctype_base_mask_ext_flags + 1)));
-
-static_assert (ctype_base_blank != 0,
-               "cannot assign value for ctype_base_blank since no "
-               "zero bits left in ctype_base_mask_ext_flags");
-
-static_assert (
-  ctype_base_blank_flag<std::ctype_base>::value != 0 ||
-  (ctype_base_blank != std::ctype_base::space  &&
-   ctype_base_blank != std::ctype_base::print  &&
-   ctype_base_blank != std::ctype_base::cntrl  &&
-   ctype_base_blank != std::ctype_base::upper  &&
-   ctype_base_blank != std::ctype_base::lower  &&
-   ctype_base_blank != std::ctype_base::alpha  &&
-   ctype_base_blank != std::ctype_base::digit  &&
-   ctype_base_blank != std::ctype_base::punct  &&
-   ctype_base_blank != std::ctype_base::xdigit &&
-   ctype_base_blank != regex_word),
-  "ctype_base_blank clashes with std::ctype_base::* constants or regex_word");
 
 } } } // namespace stud { namespace regex { namespace details {
