@@ -17,11 +17,13 @@
 #undef NDEBUG
 #include <cassert>
 
+using namespace stud::regex;
+
 int main(int, char**)
 {
     {
         typedef char CharT;
-        typedef stud::sub_match<const CharT*> SM;
+        typedef sub_match<const CharT*> SM;
         typedef SM::string_type string;
         SM sm = SM();
         assert(sm.compare(string()) == 0);
@@ -35,7 +37,7 @@ int main(int, char**)
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         typedef wchar_t CharT;
-        typedef stud::sub_match<const CharT*> SM;
+        typedef sub_match<const CharT*> SM;
         typedef SM::string_type string;
         SM sm = SM();
         assert(sm.compare(string()) == 0);

@@ -323,7 +323,7 @@ const classnames ClassNames[] = {
 #if 0
     {"blank", ctype_base::blank},
 #else
-    {"blank", stud::details::regex::ctype_base_blank},
+    {"blank", stud::regex::details::ctype_base_blank},
 #endif
     {"cntrl", ctype_base::cntrl},
     {"d", ctype_base::digit},

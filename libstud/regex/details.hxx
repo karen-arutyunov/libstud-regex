@@ -23,7 +23,7 @@
 // @@ Should we use the stud::regex-details namespace instead?
 //    Note: stud::regex name is taken.
 //
-namespace stud { namespace details { namespace regex {
+namespace stud { namespace regex { namespace details {
 
 // libcxx/include/__type_traits/void_t.h
 //
@@ -649,4 +649,4 @@ static_assert (
    ctype_base_blank != regex_word),
   "ctype_base_blank clashes with std::ctype_base::* constants or regex_word");
 
-} } } // namespace stud { namespace details { namespace regex {
+} } } // namespace stud { namespace regex { namespace details {

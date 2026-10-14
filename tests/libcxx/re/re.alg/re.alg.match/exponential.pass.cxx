@@ -26,27 +26,27 @@
 #undef NDEBUG
 #include <cassert>
 
+using namespace stud::regex;
+
 int main(int, char**) {
-  for (stud::regex_constants::syntax_option_type op :
-       {stud::regex::ECMAScript, stud::regex::extended, stud::regex::egrep,
-        stud::regex::awk}) {
+  for (regex_constants::syntax_option_type op :
+       {regex::ECMAScript, regex::extended, regex::egrep, regex::awk}) {
     try {
-      bool b = stud::regex_match(
+      bool b = regex_match(
           "aaaaaaaaaaaaaaaaaaaa",
-          stud::regex(
-              "a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?aaaaaaaaaaaaaaaaaaaa",
-              op));
+          regex("a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?aaaaaaaaaaaaaaaaaaaa",
+                op));
       assert(false);
       assert(b);
-    } catch (const stud::regex_error &e) {
-      assert(e.code() == stud::regex_constants::error_complexity);
+    } catch (const regex_error &e) {
+      assert(e.code() == regex_constants::error_complexity);
     }
   }
   std::string s(100000, 'a');
-  for (stud::regex_constants::syntax_option_type op :
-       {stud::regex::ECMAScript, stud::regex::extended, stud::regex::egrep,
-        stud::regex::awk}) {
-    assert(stud::regex_match(s, stud::regex("a*", op)));
+  for (regex_constants::syntax_option_type op :
+       {regex::ECMAScript, regex::extended, regex::egrep,
+        regex::awk}) {
+    assert(regex_match(s, regex("a*", op)));
   }
   return 0;
 }

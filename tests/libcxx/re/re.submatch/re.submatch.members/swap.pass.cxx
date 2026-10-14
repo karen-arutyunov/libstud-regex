@@ -22,10 +22,12 @@
 #define ASSERT_NOEXCEPT(...) static_assert(noexcept(__VA_ARGS__), "Operation must be noexcept")
 #define ASSERT_NOT_NOEXCEPT(...) static_assert(!noexcept(__VA_ARGS__), "Operation must NOT be noexcept")
 
+using namespace stud::regex;
+
 int main(int, char**) {
   {
     using CharT      = char;
-    using SM         = stud::sub_match<const CharT*>;
+    using SM         = sub_match<const CharT*>;
     const CharT s1[] = {'1', '2', '3', 0};
     SM sm1;
     sm1.first   = s1;
@@ -53,7 +55,7 @@ int main(int, char**) {
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
   {
     using CharT      = wchar_t;
-    using SM         = stud::sub_match<const CharT*>;
+    using SM         = sub_match<const CharT*>;
     const CharT s1[] = {L'1', L'2', L'3', 0};
     SM sm1;
     sm1.first   = s1;

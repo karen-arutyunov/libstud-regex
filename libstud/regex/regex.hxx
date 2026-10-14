@@ -1085,9 +1085,9 @@ public:
 #else
   typedef std::basic_string<char_type> string_type;
   typedef std::locale locale_type;
-  typedef details::regex::ctype_base_mask_numeric_type char_class_type;
+  typedef details::ctype_base_mask_numeric_type char_class_type;
 
-  static const char_class_type __regex_word = details::regex::regex_word;
+  static const char_class_type __regex_word = details::regex_word;
 # endif
 
 private:
@@ -1501,7 +1501,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __node() {}
@@ -1524,7 +1524,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __end_state() {}
@@ -1577,7 +1577,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __empty_state(__node<_CharT>* __s) : base(__s) {}
@@ -1601,7 +1601,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __empty_non_own_state(__node<_CharT>* __s) : base(__s) {}
@@ -1625,7 +1625,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __repeat_one_loop(__node<_CharT>* __s) : base(__s) {}
@@ -1680,7 +1680,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __loop(
@@ -1772,7 +1772,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __alternate(__owns_one_state<_CharT>* __s1, __owns_one_state<_CharT>* __s2)
@@ -1808,7 +1808,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __begin_marked_subexpression(unsigned __mexp, __node<_CharT>* __s)
@@ -1836,7 +1836,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __end_marked_subexpression(unsigned __mexp, __node<_CharT>* __s)
@@ -1865,7 +1865,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __back_ref(unsigned __mexp, __node<_CharT>* __s) : base(__s), __mexp_(__mexp) {}
@@ -1911,7 +1911,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __back_ref_icase(const _Traits& __traits, unsigned __mexp, __node<_CharT>* __s)
@@ -1957,7 +1957,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __back_ref_collate(const _Traits& __traits, unsigned __mexp, __node<_CharT>* __s)
@@ -2003,7 +2003,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI explicit __word_boundary(const _Traits& __traits, bool __invert, __node<_CharT>* __s)
@@ -2062,7 +2062,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __l_anchor_multiline(bool __multiline, __node<_CharT>* __s)
@@ -2101,7 +2101,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __r_anchor_multiline(bool __multiline, __node<_CharT>* __s)
@@ -2138,7 +2138,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __match_any(__node<_CharT>* __s) : base(__s) {}
@@ -2168,7 +2168,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __match_any_but_newline(__node<_CharT>* __s) : base(__s) {}
@@ -2195,7 +2195,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __match_char(_CharT __c, __node<_CharT>* __s) : base(__s), __c_(__c) {}
@@ -2231,7 +2231,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __match_char_icase(const _Traits& __traits, _CharT __c, __node<_CharT>* __s)
@@ -2268,7 +2268,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI __match_char_collate(const _Traits& __traits, _CharT __c, __node<_CharT>* __s)
@@ -2322,7 +2322,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI
@@ -2565,8 +2565,8 @@ private:
   typedef std::__state<_CharT> __state;
   typedef std::__node<_CharT> __node;
 #else
-  typedef stud::__state<_CharT> __state;
-  typedef stud::__node<_CharT> __node;
+  typedef stud::regex::__state<_CharT> __state;
+  typedef stud::regex::__node<_CharT> __node;
 #endif
 
 public:
@@ -2608,18 +2608,18 @@ public:
   using numeric_limits = std::numeric_limits<T>;
 
   template <bool B, typename T = void>
-  using __enable_if_t = details::regex::__enable_if_t<B, T>;
+  using __enable_if_t = details::__enable_if_t<B, T>;
 
   template <typename T>
   using __has_exactly_input_iterator_category =
-    details::regex::__has_exactly_input_iterator_category<T>;
+    details::__has_exactly_input_iterator_category<T>;
 
   template <typename T>
   using __has_forward_iterator_category =
-    details::regex::__has_forward_iterator_category<T>;
+    details::__has_forward_iterator_category<T>;
 
   template <typename I>
-  using __wrap_iter = details::regex::__wrap_iter<I>;
+  using __wrap_iter = details::__wrap_iter<I>;
 
   // construct/copy/destroy:
   LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex()
@@ -2987,7 +2987,7 @@ basic_regex(_ForwardIterator, _ForwardIterator, regex_constants::syntax_option_t
 #    endif
 #  else
 #    ifdef __cpp_deduction_guides
-template <class _ForwardIterator, details::regex::__enable_if_t<details::regex::__has_forward_iterator_category<_ForwardIterator>::value, int> = 0>
+template <class _ForwardIterator, details::__enable_if_t<details::__has_forward_iterator_category<_ForwardIterator>::value, int> = 0>
 basic_regex(_ForwardIterator, _ForwardIterator, regex_constants::syntax_option_type = regex_constants::ECMAScript)
     -> basic_regex<typename std::iterator_traits<_ForwardIterator>::value_type>;
 #    endif
@@ -3045,7 +3045,7 @@ public:
 #if 0
   typedef std::__state<_CharT> __state;
 #else
-  typedef stud::__state<_CharT> __state;
+  typedef stud::regex::__state<_CharT> __state;
 #endif
 
   LIBSTUD_REGEX_HIDE_FROM_ABI
@@ -4825,7 +4825,7 @@ public:
   LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const string_type& __s) const { return str().compare(__s); }
   LIBSTUD_REGEX_NODISCARD LIBSTUD_REGEX_HIDE_FROM_ABI int compare(const value_type* __s) const { return str().compare(__s); }
 
-  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::regex::__is_nothrow_swappable<_BidirectionalIterator>::value) {
+  LIBSTUD_REGEX_HIDE_FROM_ABI void swap(sub_match& __s) LIBSTUD_REGEX_NOEXCEPT_(details::__is_nothrow_swappable<_BidirectionalIterator>::value) {
     std::pair<_BidirectionalIterator, _BidirectionalIterator>::swap(__s);
 #endif
     std::swap(matched, __s.matched);
@@ -6073,9 +6073,9 @@ regex_search(__wrap_iter<_Iter> __first,
              __wrap_iter<_Iter> __last,
              match_results<__wrap_iter<_Iter>, _Allocator>& __m,
 #else
-regex_search(details::regex::__wrap_iter<_Iter> __first,
-             details::regex::__wrap_iter<_Iter> __last,
-             match_results<details::regex::__wrap_iter<_Iter>, _Allocator>& __m,
+regex_search(details::__wrap_iter<_Iter> __first,
+             details::__wrap_iter<_Iter> __last,
+             match_results<details::__wrap_iter<_Iter>, _Allocator>& __m,
 #endif
              const basic_regex<_CharT, _Traits>& __e,
              regex_constants::match_flag_type __flags = regex_constants::match_default) {
@@ -6083,7 +6083,7 @@ regex_search(details::regex::__wrap_iter<_Iter> __first,
 #if 0
   bool __r = __e.__search(std::__to_address(__first), std::__to_address(__last), __mc, __flags);
 #else
-  using details::regex::__to_address;
+  using details::__to_address;
   bool __r = __e.__search(__to_address(__first), __to_address(__last), __mc, __flags);
 #endif
   __m.__assign(__first, __last, __mc, __flags & regex_constants::__no_update_pos);

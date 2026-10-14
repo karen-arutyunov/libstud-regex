@@ -24,18 +24,20 @@
 #undef NDEBUG
 #include <cassert>
 
+using namespace stud::regex;
+
 int main(int, char**)
 {
     {
-        stud::cmatch m;
-        assert(!stud::regex_match("a", m, stud::regex()));
+        cmatch m;
+        assert(!regex_match("a", m, regex()));
         assert(m.size() == 0);
         assert(m.empty());
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "a";
-        assert(stud::regex_match(s, m, stud::regex("a", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.empty());
         assert(!m.prefix().matched);
@@ -49,9 +51,9 @@ int main(int, char**)
         assert(m.str(0) == "a");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "ab";
-        assert(stud::regex_match(s, m, stud::regex("ab", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("ab", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -64,35 +66,35 @@ int main(int, char**)
         assert(m.str(0) == "ab");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "ab";
-        assert(!stud::regex_match(s, m, stud::regex("ba", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("ba", regex_constants::basic)));
         assert(m.size() == 0);
         assert(m.empty());
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "aab";
-        assert(!stud::regex_match(s, m, stud::regex("ab", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("ab", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "aab";
-        assert(!stud::regex_match(s, m, stud::regex("ab", stud::regex_constants::basic),
-                                            stud::regex_constants::match_continuous));
+        assert(!regex_match(s, m, regex("ab", regex_constants::basic),
+                                              regex_constants::match_continuous));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abcd";
-        assert(!stud::regex_match(s, m, stud::regex("bc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("bc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbc";
-        assert(stud::regex_match(s, m, stud::regex("ab*c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("ab*c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -105,9 +107,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "ababc";
-        assert(stud::regex_match(s, m, stud::regex("\\(ab\\)*c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("\\(ab\\)*c", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -123,16 +125,16 @@ int main(int, char**)
         assert(m.str(1) == "ab");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abcdefghijk";
-        assert(!stud::regex_match(s, m, stud::regex("cd\\(\\(e\\)fg\\)hi",
-                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("cd\\(\\(e\\)fg\\)hi",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abc";
-        assert(stud::regex_match(s, m, stud::regex("^abc", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("^abc", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -145,21 +147,21 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abcd";
-        assert(!stud::regex_match(s, m, stud::regex("^abc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("^abc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "aabc";
-        assert(!stud::regex_match(s, m, stud::regex("^abc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("^abc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abc";
-        assert(stud::regex_match(s, m, stud::regex("abc$", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("abc$", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -172,21 +174,21 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "efabc";
-        assert(!stud::regex_match(s, m, stud::regex("abc$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("abc$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "efabcg";
-        assert(!stud::regex_match(s, m, stud::regex("abc$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("abc$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abc";
-        assert(stud::regex_match(s, m, stud::regex("a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -199,9 +201,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "acc";
-        assert(stud::regex_match(s, m, stud::regex("a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -214,9 +216,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "acc";
-        assert(stud::regex_match(s, m, stud::regex("a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -229,9 +231,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abcdef";
-        assert(stud::regex_match(s, m, stud::regex("\\(.*\\).*", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("\\(.*\\).*", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -247,21 +249,21 @@ int main(int, char**)
         assert(m.str(1) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "bc";
-        assert(!stud::regex_match(s, m, stud::regex("\\(a*\\)*", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("\\(a*\\)*", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbc";
-        assert(!stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbbc";
-        assert(stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -274,9 +276,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbbbc";
-        assert(stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -289,9 +291,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbbbbc";
-        assert(stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -304,27 +306,27 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adefc";
-        assert(!stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "abbbbbbc";
-        assert(!stud::regex_match(s, m, stud::regex("ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adec";
-        assert(!stud::regex_match(s, m, stud::regex("a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adefc";
-        assert(stud::regex_match(s, m, stud::regex("a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -337,9 +339,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adefgc";
-        assert(stud::regex_match(s, m, stud::regex("a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -352,9 +354,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adefghc";
-        assert(stud::regex_match(s, m, stud::regex("a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -367,15 +369,15 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "adefghic";
-        assert(!stud::regex_match(s, m, stud::regex("a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "-ab,ab-";
-        assert(stud::regex_match(s, m, stud::regex("-\\(.*\\),\\1-", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("-\\(.*\\),\\1-", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -391,9 +393,9 @@ int main(int, char**)
         assert(m.str(1) == "ab");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "ababbabb";
-        assert(stud::regex_match(s, m, stud::regex("^\\(ab*\\)*\\1$", stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("^\\(ab*\\)*\\1$", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -409,16 +411,16 @@ int main(int, char**)
         assert(m.str(1) == "abb");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "ababbab";
-        assert(!stud::regex_match(s, m, stud::regex("^\\(ab*\\)*\\1$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("^\\(ab*\\)*\\1$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "aBAbbAbB";
-        assert(stud::regex_match(s, m, stud::regex("^\\(Ab*\\)*\\1$",
-                   stud::regex_constants::basic | stud::regex_constants::icase)));
+        assert(regex_match(s, m, regex("^\\(Ab*\\)*\\1$",
+                                       regex_constants::basic | regex_constants::icase)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -434,17 +436,17 @@ int main(int, char**)
         assert(m.str(1) == "Abb");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "aBAbbAbB";
-        assert(!stud::regex_match(s, m, stud::regex("^\\(Ab*\\)*\\1$",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("^\\(Ab*\\)*\\1$",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "a";
-        assert(stud::regex_match(s, m, stud::regex("^[a]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("^[a]$",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -457,10 +459,10 @@ int main(int, char**)
         assert(m.str(0) == "a");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "a";
-        assert(stud::regex_match(s, m, stud::regex("^[ab]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("^[ab]$",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -473,10 +475,10 @@ int main(int, char**)
         assert(m.str(0) == "a");
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "c";
-        assert(stud::regex_match(s, m, stud::regex("^[a-f]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("^[a-f]$",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -489,31 +491,31 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "g";
-        assert(!stud::regex_match(s, m, stud::regex("^[a-f]$",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("^[a-f]$",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "Iraqi";
-        assert(!stud::regex_match(s, m, stud::regex("q[^u]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("q[^u]",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "Iraq";
-        assert(!stud::regex_match(s, m, stud::regex("q[^u]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("q[^u]",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "AmB";
-        assert(stud::regex_match(s, m, stud::regex("A[[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("A[[:lower:]]B",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -526,17 +528,17 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "AMB";
-        assert(!stud::regex_match(s, m, stud::regex("A[[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("A[[:lower:]]B",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "AMB";
-        assert(stud::regex_match(s, m, stud::regex("A[^[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("A[^[:lower:]]B",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -549,24 +551,24 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "AmB";
-        assert(!stud::regex_match(s, m, stud::regex("A[^[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("A[^[:lower:]]B",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "A5B";
-        assert(!stud::regex_match(s, m, stud::regex("A[^[:lower:]0-9]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("A[^[:lower:]0-9]B",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "A?B";
-        assert(stud::regex_match(s, m, stud::regex("A[^[:lower:]0-9]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("A[^[:lower:]0-9]B",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -579,10 +581,10 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "m";
-        assert(stud::regex_match(s, m, stud::regex("[a[=m=]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("[a[=m=]z]",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -595,17 +597,17 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "m";
-        assert(!stud::regex_match(s, m, stud::regex("[a[=M=]z]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("[a[=M=]z]",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "-";
-        assert(stud::regex_match(s, m, stud::regex("[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("[a[.hyphen.]z]",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -618,10 +620,10 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "z";
-        assert(stud::regex_match(s, m, stud::regex("[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, regex("[a[.hyphen.]z]",
+                                       regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -634,24 +636,24 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "m";
-        assert(!stud::regex_match(s, m, stud::regex("[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("[a[.hyphen.]z]",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "01a45cef9";
-        assert(!stud::regex_match(s, m, stud::regex("[ace1-9]*",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("[ace1-9]*",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::cmatch m;
+        cmatch m;
         const char s[] = "01a45cef9";
-        assert(!stud::regex_match(s, m, stud::regex("[ace1-9]\\{1,\\}",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, regex("[ace1-9]\\{1,\\}",
+                                        regex_constants::basic)));
         assert(m.size() == 0);
     }
 #if 0
@@ -660,11 +662,11 @@ int main(int, char**)
         std::ptrdiff_t sr = std::char_traits<char>::length(r);
         typedef forward_iterator<const char*> FI;
         typedef bidirectional_iterator<const char*> BI;
-        stud::regex regex(FI(r), FI(r+sr), stud::regex_constants::basic);
-        stud::match_results<BI> m;
+        regex regex(FI(r), FI(r+sr), regex_constants::basic);
+        match_results<BI> m;
         const char s[] = "-40C";
         std::ptrdiff_t ss = std::char_traits<char>::length(s);
-        assert(stud::regex_match(BI(s), BI(s+ss), m, regex));
+        assert(regex_match(BI(s), BI(s+ss), m, regex));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == BI(s));
@@ -679,16 +681,16 @@ int main(int, char**)
 #endif
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        stud::wcmatch m;
-        assert(!stud::regex_match(L"a", m, stud::wregex()));
+        wcmatch m;
+        assert(!regex_match(L"a", m, wregex()));
         assert(m.size() == 0);
         assert(m.empty());
     }
 #if 0
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"a";
-        assert(stud::regex_match(s, m, stud::wregex(L"a", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.empty());
         assert(!m.prefix().matched);
@@ -703,9 +705,9 @@ int main(int, char**)
     }
 #endif
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"ab";
-        assert(stud::regex_match(s, m, stud::wregex(L"ab", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"ab", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -718,35 +720,35 @@ int main(int, char**)
         assert(m.str(0) == L"ab");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"ab";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ba", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"ba", regex_constants::basic)));
         assert(m.size() == 0);
         assert(m.empty());
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"aab";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ab", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"ab", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"aab";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ab", stud::regex_constants::basic),
-                                            stud::regex_constants::match_continuous));
+        assert(!regex_match(s, m, wregex(L"ab", regex_constants::basic),
+                            regex_constants::match_continuous));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abcd";
-        assert(!stud::regex_match(s, m, stud::wregex(L"bc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"bc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbc";
-        assert(stud::regex_match(s, m, stud::wregex(L"ab*c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"ab*c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -759,9 +761,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"ababc";
-        assert(stud::regex_match(s, m, stud::wregex(L"\\(ab\\)*c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"\\(ab\\)*c", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -777,16 +779,16 @@ int main(int, char**)
         assert(m.str(1) == L"ab");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abcdefghijk";
-        assert(!stud::regex_match(s, m, stud::wregex(L"cd\\(\\(e\\)fg\\)hi",
-                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"cd\\(\\(e\\)fg\\)hi",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abc";
-        assert(stud::regex_match(s, m, stud::wregex(L"^abc", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"^abc", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -799,21 +801,21 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abcd";
-        assert(!stud::regex_match(s, m, stud::wregex(L"^abc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"^abc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"aabc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"^abc", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"^abc", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abc";
-        assert(stud::regex_match(s, m, stud::wregex(L"abc$", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"abc$", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -826,21 +828,21 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"efabc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"abc$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"abc$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"efabcg";
-        assert(!stud::regex_match(s, m, stud::wregex(L"abc$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"abc$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -853,9 +855,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"acc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -868,9 +870,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"acc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -883,9 +885,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abcdef";
-        assert(stud::regex_match(s, m, stud::wregex(L"\\(.*\\).*", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"\\(.*\\).*", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -901,21 +903,21 @@ int main(int, char**)
         assert(m.str(1) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"bc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"\\(a*\\)*", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"\\(a*\\)*", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbbc";
-        assert(stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -928,9 +930,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbbbc";
-        assert(stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -943,9 +945,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbbbbc";
-        assert(stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -958,27 +960,27 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adefc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"abbbbbbc";
-        assert(!stud::regex_match(s, m, stud::wregex(L"ab\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"ab\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adec";
-        assert(!stud::regex_match(s, m, stud::wregex(L"a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adefc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -991,9 +993,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adefgc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1006,9 +1008,9 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adefghc";
-        assert(stud::regex_match(s, m, stud::wregex(L"a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1021,15 +1023,15 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"adefghic";
-        assert(!stud::regex_match(s, m, stud::wregex(L"a.\\{3,5\\}c", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"a.\\{3,5\\}c", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"-ab,ab-";
-        assert(stud::regex_match(s, m, stud::wregex(L"-\\(.*\\),\\1-", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"-\\(.*\\),\\1-", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1045,9 +1047,9 @@ int main(int, char**)
         assert(m.str(1) == L"ab");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"ababbabb";
-        assert(stud::regex_match(s, m, stud::wregex(L"^\\(ab*\\)*\\1$", stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"^\\(ab*\\)*\\1$", regex_constants::basic)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1063,16 +1065,16 @@ int main(int, char**)
         assert(m.str(1) == L"abb");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"ababbab";
-        assert(!stud::regex_match(s, m, stud::wregex(L"^\\(ab*\\)*\\1$", stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"^\\(ab*\\)*\\1$", regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"aBAbbAbB";
-        assert(stud::regex_match(s, m, stud::wregex(L"^\\(Ab*\\)*\\1$",
-                   stud::regex_constants::basic | stud::regex_constants::icase)));
+        assert(regex_match(s, m, wregex(L"^\\(Ab*\\)*\\1$",
+                   regex_constants::basic | regex_constants::icase)));
         assert(m.size() == 2);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1088,17 +1090,17 @@ int main(int, char**)
         assert(m.str(1) == L"Abb");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"aBAbbAbB";
-        assert(!stud::regex_match(s, m, stud::wregex(L"^\\(Ab*\\)*\\1$",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"^\\(Ab*\\)*\\1$",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"a";
-        assert(stud::regex_match(s, m, stud::wregex(L"^[a]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"^[a]$",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1111,10 +1113,10 @@ int main(int, char**)
         assert(m.str(0) == L"a");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"a";
-        assert(stud::regex_match(s, m, stud::wregex(L"^[ab]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"^[ab]$",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1127,10 +1129,10 @@ int main(int, char**)
         assert(m.str(0) == L"a");
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"c";
-        assert(stud::regex_match(s, m, stud::wregex(L"^[a-f]$",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"^[a-f]$",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1143,31 +1145,31 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"g";
-        assert(!stud::regex_match(s, m, stud::wregex(L"^[a-f]$",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"^[a-f]$",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"Iraqi";
-        assert(!stud::regex_match(s, m, stud::wregex(L"q[^u]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"q[^u]",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"Iraq";
-        assert(!stud::regex_match(s, m, stud::wregex(L"q[^u]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"q[^u]",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"AmB";
-        assert(stud::regex_match(s, m, stud::wregex(L"A[[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"A[[:lower:]]B",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1180,17 +1182,17 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"AMB";
-        assert(!stud::regex_match(s, m, stud::wregex(L"A[[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"A[[:lower:]]B",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"AMB";
-        assert(stud::regex_match(s, m, stud::wregex(L"A[^[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"A[^[:lower:]]B",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1203,24 +1205,24 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"AmB";
-        assert(!stud::regex_match(s, m, stud::wregex(L"A[^[:lower:]]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"A[^[:lower:]]B",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"A5B";
-        assert(!stud::regex_match(s, m, stud::wregex(L"A[^[:lower:]0-9]B",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"A[^[:lower:]0-9]B",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"A?B";
-        assert(stud::regex_match(s, m, stud::wregex(L"A[^[:lower:]0-9]B",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"A[^[:lower:]0-9]B",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1233,10 +1235,10 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"m";
-        assert(stud::regex_match(s, m, stud::wregex(L"[a[=m=]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"[a[=m=]z]",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1249,17 +1251,17 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"m";
-        assert(!stud::regex_match(s, m, stud::wregex(L"[a[=M=]z]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"[a[=M=]z]",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"-";
-        assert(stud::regex_match(s, m, stud::wregex(L"[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"[a[.hyphen.]z]",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1272,10 +1274,10 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"z";
-        assert(stud::regex_match(s, m, stud::wregex(L"[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(regex_match(s, m, wregex(L"[a[.hyphen.]z]",
+                                        regex_constants::basic)));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == s);
@@ -1288,24 +1290,24 @@ int main(int, char**)
         assert(m.str(0) == s);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"m";
-        assert(!stud::regex_match(s, m, stud::wregex(L"[a[.hyphen.]z]",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"[a[.hyphen.]z]",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"01a45cef9";
-        assert(!stud::regex_match(s, m, stud::wregex(L"[ace1-9]*",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"[ace1-9]*",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
     {
-        stud::wcmatch m;
+        wcmatch m;
         const wchar_t s[] = L"01a45cef9";
-        assert(!stud::regex_match(s, m, stud::wregex(L"[ace1-9]\\{1,\\}",
-                                                 stud::regex_constants::basic)));
+        assert(!regex_match(s, m, wregex(L"[ace1-9]\\{1,\\}",
+                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
 #if 0
@@ -1314,11 +1316,11 @@ int main(int, char**)
         std::ptrdiff_t sr = std::char_traits<wchar_t>::length(r);
         typedef forward_iterator<const wchar_t*> FI;
         typedef bidirectional_iterator<const wchar_t*> BI;
-        stud::wregex regex(FI(r), FI(r+sr), stud::regex_constants::basic);
-        stud::match_results<BI> m;
+        wregex regex(FI(r), FI(r+sr), regex_constants::basic);
+        match_results<BI> m;
         const wchar_t s[] = L"-40C";
         std::ptrdiff_t ss = std::char_traits<wchar_t>::length(s);
-        assert(stud::regex_match(BI(s), BI(s+ss), m, regex));
+        assert(regex_match(BI(s), BI(s+ss), m, regex));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
         assert(m.prefix().first == BI(s));
@@ -1334,25 +1336,25 @@ int main(int, char**)
 #endif // TEST_HAS_NO_WIDE_CHARACTERS
 
     { // LWG 2273
-        stud::regex re("Foo|FooBar");
-        stud::cmatch m;
+        regex re("Foo|FooBar");
+        cmatch m;
         {
-            assert(stud::regex_match("FooBar", m, re));
+            assert(regex_match("FooBar", m, re));
             assert(m.size() == 1);
             assert(m[0] == "FooBar");
         }
         {
-            assert(stud::regex_match("Foo", m, re));
+            assert(regex_match("Foo", m, re));
             assert(m.size() == 1);
             assert(m[0] == "Foo");
         }
         {
-            assert(!stud::regex_match("FooBarBaz", m, re));
+            assert(!regex_match("FooBarBaz", m, re));
             assert(m.size() == 0);
             assert(m.empty());
         }
         {
-            assert(!stud::regex_match("FooBa", m, re));
+            assert(!regex_match("FooBa", m, re));
             assert(m.size() == 0);
             assert(m.empty());
         }
