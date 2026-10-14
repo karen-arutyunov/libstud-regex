@@ -74,9 +74,13 @@
 #define LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14          constexpr
 
 #define LIBSTUD_REGEX_HAS_EXCEPTIONS                 1
-#define LIBSTUD_REGEX_HAS_LOCALIZATION               1
 #define LIBSTUD_REGEX_ABI_REGEX_CONSTANTS_NONZERO    1
+
+#define LIBSTUD_REGEX_HAS_LOCALIZATION               1
+#undef  LIBSTUD_REGEX_HAS_NO_LOCALIZATION
+
 #define LIBSTUD_REGEX_HAS_WIDE_CHARACTERS            1
+#undef  LIBSTUD_REGEX_HAS_NO_WIDE_CHARACTERS
 
 #define LIBSTUD_REGEX_AVAILABILITY_PMR
 
@@ -97,26 +101,73 @@
 #  define LIBSTUD_REGEX_LIBC_NEWLIB                  1
 #endif
 
+// Note that some older compilers (GCC 4.9, etc) don't support the
+// __has_cpp_attribute() preprocessor operator, introduced in C++11. We will
+// assume that if we have no means for checking for the attributes support,
+// the none of them is supported.
+//
+#ifdef __has_cpp_attribute
+#  define LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(...) __has_cpp_attribute(__VA_ARGS__)
+#else
+#  define LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(...) 0
+#endif
+
 // Note that Clang 3.7 doesn't provide complete support for C++17. In
 // particular, it doesn't support the nodiscard and fallthrough attributes.
 //
-#if LIBSTUD_REGEX_STD_VER >= 17
-#  ifdef __has_cpp_attribute
-#    if __has_cpp_attribute(nodiscard)
-#      define LIBSTUD_REGEX_NODISCARD [[nodiscard]]
-#    else
-#      define LIBSTUD_REGEX_NODISCARD
-#    endif
-#    if __has_cpp_attribute(fallthrough)
-#      define LIBSTUD_REGEX_FALLTHROUGH [[fallthrough]]
-#    else
-#      define LIBSTUD_REGEX_FALLTHROUGH
-#    endif
-#  else
-#    define LIBSTUD_REGEX_NODISCARD
-#    define LIBSTUD_REGEX_FALLTHROUGH
-#  endif
+#if LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(nodiscard)
+#  define LIBSTUD_REGEX_NODISCARD [[nodiscard]]
 #else
 #  define LIBSTUD_REGEX_NODISCARD
+#endif
+#if LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(fallthrough)
+#  define LIBSTUD_REGEX_FALLTHROUGH [[fallthrough]]
+#else
 #  define LIBSTUD_REGEX_FALLTHROUGH
 #endif
+
+// Note that the following macros are currently used only in tests copied from
+// llvm-project/libcxx. Let's, however, define them here to keep all
+// definitions in a single place, for convenience.
+//
+
+// Make sure that tests do not rely on libc++-specific features.
+//
+#undef LIBSTUD_REGEX_LIBCPP
+
+#undef LIBSTUD_REGEX_ABI_MICROSOFT
+
+#define LIBSTUD_REGEX_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT 0
+#define LIBSTUD_REGEX_HAS_UNICODE                                1
+#define LIBSTUD_REGEX_HAS_EXPERIMENTAL_TZDB                      0
+
+#if defined(_WIN32)
+#  if defined(_MSC_VER) && !defined(__MINGW32__)
+#    define LIBSTUD_REGEX_MSVCRT // Using Microsoft's C Runtime library
+#  endif
+#  define LIBSTUD_REGEX_HAS_OPEN_WITH_WCHAR 1
+#else
+#  define LIBSTUD_REGEX_HAS_OPEN_WITH_WCHAR 0
+#endif // defined(_WIN32)
+
+#if !defined(__SIZEOF_INT128__) || defined(_MSC_VER)
+#  define LIBSTUD_REGEX_HAS_INT128 0
+#else
+#  define LIBSTUD_REGEX_HAS_INT128 1
+#endif
+#undef LIBSTUD_REGEX_HAS_NO_INT128
+
+#define LIBSTUD_REGEX_HAS_THREADS    1
+#undef  LIBSTUD_REGEX_HAS_NO_THREADS
+
+#define LIBSTUD_REGEX_HAS_FILESYSTEM    1
+#undef  LIBSTUD_REGEX_HAS_NO_FILESYSTEM
+
+#define LIBSTUD_REGEX_HAS_C8RTOMB_MBRTOC8    0
+#undef  LIBSTUD_REGEX_HAS_NO_C8RTOMB_MBRTOC8
+
+#define LIBSTUD_REGEX_HAS_RANDOM_DEVICE    1
+#undef  LIBSTUD_REGEX_HAS_NO_RANDOM_DEVICE
+
+#define LIBSTUD_REGEX_HAS_TIME_ZONE_DATABASE    1
+#undef  LIBSTUD_REGEX_HAS_NO_TIME_ZONE_DATABASE

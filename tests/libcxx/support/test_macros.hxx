@@ -10,6 +10,8 @@
 #ifndef SUPPORT_TEST_MACROS_HPP
 #define SUPPORT_TEST_MACROS_HPP
 
+#include <libstud/regex/config.hxx>
+
 #ifdef __has_include
 #  if __has_include(<version>)
 #    include <version>
@@ -97,10 +99,12 @@
 
 /* Make a nice name for the standard version */
 #ifndef TEST_STD_VER
-#  if __cplusplus <= 199711L
-#    define TEST_STD_VER 3
-#  elif __cplusplus <= 201103L
-#    define TEST_STD_VER 11
+#  if __cplusplus <= 201103L
+#    if defined(_MSC_VER) && _MSC_VER >= 1800 // MSVC >= 12.0
+#      define TEST_STD_VER 14
+#    else
+#      error C++14 compiler required
+#    endif
 #  elif __cplusplus <= 201402L
 #    define TEST_STD_VER 14
 #  elif __cplusplus <= 201703L
@@ -237,7 +241,7 @@
 
 #if TEST_STD_VER > 17
 #  define TEST_CONSTINIT constinit
-#elif __has_cpp_attribute(clang::require_constant_initialization)
+#elif LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(clang::require_constant_initialization)
 #  define TEST_CONSTINIT [[clang::require_constant_initialization]]
 #else
 #  define TEST_CONSTINIT
@@ -275,7 +279,7 @@
 #  define LIBCPP_NON_FROZEN_STATIC_ASSERT(...) LIBCPP_STATIC_ASSERT(__VA_ARGS__)
 #endif
 
-#if __has_cpp_attribute(nodiscard)
+#if LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(nodiscard)
 #  define TEST_NODISCARD [[nodiscard]]
 #else
 #  define TEST_NODISCARD
@@ -525,9 +529,9 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_MSVC_DIAGNOSTIC_IGNORED(num)
 #endif
 
-#if __has_cpp_attribute(msvc::no_unique_address)
+#if LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(msvc::no_unique_address)
 #  define TEST_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
-#elif __has_cpp_attribute(no_unique_address)
+#elif LIBSTUD_REGEX_HAS_CPP_ATTRIBUTE(no_unique_address)
 #  define TEST_NO_UNIQUE_ADDRESS [[no_unique_address]]
 #else
 #  define TEST_NO_UNIQUE_ADDRESS
