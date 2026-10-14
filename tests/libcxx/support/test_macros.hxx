@@ -47,7 +47,7 @@
 // Note __has_extension(bit_int) is unusable because it is not recognized by Clang and produces 0.
 // Currently, library support for _BitInt(N) is an extension explicitly supported by libc++,
 // and test coverage is disabled for other implementations.
-#if defined(__BITINT_MAXWIDTH__) && defined(_LIBCPP_VERSION)
+#if defined(__BITINT_MAXWIDTH__) && defined(LIBSTUD_REGEX_LIBCPP)
 #  define TEST_HAS_BITINT 1
 #else
 #  define TEST_HAS_BITINT 0
@@ -113,7 +113,7 @@
 #    define TEST_STD_VER 26
 #  else
 #    define TEST_STD_VER 99 // greater than current standard
-// This is deliberately different than _LIBCPP_STD_VER to discourage matching them up.
+// This is deliberately different than LIBSTUD_REGEX_STD_VER to discourage matching them up.
 #  endif
 #endif
 
@@ -253,7 +253,7 @@
 #endif
 
 /* Macros for testing libc++ specific behavior and extensions */
-#if defined(_LIBCPP_VERSION)
+#if defined(LIBSTUD_REGEX_LIBCPP)
 #  define LIBCPP_ASSERT(...) assert(__VA_ARGS__)
 #  define LIBCPP_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
 #  define LIBCPP_ASSERT_NOEXCEPT(...) ASSERT_NOEXCEPT(__VA_ARGS__)
@@ -267,7 +267,7 @@
 #  define LIBCPP_ONLY(...) static_assert(true, "")
 #endif
 
-#ifdef _LIBCPP_USE_FROZEN_CXX03_HEADERS
+#ifdef LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS
 #  define LIBCPP_NON_FROZEN_ASSERT(...) static_assert(true, "")
 #  define LIBCPP_NON_FROZEN_STATIC_ASSERT(...) static_assert(true, "")
 #else
@@ -283,10 +283,10 @@
 
 #define TEST_IGNORE_NODISCARD (void)
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT) &&                         \
-    !_LIBCPP_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT) &&                         \
+    !LIBSTUD_REGEX_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT
 // not available
-#elif defined(_LIBCPP_VERSION) && !defined(_LIBCPP_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && !defined(LIBSTUD_REGEX_AVAILABILITY_HAS_FROM_CHARS_FLOATING_POINT) /* old libc++ version */
 // not available
 #else
 #  define TEST_HAS_FROM_CHARS_FLOATING_POINT
@@ -419,43 +419,43 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #endif
 
 // Support for carving out parts of the test suite, like removing wide characters, etc.
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_WIDE_CHARACTERS) && !_LIBCPP_HAS_WIDE_CHARACTERS
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_WIDE_CHARACTERS) && !LIBSTUD_REGEX_HAS_WIDE_CHARACTERS
 #  define TEST_HAS_NO_WIDE_CHARACTERS
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_WIDE_CHARACTERS) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_WIDE_CHARACTERS) /* old libc++ version */
 #  define TEST_HAS_NO_WIDE_CHARACTERS
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_UNICODE) && !_LIBCPP_HAS_UNICODE
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_UNICODE) && !LIBSTUD_REGEX_HAS_UNICODE
 #  define TEST_HAS_NO_UNICODE
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_UNICODE) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_UNICODE) /* old libc++ version */
 #  define TEST_HAS_NO_UNICODE
 #elif defined(_MSVC_EXECUTION_CHARACTER_SET) && _MSVC_EXECUTION_CHARACTER_SET != 65001
 #  define TEST_HAS_NO_UNICODE
 #endif
 
-#ifdef _LIBCPP_USE_FROZEN_CXX03_HEADERS
-#  ifdef _LIBCPP_HAS_OPEN_WITH_WCHAR
+#ifdef LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS
+#  ifdef LIBSTUD_REGEX_HAS_OPEN_WITH_WCHAR
 #    define TEST_HAS_OPEN_WITH_WCHAR
 #  endif
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_OPEN_WITH_WCHAR) && _LIBCPP_HAS_OPEN_WITH_WCHAR
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_OPEN_WITH_WCHAR) && LIBSTUD_REGEX_HAS_OPEN_WITH_WCHAR
 #  define TEST_HAS_OPEN_WITH_WCHAR
 #endif
 
-#ifdef _LIBCPP_USE_FROZEN_CXX03_HEADERS
-#  ifdef _LIBCPP_HAS_NO_INT128
+#ifdef LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS
+#  ifdef LIBSTUD_REGEX_HAS_NO_INT128
 #    define TEST_HAS_NO_INT128
 #  endif
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_INT128) && !_LIBCPP_HAS_INT128
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_INT128) && !LIBSTUD_REGEX_HAS_INT128
 #  define TEST_HAS_NO_INT128
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_INT128) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_INT128) /* old libc++ version */
 #  define TEST_HAS_NO_INT128
 #elif defined(_MSVC_STL_VERSION)
 #  define TEST_HAS_NO_INT128
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_LOCALIZATION) && !_LIBCPP_HAS_LOCALIZATION
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_LOCALIZATION) && !LIBSTUD_REGEX_HAS_LOCALIZATION
 #  define TEST_HAS_NO_LOCALIZATION
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_LOCALIZATION) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_LOCALIZATION) /* old libc++ version */
 #  define TEST_HAS_NO_LOCALIZATION
 #endif
 
@@ -463,39 +463,39 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_HAS_NO_CHAR8_T
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_THREADS) && !_LIBCPP_HAS_THREADS
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_THREADS) && !LIBSTUD_REGEX_HAS_THREADS
 #  define TEST_HAS_NO_THREADS
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_THREADS) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_THREADS) /* old libc++ version */
 #  define TEST_HAS_NO_THREADS
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_FILESYSTEM) && !_LIBCPP_HAS_FILESYSTEM
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_FILESYSTEM) && !LIBSTUD_REGEX_HAS_FILESYSTEM
 #  define TEST_HAS_NO_FILESYSTEM
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_FILESYSTEM) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_FILESYSTEM) /* old libc++ version */
 #  define TEST_HAS_NO_FILESYSTEM
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_C8RTOMB_MBRTOC8) && !_LIBCPP_HAS_C8RTOMB_MBRTOC8
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_C8RTOMB_MBRTOC8) && !LIBSTUD_REGEX_HAS_C8RTOMB_MBRTOC8
 #  define TEST_HAS_NO_C8RTOMB_MBRTOC8
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_C8RTOMB_MBRTOC8) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_C8RTOMB_MBRTOC8) /* old libc++ version */
 #  define TEST_HAS_NO_C8RTOMB_MBRTOC8
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_RANDOM_DEVICE) && !_LIBCPP_HAS_RANDOM_DEVICE
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_RANDOM_DEVICE) && !LIBSTUD_REGEX_HAS_RANDOM_DEVICE
 #  define TEST_HAS_NO_RANDOM_DEVICE
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_RANDOM_DEVICE) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_RANDOM_DEVICE) /* old libc++ version */
 #  define TEST_HAS_NO_RANDOM_DEVICE
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_EXPERIMENTAL_TZDB) && !_LIBCPP_HAS_EXPERIMENTAL_TZDB
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_EXPERIMENTAL_TZDB) && !LIBSTUD_REGEX_HAS_EXPERIMENTAL_TZDB
 #  define TEST_HAS_NO_EXPERIMENTAL_TZDB
-#elif defined(_LIBCPP_VERSION) && !defined(_LIBCPP_HAS_EXPERIMENTAL_TZDB) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && !defined(LIBSTUD_REGEX_HAS_EXPERIMENTAL_TZDB) /* old libc++ version */
 #  define TEST_HAS_NO_EXPERIMENTAL_TZDB
 #endif
 
-#if defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_TIME_ZONE_DATABASE) && !_LIBCPP_HAS_TIME_ZONE_DATABASE
+#if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_TIME_ZONE_DATABASE) && !LIBSTUD_REGEX_HAS_TIME_ZONE_DATABASE
 #  define TEST_HAS_NO_TIME_ZONE_DATABASE
-#elif defined(_LIBCPP_VERSION) && defined(_LIBCPP_HAS_NO_TIME_ZONE_DATABASE) /* old libc++ version */
+#elif defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_NO_TIME_ZONE_DATABASE) /* old libc++ version */
 #  define TEST_HAS_NO_TIME_ZONE_DATABASE
 #endif
 
@@ -537,7 +537,7 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_SHORT_WCHAR
 #endif
 
-#ifdef _LIBCPP_ABI_MICROSOFT
+#ifdef LIBSTUD_REGEX_ABI_MICROSOFT
 #  define TEST_ABI_MICROSOFT
 #endif
 
