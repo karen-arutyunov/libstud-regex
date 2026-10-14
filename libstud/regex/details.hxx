@@ -33,7 +33,11 @@ using __void_t LIBSTUD_REGEX_NODEBUG = void;
 // libcxx/include/__type_traits/enable_if.h
 //
 template <bool _Bp, class _Tp = void>
+#if 0
+using __enable_if_t _LIBCPP_NODEBUG = typename enable_if<_Bp, _Tp>::type;
+#else
 using __enable_if_t LIBSTUD_REGEX_NODEBUG = typename std::enable_if<_Bp, _Tp>::type;
+#endif
 
 // libcxx/include/__type_traits/is_swappable.h
 //
@@ -42,27 +46,29 @@ using __enable_if_t LIBSTUD_REGEX_NODEBUG = typename std::enable_if<_Bp, _Tp>::t
 //
 #if 0
 template <class _Tp, class _Up, class = void>
-constexpr bool __is_swappable_with_v = false;
+inline const bool __is_swappable_with_v = false;
 
 template <class _Tp>
-constexpr bool __is_swappable_v = __is_swappable_with_v<_Tp&, _Tp&>;
+inline const bool __is_swappable_v = __is_swappable_with_v<_Tp&, _Tp&>;
 
 template <class _Tp, class _Up, bool = __is_swappable_with_v<_Tp, _Up> >
-constexpr bool __is_nothrow_swappable_with_v = false;
+inline const bool __is_nothrow_swappable_with_v = false;
 
 template <class _Tp>
-constexpr bool __is_nothrow_swappable_v = __is_nothrow_swappable_with_v<_Tp&, _Tp&>;
+inline const bool __is_nothrow_swappable_v = __is_nothrow_swappable_with_v<_Tp&, _Tp&>;
 
 template <class _Tp, class _Up>
-constexpr bool __is_swappable_with_v<_Tp,
-                                     _Up,
-                                     __void_t<decltype(std::swap(std::declval<_Tp>(), std::declval<_Up>())),
-                                              decltype(std::swap(std::declval<_Up>(), std::declval<_Tp>()))> > = true;
+inline const bool __is_swappable_with_v<_Tp,
+                                        _Up,
+                                        __void_t<decltype(swap(std::declval<_Tp>(), std::declval<_Up>())),
+                                                 decltype(swap(std::declval<_Up>(), std::declval<_Tp>()))> > = true;
 
+#ifndef _LIBCPP_CXX03_LANG // C++03 doesn't have noexcept, so things are never nothrow swappable
 template <class _Tp, class _Up>
-constexpr bool __is_nothrow_swappable_with_v<_Tp, _Up, true> =
-    noexcept(std::swap(std::declval<_Tp>(), std::declval<_Up>())) &&
-    noexcept(std::swap(std::declval<_Up>(), std::declval<_Tp>()));
+inline const bool __is_nothrow_swappable_with_v<_Tp, _Up, true> =
+    noexcept(swap(std::declval<_Tp>(), std::declval<_Up>())) &&
+    noexcept(swap(std::declval<_Up>(), std::declval<_Tp>()));
+#endif
 
 #else
 
@@ -126,10 +132,18 @@ template <class... _Pred>
 __expand_to_true<__enable_if_t<_Pred::value>...> __and_helper(int);
 
 template <class...>
+#if 0
+false_type __and_helper(...);
+#else
 std::false_type __and_helper(...);
+#endif
 
 template <class... _Pred>
+#if 0
+using _And _LIBCPP_NODEBUG = decltype(std::__and_helper<_Pred...>(0));
+#else
 using _And LIBSTUD_REGEX_NODEBUG = decltype(__and_helper<_Pred...>(0));
+#endif
 
 // libcxx/include/__type_traits/disjunction.h
 //
@@ -150,12 +164,40 @@ struct _OrImpl<false> {
 };
 
 template <class... _Args>
+#if 0
+using _Or _LIBCPP_NODEBUG = typename _OrImpl<sizeof...(_Args) != 0>::template _Result<false_type, _Args...>;
+#else
 using _Or LIBSTUD_REGEX_NODEBUG = typename _OrImpl<sizeof...(_Args) != 0>::template _Result<std::false_type, _Args...>;
+#endif
 
 // libcxx/include/__type_traits/remove_reference.h
 //
+#if 0
+#if __has_builtin(__remove_reference_t)
+template <class _Tp>
+struct _LIBCPP_NO_SPECIALIZATIONS remove_reference {
+  using type _LIBCPP_NODEBUG = __remove_reference_t(_Tp);
+};
+
+template <class _Tp>
+using __libcpp_remove_reference_t _LIBCPP_NODEBUG = __remove_reference_t(_Tp);
+#elif __has_builtin(__remove_reference)
+template <class _Tp>
+struct remove_reference {
+  using type _LIBCPP_NODEBUG = __remove_reference(_Tp);
+};
+
+template <class _Tp>
+using __libcpp_remove_reference_t = typename remove_reference<_Tp>::type;
+#else
+#  error "remove_reference not implemented!"
+#endif // __has_builtin(__remove_reference_t)
+
+#else
+
 template <class _Tp>
 using __libcpp_remove_reference_t = typename std::remove_reference<_Tp>::type;
+#endif
 
 // libcxx/include/__type_traits/make_const_lvalue_ref.h
 //
@@ -164,17 +206,47 @@ using __make_const_lvalue_ref LIBSTUD_REGEX_NODEBUG = const __libcpp_remove_refe
 
 // libcxx/include/__type_traits/decay.h
 //
+#if 0
+#ifdef _LIBCPP_COMPILER_GCC
+template <class _Tp>
+using __decay_t _LIBCPP_NODEBUG = typename decay<_Tp>::type;
+#else
+template <class _Tp>
+using __decay_t _LIBCPP_NODEBUG = __decay(_Tp);
+#endif
+
+#else
+
 template <class _Tp>
 using __decay_t LIBSTUD_REGEX_NODEBUG = typename std::decay<_Tp>::type;
+#endif
+
+// libcxx/include/__type_traits/nat.h
+//
+struct __nat {
+#ifndef LIBSTUD_REGEX_CXX03_LANG
+  __nat()                        = delete;
+  __nat(const __nat&)            = delete;
+  __nat& operator=(const __nat&) = delete;
+  ~__nat()                       = delete;
+#endif
+};
 
 // libcxx/include/__memory/pointer_traits.h
 //
 template <class _Tp>
 LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR _Tp* __to_address(_Tp* __p) LIBSTUD_REGEX_NOEXCEPT {
+#if 0
+  static_assert(!is_function<_Tp>::value, "_Tp is a function type");
+#else
   static_assert(!std::is_function<_Tp>::value, "_Tp is a function type");
+#endif
   return __p;
 }
 
+// Note that GCC 4.9 doesn't support variable templates (see above for
+// details).
+//
 #if 0
 template <class _Pointer, class = void>
 constexpr bool __has_to_address_v = false;
@@ -215,39 +287,56 @@ __to_address(const _Pointer& __p) LIBSTUD_REGEX_NOEXCEPT {
 template <class _Tp>
 using __iterator_category LIBSTUD_REGEX_NODEBUG = typename _Tp::iterator_category;
 
-// libcxx/include/__type_traits/nat.h
-//
-struct __nat {
-#ifndef LIBSTUD_REGEX_CXX03_LANG
-  __nat()                        = delete;
-  __nat(const __nat&)            = delete;
-  __nat& operator=(const __nat&) = delete;
-  ~__nat()                       = delete;
-#endif
-};
-
 template <class _Tp, class _Up>
 using __has_iterator_category_convertible_to LIBSTUD_REGEX_NODEBUG =
-  std::is_convertible<__detected_or_t<__nat, __iterator_category, std::iterator_traits<_Tp> >, _Up>;
+#if 0
+    is_convertible<__detected_or_t<__nat, __iterator_category, iterator_traits<_Tp> >, _Up>;
+#else
+    std::is_convertible<__detected_or_t<__nat, __iterator_category, std::iterator_traits<_Tp> >, _Up>;
+#endif
 
 template <class _Tp>
 using __has_exactly_input_iterator_category LIBSTUD_REGEX_NODEBUG =
-  std::integral_constant<bool,
-                         __has_iterator_category_convertible_to<_Tp, std::input_iterator_tag>::value &&
-                           !__has_iterator_category_convertible_to<_Tp, std::forward_iterator_tag>::value>;
+#if 0
+    integral_constant<bool,
+                      __has_iterator_category_convertible_to<_Tp, input_iterator_tag>::value &&
+                          !__has_iterator_category_convertible_to<_Tp, forward_iterator_tag>::value>;
+#else
+    std::integral_constant<bool,
+                            __has_iterator_category_convertible_to<_Tp, std::input_iterator_tag>::value &&
+                               !__has_iterator_category_convertible_to<_Tp, std::forward_iterator_tag>::value>;
+#endif
 
 template <class _Tp>
 using __has_forward_iterator_category LIBSTUD_REGEX_NODEBUG =
-  __has_iterator_category_convertible_to<_Tp, std::forward_iterator_tag>;
+#if 0
+    __has_iterator_category_convertible_to<_Tp, forward_iterator_tag>;
+#else
+    __has_iterator_category_convertible_to<_Tp, std::forward_iterator_tag>;
+#endif
 
 template <class _Iter>
+#if 0
+using __iterator_reference _LIBCPP_NODEBUG = typename iterator_traits<_Iter>::reference;
+#else
 using __iterator_reference LIBSTUD_REGEX_NODEBUG = typename std::iterator_traits<_Iter>::reference;
+#endif
 
 // libcxx/include/__iterator/wrap_iter.h
 //
 template <class _Iter>
 class LIBSTUD_REGEX_WARN_UNUSED __wrap_iter {
 public:
+#if 0
+  typedef typename iterator_traits<_Iter>::value_type value_type;
+  typedef typename iterator_traits<_Iter>::difference_type difference_type;
+  typedef typename iterator_traits<_Iter>::pointer pointer;
+  typedef typename iterator_traits<_Iter>::reference reference;
+  typedef typename iterator_traits<_Iter>::iterator_category iterator_category;
+#if _LIBCPP_STD_VER >= 20
+  typedef contiguous_iterator_tag iterator_concept;
+#endif
+#else
   typedef typename std::iterator_traits<_Iter>::value_type value_type;
   typedef typename std::iterator_traits<_Iter>::difference_type difference_type;
   typedef typename std::iterator_traits<_Iter>::pointer pointer;
@@ -255,6 +344,7 @@ public:
   typedef typename std::iterator_traits<_Iter>::iterator_category iterator_category;
 #ifdef __cpp_lib_ranges
   typedef std::contiguous_iterator_tag iterator_concept;
+#endif
 #endif
 
 private:
@@ -271,9 +361,15 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter() LIBSTUD_REGEX_NOEXCEPT : __i_() {}
   template <class _OtherIter,
             __enable_if_t<
-              _And<std::is_convertible<const _OtherIter&, _Iter>,
-                _Or<std::is_same<reference, __iterator_reference<_OtherIter> >,
-                    std::is_same<reference, __make_const_lvalue_ref<__iterator_reference<_OtherIter> > > > >::value,
+#if 0
+                _And<is_convertible<const _OtherIter&, _Iter>,
+                     _Or<is_same<reference, __iterator_reference<_OtherIter> >,
+                         is_same<reference, __make_const_lvalue_ref<__iterator_reference<_OtherIter> > > > >::value,
+#else
+                _And<std::is_convertible<const _OtherIter&, _Iter>,
+                  _Or<std::is_same<reference, __iterator_reference<_OtherIter> >,
+                      std::is_same<reference, __make_const_lvalue_ref<__iterator_reference<_OtherIter> > > > >::value,
+#endif
               int> = 0>
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter(const __wrap_iter<_OtherIter>& __u) LIBSTUD_REGEX_NOEXCEPT
       : __i_(__u.__i_) {}
@@ -281,7 +377,11 @@ public:
     return *__i_;
   }
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 pointer operator->() const LIBSTUD_REGEX_NOEXCEPT {
+#if 0
+    return std::__to_address(__i_);
+#else
     return __to_address(__i_);
+#endif
   }
   LIBSTUD_REGEX_HIDE_FROM_ABI LIBSTUD_REGEX_CONSTEXPR_SINCE_CXX14 __wrap_iter& operator++() LIBSTUD_REGEX_NOEXCEPT {
     ++__i_;
@@ -425,16 +525,20 @@ private:
   template <class _Iter2>
   LIBSTUD_REGEX_HIDE_FROM_ABI friend constexpr std::strong_ordering
   operator<=>(const __wrap_iter& __x, const __wrap_iter<_Iter2>& __y) noexcept {
-    if constexpr (std::three_way_comparable_with<_Iter, _Iter2, std::strong_ordering>) {
+#if 1
+    using std::three_way_comparable_with;
+    using std::strong_ordering;
+#endif
+    if constexpr (three_way_comparable_with<_Iter, _Iter2, strong_ordering>) {
       return __x.__i_ <=> __y.__i_;
     } else {
       if (__x.__i_ < __y.__i_)
-        return std::strong_ordering::less;
+        return strong_ordering::less;
 
       if (__x.__i_ == __y.__i_)
-        return std::strong_ordering::equal;
+        return strong_ordering::equal;
 
-      return std::strong_ordering::greater;
+      return strong_ordering::greater;
     }
   }
 #endif // LIBSTUD_REGEX_STD_VER >= 20
