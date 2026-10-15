@@ -24,8 +24,15 @@
 #define TEST_COMPARISONS_H
 
 #include <cassert>
-#include <compare>
-#include <concepts>
+
+#ifdef __cpp_lib_three_way_comparison
+#  include <compare>
+#endif
+
+#if __cpp_concepts
+#  include <concepts>
+#endif
+
 #include <limits>
 #include <type_traits>
 #include <utility>
@@ -34,7 +41,11 @@
 
 // Test the consistency of the six basic comparison operators for values that are ordered or unordered.
 template <class T, class U = T>
+#if 0
 TEST_NODISCARD TEST_CONSTEXPR_CXX14 bool
+#else
+TEST_NODISCARD bool
+#endif
 testComparisonsComplete(const T& t1, const U& t2, bool isEqual, bool isLess, bool isGreater) {
     assert(((isEqual ? 1 : 0) + (isLess ? 1 : 0) + (isGreater ? 1 : 0) <= 1) &&
            "at most one of isEqual, isLess, and isGreater can be true");
@@ -97,7 +108,11 @@ testComparisonsComplete(const T& t1, const U& t2, bool isEqual, bool isLess, boo
 
 // Test the six basic comparison operators for ordered values.
 template <class T, class U = T>
+#if 0
 TEST_NODISCARD TEST_CONSTEXPR_CXX14 bool testComparisons(const T& t1, const U& t2, bool isEqual, bool isLess) {
+#else
+TEST_NODISCARD bool testComparisons(const T& t1, const U& t2, bool isEqual, bool isLess) {
+#endif
     assert(!(isEqual && isLess) && "isEqual and isLess cannot be both true");
     bool isGreater = !isEqual && !isLess;
     return testComparisonsComplete(t1, t2, isEqual, isLess, isGreater);
@@ -105,7 +120,11 @@ TEST_NODISCARD TEST_CONSTEXPR_CXX14 bool testComparisons(const T& t1, const U& t
 
 //  Easy call when you can init from something already comparable.
 template <class T, class Param>
+#if 0
 TEST_NODISCARD TEST_CONSTEXPR_CXX14 bool testComparisonsValues(Param val1, Param val2)
+#else
+TEST_NODISCARD bool testComparisonsValues(Param val1, Param val2)
+#endif
 {
     const bool isEqual   = val1 == val2;
     const bool isLess    = val1 <  val2;
@@ -145,7 +164,7 @@ void AssertComparisonsConvertibleToBool()
     static_assert((std::is_convertible<decltype(std::declval<const T&>() >= std::declval<const U&>()), bool>::value), "");
 }
 
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
 template <class T, class U = T>
 constexpr void AssertOrderAreNoexcept() {
     AssertComparisonsAreNoexcept<T, U>();
@@ -239,7 +258,7 @@ struct LessAndEqComp {
   }
 };
 
-#if TEST_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 
 template <typename T1, typename T2 = T1>
 concept HasOperatorEqual = requires(T1 t1, T2 t2) { t1 == t2; };
@@ -261,7 +280,12 @@ concept HasOperatorNotEqual = requires(T1 t1, T2 t2) { t1 != t2; };
 template <typename T1, typename T2 = T1>
 concept HasOperatorSpaceship = requires(T1 t1, T2 t2) { t1 <=> t2; };
 
-#elif TEST_STD_VER >= 14
+// All that variable template based SFINAE doesn't work well for VC prior to
+// version 15 and GCC prior to version 5.
+//
+#elif TEST_STD_VER >= 14                       && \
+      (!defined(_MSC_VER) || _MSC_VER >= 1910) && \
+      (!defined(__GNUC__) || __GNUC__ >= 5)
 
 template <typename T1, typename T2 = T1, typename = void>
 constexpr bool HasOperatorEqual = false;
@@ -297,7 +321,9 @@ constexpr bool HasOperatorNotEqual<T1, T2, decltype((void)(std::declval<T1&>() !
 
 struct NonComparable {};
 
-#if TEST_STD_VER >= 14
+#if TEST_STD_VER >= 14                       && \
+    (!defined(_MSC_VER) || _MSC_VER >= 1910) && \
+    (!defined(__GNUC__) || __GNUC__ >= 5)
 
 static_assert(!HasOperatorEqual<NonComparable>, "");
 static_assert(!HasOperatorGreaterThan<NonComparable>, "");
@@ -308,20 +334,21 @@ static_assert(!HasOperatorNotEqual<NonComparable>, "");
 
 #endif // TEST_STD_VER >= 14
 
-#if TEST_STD_VER >= 20
-
+#ifdef __cpp_lib_concepts
 static_assert(!std::equality_comparable<NonComparable>);
 static_assert(!std::totally_ordered<NonComparable>);
+#endif
+
+#ifdef __cpp_lib_three_way_comparison
 static_assert(!std::three_way_comparable<NonComparable>);
 static_assert(!HasOperatorSpaceship<NonComparable>);
-
 #endif // TEST_STD_VER >= 20
 
 class EqualityComparable {
 public:
   TEST_CONSTEXPR EqualityComparable(int value) : value_(value) {};
 
-#if TEST_STD_VER >= 20
+#ifdef __cpp_impl_three_way_comparison
   friend constexpr bool operator==(const EqualityComparable&, const EqualityComparable&) noexcept = default;
 #else
   friend TEST_CONSTEXPR bool operator==(const EqualityComparable& lhs, const EqualityComparable& rhs) TEST_NOEXCEPT {
@@ -337,7 +364,9 @@ private:
   int value_;
 };
 
-#if TEST_STD_VER >= 14
+#if TEST_STD_VER >= 14                       && \
+    (!defined(_MSC_VER) || _MSC_VER >= 1910) && \
+    (!defined(__GNUC__) || __GNUC__ >= 5)
 
 static_assert(HasOperatorEqual<EqualityComparable>, "");
 static_assert(HasOperatorNotEqual<EqualityComparable>, "");
@@ -347,20 +376,21 @@ static_assert(!HasOperatorLessThanEqual<EqualityComparable>, "");
 
 #endif // TEST_STD_VER >= 14
 
-#if TEST_STD_VER >= 20
-
+#ifdef __cpp_lib_concepts
 static_assert(std::equality_comparable<EqualityComparable>);
 static_assert(!std::totally_ordered<EqualityComparable>);
+#endif
+
+#ifdef __cpp_lib_three_way_comparison
 static_assert(!std::three_way_comparable<EqualityComparable>);
 static_assert(!HasOperatorSpaceship<EqualityComparable>);
-
-#endif // TEST_STD_VER >= 20
+#endif
 
 class TotallyOrdered {
 public:
   TEST_CONSTEXPR TotallyOrdered(int value) : value_(value) {};
 
-#if TEST_STD_VER >= 20
+#ifdef __cpp_impl_three_way_comparison
   friend constexpr bool operator==(const TotallyOrdered&, const TotallyOrdered&) noexcept = default;
 #else
   friend TEST_CONSTEXPR bool operator==(const TotallyOrdered& lhs, const TotallyOrdered& rhs) TEST_NOEXCEPT {
@@ -392,7 +422,9 @@ private:
   int value_;
 };
 
-#if TEST_STD_VER >= 14
+#if TEST_STD_VER >= 14                       && \
+    (!defined(_MSC_VER) || _MSC_VER >= 1910) && \
+    (!defined(__GNUC__) || __GNUC__ >= 5)
 
 static_assert(HasOperatorEqual<TotallyOrdered>, "");
 static_assert(HasOperatorNotEqual<TotallyOrdered>, "");
@@ -403,16 +435,17 @@ static_assert(HasOperatorNotEqual<TotallyOrdered>, "");
 
 #endif // TEST_STD_VER >= 14
 
-#if TEST_STD_VER >= 20
-
+#ifdef __cpp_lib_concepts
 static_assert(std::equality_comparable<TotallyOrdered>);
 static_assert(std::totally_ordered<TotallyOrdered>);
+#endif
+
+#ifdef __cpp_lib_three_way_comparison
 static_assert(!std::three_way_comparable<TotallyOrdered>);
 static_assert(!HasOperatorSpaceship<TotallyOrdered>);
+#endif
 
-#endif // TEST_STD_VER >= 20
-
-#if TEST_STD_VER >= 20
+#ifdef __cpp_lib_three_way_comparison
 
 struct StrongOrder {
   int value;
@@ -452,6 +485,7 @@ public:
 private:
   int value_;
 };
+
 static_assert(std::equality_comparable<ThreeWayComparable>);
 static_assert(std::three_way_comparable<ThreeWayComparable>);
 static_assert(HasOperatorEqual<ThreeWayComparable>);
