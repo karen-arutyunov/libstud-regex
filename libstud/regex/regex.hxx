@@ -2963,11 +2963,13 @@ private:
                            const basic_regex<_Cp, _Tp>& __e,
                            regex_constants::match_flag_type __flags);
 
+#if 0
   template <class _ST, class _SA, class _Ap, class _Cp, class _Tp>
   friend bool regex_search(const basic_string<_Cp, _ST, _SA>& __s,
                            match_results<typename basic_string<_Cp, _ST, _SA>::const_iterator, _Ap>&,
                            const basic_regex<_Cp, _Tp>& __e,
                            regex_constants::match_flag_type __flags);
+#endif
 
   template <class _Iter, class _Ap, class _Cp, class _Tp>
   friend bool
@@ -6161,15 +6163,16 @@ regex_search(const std::basic_string<_CharT, _ST, _SA>& __s,
   return __e.__search(__s.data(), __s.data() + __s.size(), __mc, __flags);
 }
 
+// Rewrite the function, so it doesn't need to be a friend of the basic_regex
+// class template. Otherwise, MSVC 17 and later fails with the 'ambiguous call
+// to overloaded function', considering this function definition and this
+// function in-class friend declaration as distinct overloads.
+//
+#if 0
 template <class _ST, class _SA, class _Allocator, class _CharT, class _Traits>
 inline LIBSTUD_REGEX_HIDE_FROM_ABI bool
-#if 0
 regex_search(const basic_string<_CharT, _ST, _SA>& __s,
              match_results<typename basic_string<_CharT, _ST, _SA>::const_iterator, _Allocator>& __m,
-#else
-regex_search(const std::basic_string<_CharT, _ST, _SA>& __s,
-             match_results<typename std::basic_string<_CharT, _ST, _SA>::const_iterator, _Allocator>& __m,
-#endif
              const basic_regex<_CharT, _Traits>& __e,
              regex_constants::match_flag_type __flags = regex_constants::match_default) {
   match_results<const _CharT*> __mc;
@@ -6177,6 +6180,19 @@ regex_search(const std::basic_string<_CharT, _ST, _SA>& __s,
   __m.__assign(__s.begin(), __s.end(), __mc, __flags & regex_constants::__no_update_pos);
   return __r;
 }
+#else
+template <class _ST, class _SA, class _Allocator, class _CharT, class _Traits>
+inline LIBSTUD_REGEX_HIDE_FROM_ABI bool
+regex_search(const std::basic_string<_CharT, _ST, _SA>& __s,
+             match_results<typename std::basic_string<_CharT, _ST, _SA>::const_iterator, _Allocator>& __m,
+             const basic_regex<_CharT, _Traits>& __e,
+             regex_constants::match_flag_type __flags = regex_constants::match_default) {
+  match_results<const _CharT*> __mc;
+  bool __r = regex_search(__s.data(), __s.data() + __s.size(), __mc, __e, __flags);
+  __m.__assign(__s.begin(), __s.end(), __mc, __flags & regex_constants::__no_update_pos);
+  return __r;
+}
+#endif
 
 #    if LIBSTUD_REGEX_STD_VER >= 14
 template <class _ST, class _SA, class _Ap, class _Cp, class _Tp>
