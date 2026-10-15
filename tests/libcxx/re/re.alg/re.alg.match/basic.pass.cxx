@@ -22,7 +22,7 @@
 #include <cstddef> // size_t, ptrdiff_t
 
 #include "test_macros.hxx"
-//#include "test_iterators.h"
+#include "test_iterators.hxx"
 
 #undef NDEBUG
 #include <cassert>
@@ -659,7 +659,6 @@ int main(int, char**)
                                         regex_constants::basic)));
         assert(m.size() == 0);
     }
-#if 0
     {
         const char r[] = "^[-+]\\{0,1\\}[0-9]\\{1,\\}[CF]$";
         std::ptrdiff_t sr = std::char_traits<char>::length(r);
@@ -681,7 +680,6 @@ int main(int, char**)
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
-#endif
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
         wcmatch m;
@@ -689,7 +687,6 @@ int main(int, char**)
         assert(m.size() == 0);
         assert(m.empty());
     }
-#if 0
     {
         wcmatch m;
         const wchar_t s[] = L"a";
@@ -706,7 +703,6 @@ int main(int, char**)
         assert(m.position(0) == 0);
         assert(m.str(0) == L"a");
     }
-#endif
     {
         wcmatch m;
         const wchar_t s[] = L"ab";
@@ -1313,7 +1309,6 @@ int main(int, char**)
                                          regex_constants::basic)));
         assert(m.size() == 0);
     }
-#if 0
     {
         const wchar_t r[] = L"^[-+]\\{0,1\\}[0-9]\\{1,\\}[CF]$";
         std::ptrdiff_t sr = std::char_traits<wchar_t>::length(r);
@@ -1335,7 +1330,6 @@ int main(int, char**)
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
-#endif
 #endif // TEST_HAS_NO_WIDE_CHARACTERS
 
     { // LWG 2273
