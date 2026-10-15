@@ -70,8 +70,10 @@ struct apply_type_identity {
   }
 };
 
+#ifdef __cpp_deduction_guides
 template <class T>
 apply_type_identity(T) -> apply_type_identity<T>;
+#endif
 
 #endif
 template <template <class...> class T, class... Args>
