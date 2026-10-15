@@ -12,7 +12,10 @@
 #include "test_macros.hxx"
 
 #include <string>
-#include <string_view>
+
+#ifdef __cpp_lib_string_view
+#  include <string_view>
+#endif
 
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
 # define MKSTR_WCHAR_ONLY(...) __VA_ARGS__
@@ -95,8 +98,9 @@ struct MultiStringType {
 #define MAKE_STRING(CharT, Str)                                                \
   std::basic_string<CharT>(MAKE_CSTRING(CharT, Str), MKSTR_LEN(CharT, Str))
 
+#ifdef __cpp_lib_string_view
 // Like MAKE_CSTRING but makes a basic_string_view<CharT>. Embedded nulls are OK.
 #define MAKE_STRING_VIEW(CharT, Str)                                           \
   std::basic_string_view<CharT>(MAKE_CSTRING(CharT, Str), MKSTR_LEN(CharT, Str))
-
+#endif
 #endif

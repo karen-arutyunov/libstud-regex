@@ -293,7 +293,7 @@ test(const basic_string<CharT>& x, const basic_string<CharT>& y, bool doCStrTest
     assert(testComparisons(sm1, sm2, x == y, x < y));
     assert(testComparisons(x, sm2, x == y, x < y));
     assert(testComparisons(sm1, y, x == y, x < y));
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
     assert(testOrder(sm1, sm2, x <=> y));
     assert(testOrder(x, sm2, x <=> y));
     assert(testOrder(sm1, y, x <=> y));
@@ -302,7 +302,7 @@ test(const basic_string<CharT>& x, const basic_string<CharT>& y, bool doCStrTest
     if (doCStrTests) {
         assert(testComparisons(x.c_str(), sm2, x == y, x < y));
         assert(testComparisons(sm1, y.c_str(), x == y, x < y));
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
         assert(testOrder(x.c_str(), sm2, x <=> y));
         assert(testOrder(sm1, y.c_str(), x <=> y));
 #endif
@@ -310,13 +310,13 @@ test(const basic_string<CharT>& x, const basic_string<CharT>& y, bool doCStrTest
 
     assert(testComparisons(x[0], sm2, string(1, x[0]) == y, string(1, x[0]) < y));
     assert(testComparisons(sm1, y[0], x == string(1, y[0]), x < string(1, y[0])));
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
     assert(testOrder(x[0], sm2, (string(1, x[0]) <=> y)));
     assert(testOrder(sm1, y[0], x <=> (string(1, y[0]))));
 #endif
 }
 
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
 template <class CharT, class Ordering>
 struct char_traits : public constexpr_char_traits<CharT> {
     using comparison_category = Ordering;
@@ -366,7 +366,7 @@ int main(int, char**)
     test(string("123"), string("123"));
     test(string("1234"), string("123"));
     test(string("123\000" "56", 6), string("123\000" "56", 6), false);
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
     test_all_orderings<char>();
 #endif
 
@@ -374,7 +374,7 @@ int main(int, char**)
     test(wstring(L"123"), wstring(L"123"));
     test(wstring(L"1234"), wstring(L"123"));
     test(wstring(L"123\000" L"56", 6), wstring(L"123\000" L"56", 6), false);
-#if TEST_STD_VER > 17
+#ifdef __cpp_lib_three_way_comparison
     test_all_orderings<wchar_t>();
 #endif
 #endif // TEST_HAS_NO_WIDE_CHARACTERS
