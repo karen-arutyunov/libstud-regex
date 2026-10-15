@@ -29,6 +29,10 @@
 
 using namespace stud::regex;
 
+using std::size_t;
+using std::char_traits;
+using std::ptrdiff_t;
+
 int main(int, char**)
 {
     {
@@ -388,7 +392,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 2);
@@ -406,7 +410,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 3);
@@ -431,7 +435,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 3);
@@ -526,7 +530,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -549,7 +553,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -579,7 +583,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -595,7 +599,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -618,7 +622,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -634,7 +638,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<char>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<char>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -661,13 +665,13 @@ int main(int, char**)
     }
     {
         const char r[] = "^[-+]\\{0,1\\}[0-9]\\{1,\\}[CF]$";
-        std::ptrdiff_t sr = std::char_traits<char>::length(r);
+        ptrdiff_t sr = char_traits<char>::length(r);
         typedef forward_iterator<const char*> FI;
         typedef bidirectional_iterator<const char*> BI;
         regex regex(FI(r), FI(r+sr), regex_constants::basic);
         match_results<BI> m;
         const char s[] = "-40C";
-        std::ptrdiff_t ss = std::char_traits<char>::length(s);
+        ptrdiff_t ss = char_traits<char>::length(s);
         assert(regex_match(BI(s), BI(s+ss), m, regex));
         assert(m.size() == 1);
         assert(!m.prefix().matched);
@@ -924,7 +928,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -939,7 +943,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -954,7 +958,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -987,7 +991,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1002,7 +1006,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1017,7 +1021,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1038,7 +1042,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 2);
@@ -1056,7 +1060,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 3);
@@ -1081,7 +1085,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
         assert(m.length(1) == 3);
@@ -1176,7 +1180,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1199,7 +1203,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1229,7 +1233,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1245,7 +1249,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1268,7 +1272,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1284,7 +1288,7 @@ int main(int, char**)
         assert(!m.suffix().matched);
         assert(m.suffix().first == m[0].second);
         assert(m.suffix().second == m[0].second);
-        assert(m.length(0) >= 0 && static_cast<std::size_t>(m.length(0)) == std::char_traits<wchar_t>::length(s));
+        assert(m.length(0) >= 0 && static_cast<size_t>(m.length(0)) == char_traits<wchar_t>::length(s));
         assert(m.position(0) == 0);
         assert(m.str(0) == s);
     }
@@ -1311,13 +1315,13 @@ int main(int, char**)
     }
     {
         const wchar_t r[] = L"^[-+]\\{0,1\\}[0-9]\\{1,\\}[CF]$";
-        std::ptrdiff_t sr = std::char_traits<wchar_t>::length(r);
+        ptrdiff_t sr = char_traits<wchar_t>::length(r);
         typedef forward_iterator<const wchar_t*> FI;
         typedef bidirectional_iterator<const wchar_t*> BI;
         wregex regex(FI(r), FI(r+sr), regex_constants::basic);
         match_results<BI> m;
         const wchar_t s[] = L"-40C";
-        std::ptrdiff_t ss = std::char_traits<wchar_t>::length(s);
+        ptrdiff_t ss = char_traits<wchar_t>::length(s);
         assert(regex_match(BI(s), BI(s+ss), m, regex));
         assert(m.size() == 1);
         assert(!m.prefix().matched);

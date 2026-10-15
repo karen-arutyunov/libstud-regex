@@ -30,6 +30,8 @@
 
 using namespace stud::regex;
 
+using std::string;
+
 int main(int, char**) {
   for (regex_constants::syntax_option_type op :
        {regex::ECMAScript, regex::extended, regex::egrep, regex::awk}) {
@@ -44,7 +46,7 @@ int main(int, char**) {
       assert(e.code() == regex_constants::error_complexity);
     }
   }
-  std::string s(100000, 'a');
+  string s(100000, 'a');
   for (regex_constants::syntax_option_type op :
        {regex::ECMAScript, regex::extended, regex::egrep,
         regex::awk}) {
