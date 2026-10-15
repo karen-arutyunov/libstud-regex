@@ -455,6 +455,8 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_HAS_NO_INT128
 #elif defined(_MSVC_STL_VERSION)
 #  define TEST_HAS_NO_INT128
+#elif defined (LIBSTUD_REGEX_HAS_NO_INT128)
+#  define TEST_HAS_NO_INT128
 #endif
 
 #if defined(LIBSTUD_REGEX_LIBCPP) && defined(LIBSTUD_REGEX_HAS_LOCALIZATION) && !LIBSTUD_REGEX_HAS_LOCALIZATION

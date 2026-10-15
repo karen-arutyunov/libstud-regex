@@ -20,14 +20,22 @@ struct double_move_tracker {
 
   double_move_tracker(double_move_tracker const&) = default;
 
+#if 0
   TEST_CONSTEXPR_CXX14 double_move_tracker(double_move_tracker&& other) : moved_from_(false) {
+#else
+  double_move_tracker(double_move_tracker&& other) : moved_from_(false) {
+#endif
     assert(!other.moved_from_);
     other.moved_from_ = true;
   }
 
   double_move_tracker& operator=(double_move_tracker const&) = default;
 
+#if 0
   TEST_CONSTEXPR_CXX14 double_move_tracker& operator=(double_move_tracker&& other) {
+#else
+  double_move_tracker& operator=(double_move_tracker&& other) {
+#endif
     assert(!other.moved_from_);
     other.moved_from_ = true;
     moved_from_       = false;
