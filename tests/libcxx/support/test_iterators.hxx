@@ -36,7 +36,6 @@
 #include "test_macros.hxx"
 #include "type_algorithms.hxx"
 
-#if 0
 // This iterator meets C++20's Cpp17OutputIterator requirements, as described
 // in Table 90 ([output.iterators]).
 template <class It>
@@ -59,33 +58,46 @@ public:
     TEST_CONSTEXPR cpp17_output_iterator(const cpp17_output_iterator<U>& u) : it_(u.it_), tracker_(u.tracker_) {}
 
     template <class U, class = typename std::enable_if<std::is_default_constructible<U>::value>::type>
+#if 0
     TEST_CONSTEXPR_CXX14 cpp17_output_iterator(cpp17_output_iterator<U>&& u)
+#else
+    cpp17_output_iterator(cpp17_output_iterator<U>&& u)
+#endif
         : it_(std::move(u.it_)), tracker_(std::move(u.tracker_)) {
       u.it_ = U();
     }
 
     TEST_CONSTEXPR reference operator*() const {return *it_;}
 
+#if 0
     TEST_CONSTEXPR_CXX14 cpp17_output_iterator& operator++() {++it_; return *this;}
     TEST_CONSTEXPR_CXX14 cpp17_output_iterator operator++(int) {return cpp17_output_iterator(it_++);}
+#else
+    cpp17_output_iterator& operator++() {++it_; return *this;}
+    cpp17_output_iterator operator++(int) {return cpp17_output_iterator(it_++);}
+#endif
 
     friend TEST_CONSTEXPR It base(const cpp17_output_iterator& i) { return i.it_; }
 
+#if 0
     template <class T>
     void operator,(T const &) = delete;
 
     template <class T>
     friend void operator,(const T&, const cpp17_output_iterator&) = delete;
+#endif
 };
-#if TEST_STD_VER > 14
+#ifdef __cpp_deduction_guides
 template <class It>
 cpp17_output_iterator(It) -> cpp17_output_iterator<It>;
 #endif
 
+#if 0
 #if TEST_STD_VER > 17
 #  ifdef __cpp_lib_concepts
    static_assert(std::output_iterator<cpp17_output_iterator<int*>, int>);
 #  endif
+#endif
 #endif
 
 // This iterator meets C++20's Cpp17InputIterator requirements, as described
@@ -111,32 +123,44 @@ public:
     TEST_CONSTEXPR cpp17_input_iterator(const cpp17_input_iterator<U, T>& u) : it_(u.it_), tracker_(u.tracker_) {}
 
     template <class U, class T, class = typename std::enable_if<std::is_default_constructible<U>::value>::type>
+#if 0
     TEST_CONSTEXPR_CXX14 cpp17_input_iterator(cpp17_input_iterator<U, T>&& u)
+#else
+    cpp17_input_iterator(cpp17_input_iterator<U, T>&& u)
+#endif
         : it_(std::move(u.it_)), tracker_(std::move(u.tracker_)) {
       u.it_ = U();
     }
 
     TEST_CONSTEXPR reference operator*() const {return *it_;}
 
+#if 0
     TEST_CONSTEXPR_CXX14 cpp17_input_iterator& operator++() {++it_; return *this;}
     TEST_CONSTEXPR_CXX14 cpp17_input_iterator operator++(int) {return cpp17_input_iterator(it_++);}
+#else
+    cpp17_input_iterator& operator++() {++it_; return *this;}
+    cpp17_input_iterator operator++(int) {return cpp17_input_iterator(it_++);}
+#endif
 
     friend TEST_CONSTEXPR bool operator==(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ == y.it_;}
     friend TEST_CONSTEXPR bool operator!=(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ != y.it_;}
 
     friend TEST_CONSTEXPR It base(const cpp17_input_iterator& i) { return i.it_; }
 
+#if 0
     template <class T>
     void operator,(T const &) = delete;
 
     template <class T>
     friend void operator,(const T&, const cpp17_input_iterator&) = delete;
+#endif
 };
-#if TEST_STD_VER > 14
+#ifdef __cpp_deduction_guides
 template <class It>
 cpp17_input_iterator(It) -> cpp17_input_iterator<It>;
 #endif
 
+#if 0
 #if TEST_STD_VER > 17
 #  ifdef __cpp_lib_concepts
    static_assert(std::input_iterator<cpp17_input_iterator<int*>>);
