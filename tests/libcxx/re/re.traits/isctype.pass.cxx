@@ -13,16 +13,26 @@
 // bool isctype(charT c, char_class_type f) const;
 
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
+
+using namespace stud::regex;
+
+using std::string;
+using std::wstring;
 
 int main(int, char**)
 {
     {
-        std::regex_traits<char> t;
+        regex_traits<char> t;
 
-        std::string s("w");
+        string s("w");
         assert( t.isctype('_', t.lookup_classname(s.begin(), s.end())));
         assert( t.isctype('a', t.lookup_classname(s.begin(), s.end())));
         assert( t.isctype('Z', t.lookup_classname(s.begin(), s.end())));
@@ -151,9 +161,9 @@ int main(int, char**)
 
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        std::regex_traits<wchar_t> t;
+        regex_traits<wchar_t> t;
 
-        std::wstring s(L"w");
+        wstring s(L"w");
         assert( t.isctype(L'_', t.lookup_classname(s.begin(), s.end())));
         assert( t.isctype(L'a', t.lookup_classname(s.begin(), s.end())));
         assert( t.isctype(L'Z', t.lookup_classname(s.begin(), s.end())));
