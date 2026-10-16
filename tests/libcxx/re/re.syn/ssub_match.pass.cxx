@@ -8,15 +8,26 @@
 
 // <regex>
 
-// typedef regex_iterator<string::const_iterator>   sregex_iterator;
+// typedef sub_match<string::const_iterator>   ssub_match;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
+using std::string;
 
 int main(int, char**)
 {
-    static_assert((std::is_same<std::regex_iterator<std::string::const_iterator>, std::sregex_iterator>::value), "");
+    static_assert((is_same<sub_match<string::const_iterator>, ssub_match>::value), "");
 
   return 0;
 }
