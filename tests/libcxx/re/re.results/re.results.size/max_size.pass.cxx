@@ -10,30 +10,31 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// allocator_type get_allocator() const;
+// size_type max_size() const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
 
-#include "test_macros.h"
-#include "test_allocator.h"
+using namespace stud::regex;
 
-template <class CharT, class Allocator>
+template <class CharT>
 void
-test(const Allocator& a)
+test()
 {
-    std::match_results<const CharT*, Allocator> m(a);
-    assert(m.size() == 0);
-    assert(!m.ready());
-    assert(m.get_allocator() == a);
+    match_results<const CharT*> m;
+    assert(m.max_size() > 0);
 }
 
 int main(int, char**)
 {
-    test<char>(test_allocator<std::sub_match<const char*> >(3));
+    test<char>();
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(test_allocator<std::sub_match<const wchar_t*> >(3));
+    test<wchar_t>();
 #endif
 
-  return 0;
+    return 0;
 }

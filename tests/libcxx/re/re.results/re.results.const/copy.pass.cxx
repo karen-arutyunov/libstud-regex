@@ -12,16 +12,25 @@
 
 // match_results(const match_results& m);
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <memory> // allocator
+
+#include "test_macros.hxx"
+#include "test_allocator.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
-#include "test_allocator.h"
+
+using namespace stud::regex;
+
+using std::allocator;
 
 template <class CharT, class Allocator>
 void
 test(const Allocator& a)
 {
-    typedef std::match_results<const CharT*, Allocator> SM;
+    typedef match_results<const CharT*, Allocator> SM;
     SM m0(a);
     SM m1(m0);
 
@@ -32,14 +41,14 @@ test(const Allocator& a)
 
 int main(int, char**)
 {
-    test<char>   (std::allocator<std::sub_match<const char *> >());
+    test<char>   (allocator<sub_match<const char *> >());
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(std::allocator<std::sub_match<const wchar_t *> >());
+    test<wchar_t>(allocator<sub_match<const wchar_t *> >());
 #endif
 
-    test<char>   (test_allocator<std::sub_match<const char*> >(3));
+    test<char>   (test_allocator<sub_match<const char*> >(3));
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(test_allocator<std::sub_match<const wchar_t*> >(3));
+    test<wchar_t>(test_allocator<sub_match<const wchar_t*> >(3));
 #endif
 
   return 0;

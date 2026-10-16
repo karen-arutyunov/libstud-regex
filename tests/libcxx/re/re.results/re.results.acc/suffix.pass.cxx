@@ -10,27 +10,27 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// const_iterator begin() const;
-// const_iterator end() const;
+// const_reference suffix() const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include <cstddef>
-#include "test_macros.h"
+
+using namespace stud::regex;
 
 void
 test()
 {
-    std::match_results<const char*> m;
+    match_results<const char*> m;
     const char s[] = "abcdefghijk";
-    assert(std::regex_search(s, m, std::regex("cd((e)fg)hi")));
+    assert(regex_search(s, m, regex("cd((e)fg)hi")));
 
-    std::match_results<const char*>::const_iterator i = m.begin();
-    std::match_results<const char*>::const_iterator e = m.end();
-
-    assert(static_cast<std::size_t>(e - i) == m.size());
-    for (int j = 0; i != e; ++i, ++j)
-        assert(*i == m[j]);
+    assert(m.suffix().first == s+9);
+    assert(m.suffix().second == s+11);
+    assert(m.suffix().matched == true);
 }
 
 int main(int, char**)

@@ -12,23 +12,33 @@
 
 // match_results& operator=(const match_results& m);
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <memory> // allocator, allocator_traits
+
+#include "test_macros.hxx"
+#include "test_allocator.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
-#include "test_allocator.h"
+
+using namespace stud::regex;
+
+using std::allocator;
+using std::allocator_traits;
 
 template <class CharT, class Allocator>
 void
 test(const Allocator& a)
 {
-    typedef std::match_results<const CharT*, Allocator> SM;
+    typedef match_results<const CharT*, Allocator> SM;
     SM m0(a);
     SM m1;
 
     m1 = m0;
     assert(m1.size()          == m0.size());
     assert(m1.ready()         == m0.ready());
-    if (std::allocator_traits<Allocator>::propagate_on_container_copy_assignment::value)
+    if (allocator_traits<Allocator>::propagate_on_container_copy_assignment::value)
         assert(m1.get_allocator() == m0.get_allocator());
     else
         assert(m1.get_allocator() == Allocator());
@@ -36,21 +46,21 @@ test(const Allocator& a)
 
 int main(int, char**)
 {
-    test<char>   (std::allocator<std::sub_match<const char *> >());
+    test<char>   (allocator<sub_match<const char *> >());
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(std::allocator<std::sub_match<const wchar_t *> >());
+    test<wchar_t>(allocator<sub_match<const wchar_t *> >());
 #endif
 
     // test_allocator has POCCA -> false
-    test<char>   (test_allocator<std::sub_match<const char*> >(3));
+    test<char>   (test_allocator<sub_match<const char*> >(3));
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(test_allocator<std::sub_match<const wchar_t*> >(3));
+    test<wchar_t>(test_allocator<sub_match<const wchar_t*> >(3));
 #endif
 
     // other_allocator has POCCA -> true
-    test<char>   (other_allocator<std::sub_match<const char*> >(3));
+    test<char>   (other_allocator<sub_match<const char*> >(3));
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>(other_allocator<std::sub_match<const wchar_t*> >(3));
+    test<wchar_t>(other_allocator<sub_match<const wchar_t*> >(3));
 #endif
 
   return 0;

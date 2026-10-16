@@ -10,29 +10,41 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// size_type size() const;
-// bool empty() const;
+// bool ready() const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
 
-template <class CharT>
+using namespace stud::regex;
+
 void
-test()
+test1()
 {
-    std::match_results<const CharT*> m;
-    assert(m.empty());
-    assert(m.size() == 0);
+    match_results<const char*> m;
     const char s[] = "abcdefghijk";
-    assert(std::regex_search(s, m, std::regex("cd((e)fg)hi")));
-    assert(!m.empty());
-    assert(m.size() == 3);
+    assert(m.ready() == false);
+    regex_search(s, m, regex("cd((e)fg)hi"));
+    assert(m.ready() == true);
+}
+
+void
+test2()
+{
+    match_results<const char*> m;
+    const char s[] = "abcdefghijk";
+    assert(m.ready() == false);
+    regex_search(s, m, regex("z"));
+    assert(m.ready() == true);
 }
 
 int main(int, char**)
 {
-    test<char>();
+    test1();
+    test2();
 
   return 0;
 }

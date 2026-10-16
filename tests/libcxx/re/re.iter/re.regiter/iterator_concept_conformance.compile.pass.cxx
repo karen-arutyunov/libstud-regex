@@ -14,6 +14,9 @@
 
 #include <iterator>
 
+#undef NDEBUG
+#include <cassert>
+
 using namespace stud::regex;
 
 #ifdef __cpp_lib_ranges
