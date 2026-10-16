@@ -75,7 +75,7 @@ int main(int, char**)
     LIBCPP_ASSERT((ctype_base::digit  & regex_traits<char>::__regex_word) == 0);
     LIBCPP_ASSERT((ctype_base::punct  & regex_traits<char>::__regex_word) == 0);
     LIBCPP_ASSERT((ctype_base::xdigit & regex_traits<char>::__regex_word) == 0);
-    LIBCPP_ASSERT((ctype_base::blank  & regex_traits<char>::__regex_word) == 0);
+    LIBCPP_ASSERT((details::ctype_base_blank  & regex_traits<char>::__regex_word) == 0);
 
     test("d", ctype_base::digit);
     test("D", ctype_base::digit);
@@ -106,10 +106,10 @@ int main(int, char**)
     test("alpha", ctype_base::alpha, true);
     test("Alpha", ctype_base::alpha, true);
 
-    test("blank", ctype_base::blank);
-    test("Blank", ctype_base::blank);
-    test("blank", ctype_base::blank, true);
-    test("Blank", ctype_base::blank, true);
+    test("blank", details::ctype_base_blank);
+    test("Blank", details::ctype_base_blank);
+    test("blank", details::ctype_base_blank, true);
+    test("Blank", details::ctype_base_blank, true);
 
     test("cntrl", ctype_base::cntrl);
     test("Cntrl", ctype_base::cntrl);
@@ -195,10 +195,10 @@ int main(int, char**)
     test(L"alpha", ctype_base::alpha, true);
     test(L"Alpha", ctype_base::alpha, true);
 
-    test(L"blank", ctype_base::blank);
-    test(L"Blank", ctype_base::blank);
-    test(L"blank", ctype_base::blank, true);
-    test(L"Blank", ctype_base::blank, true);
+    test(L"blank", details::ctype_base_blank);
+    test(L"Blank", details::ctype_base_blank);
+    test(L"blank", details::ctype_base_blank, true);
+    test(L"Blank", details::ctype_base_blank, true);
 
     test(L"cntrl", ctype_base::cntrl);
     test(L"Cntrl", ctype_base::cntrl);
