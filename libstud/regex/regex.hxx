@@ -5691,7 +5691,7 @@ LIBSTUD_REGEX_HIDE_FROM_ABI bool operator==(const match_results<_BidirectionalIt
   return __x.__matches_ == __y.__matches_ && __x.__prefix_ == __y.__prefix_ && __x.__suffix_ == __y.__suffix_;
 }
 
-#    if LIBSTUD_REGEX_STD_VER < 20
+#    ifndef __cpp_impl_three_way_comparison
 template <class _BidirectionalIterator, class _Allocator>
 inline LIBSTUD_REGEX_HIDE_FROM_ABI bool operator!=(const match_results<_BidirectionalIterator, _Allocator>& __x,
                                              const match_results<_BidirectionalIterator, _Allocator>& __y) {
