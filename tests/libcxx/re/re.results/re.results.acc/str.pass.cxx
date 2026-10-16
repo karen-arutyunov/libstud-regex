@@ -10,27 +10,33 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// void swap(match_results& that);
+// string_type str(size_type sub = 0) const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
+
+using namespace stud::regex;
+
+using std::string;
 
 void
 test()
 {
-    std::match_results<const char*> m1;
+    match_results<const char*> m;
     const char s[] = "abcdefghijk";
-    assert(std::regex_search(s, m1, std::regex("cd((e)fg)hi")));
-    std::match_results<const char*> m2;
-
-    std::match_results<const char*> m1_save = m1;
-    std::match_results<const char*> m2_save = m2;
-
-    m1.swap(m2);
-
-    assert(m1 == m2_save);
-    assert(m2 == m1_save);
+    assert(regex_search(s, m, regex("cd((e)fg)hi")));
+    assert(m.str() == string(m[0]));
+    assert(m.str(0) == string(m[0]));
+    assert(m.str(1) == string(m[1]));
+    assert(m.str(2) == string(m[2]));
+    assert(m.str(3) == string(m[3]));
+    assert(m.str(4) == string(m[4]));
 }
 
 int main(int, char**)

@@ -10,24 +10,35 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// difference_type position(size_type sub = 0) const;
+// const_iterator begin() const;
+// const_iterator end() const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <cstddef> // size_t
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
+
+using namespace stud::regex;
+
+using std::size_t;
 
 void
 test()
 {
-    std::match_results<const char*> m;
+    match_results<const char*> m;
     const char s[] = "abcdefghijk";
-    assert(std::regex_search(s, m, std::regex("cd((e)fg)hi")));
-    assert(m.position() == std::distance(s, m[0].first));
-    assert(m.position(0) == std::distance(s, m[0].first));
-    assert(m.position(1) == std::distance(s, m[1].first));
-    assert(m.position(2) == std::distance(s, m[2].first));
-    assert(m.position(3) == std::distance(s, m[3].first));
-    assert(m.position(4) == std::distance(s, m[4].first));
+    assert(regex_search(s, m, regex("cd((e)fg)hi")));
+
+    match_results<const char*>::const_iterator i = m.begin();
+    match_results<const char*>::const_iterator e = m.end();
+
+    assert(static_cast<size_t>(e - i) == m.size());
+    for (int j = 0; i != e; ++i, ++j)
+        assert(*i == m[j]);
 }
 
 int main(int, char**)

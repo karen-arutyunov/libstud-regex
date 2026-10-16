@@ -24,24 +24,40 @@
 //     typedef typename iterator_traits<BidirectionalIterator>::value_type char_type;
 //     typedef basic_string<char_type>                           string_type;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
+#include <memory>      // allocator
+#include <cstddef>     // size_t, ptrdiff_t
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
+using std::basic_string;
+using std::allocator;
+using std::size_t;
+using std::ptrdiff_t;
 
 template <class CharT>
 void
 test()
 {
-    typedef std::match_results<CharT*> MR;
-    static_assert((std::is_same<typename MR::value_type, std::sub_match<CharT*> >::value), "");
-    static_assert((std::is_same<typename MR::const_reference, const std::sub_match<CharT*>& >::value), "");
-    static_assert((std::is_same<typename MR::reference, std::sub_match<CharT*>& >::value), "");
-    static_assert((!std::is_same<typename MR::const_iterator, void>::value), "");
-    static_assert((std::is_same<typename MR::difference_type, std::ptrdiff_t>::value), "");
-    static_assert((std::is_same<typename MR::size_type, std::size_t>::value), "");
-    static_assert((std::is_same<typename MR::allocator_type, std::allocator<std::sub_match<CharT*> > >::value), "");
-    static_assert((std::is_same<typename MR::char_type, CharT>::value), "");
-    static_assert((std::is_same<typename MR::string_type, std::basic_string<CharT> >::value), "");
+    typedef match_results<CharT*> MR;
+    static_assert((is_same<typename MR::value_type, sub_match<CharT*> >::value), "");
+    static_assert((is_same<typename MR::const_reference, const sub_match<CharT*>& >::value), "");
+    static_assert((is_same<typename MR::reference, sub_match<CharT*>& >::value), "");
+    static_assert((!is_same<typename MR::const_iterator, void>::value), "");
+    static_assert((is_same<typename MR::difference_type, ptrdiff_t>::value), "");
+    static_assert((is_same<typename MR::size_type, size_t>::value), "");
+    static_assert((is_same<typename MR::allocator_type, allocator<sub_match<CharT*> > >::value), "");
+    static_assert((is_same<typename MR::char_type, CharT>::value), "");
+    static_assert((is_same<typename MR::string_type, basic_string<CharT> >::value), "");
 }
 
 int main(int, char**)

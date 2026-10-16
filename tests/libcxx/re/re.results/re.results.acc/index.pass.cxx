@@ -12,16 +12,21 @@
 
 // const_reference operator[](size_type n) const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
+
+using namespace stud::regex;
 
 void
-test(std::regex_constants::syntax_option_type syntax)
+test(regex_constants::syntax_option_type syntax)
 {
-    std::match_results<const char*> m;
+    match_results<const char*> m;
     const char s[] = "abcdefghijk";
-    assert(std::regex_search(s, m, std::regex("cd((e)fg)hi|(z)", syntax)));
+    assert(regex_search(s, m, regex("cd((e)fg)hi|(z)", syntax)));
 
     assert(m.size() == 4);
 
@@ -48,8 +53,8 @@ test(std::regex_constants::syntax_option_type syntax)
 
 int main(int, char**)
 {
-    test(std::regex_constants::ECMAScript);
-    test(std::regex_constants::extended);
+    test(regex_constants::ECMAScript);
+    test(regex_constants::extended);
 
   return 0;
 }

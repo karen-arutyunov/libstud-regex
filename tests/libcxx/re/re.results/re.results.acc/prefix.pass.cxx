@@ -10,26 +10,32 @@
 
 // class match_results<BidirectionalIterator, Allocator>
 
-// size_type max_size() const;
+// const_reference prefix() const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
 
-template <class CharT>
+using namespace stud::regex;
+
 void
 test()
 {
-    std::match_results<const CharT*> m;
-    assert(m.max_size() > 0);
+    match_results<const char*> m;
+    const char s[] = "abcdefghijk";
+    assert(regex_search(s, m, regex("cd((e)fg)hi")));
+
+    assert(m.prefix().first == s);
+    assert(m.prefix().second == s+2);
+    assert(m.prefix().matched == true);
 }
 
 int main(int, char**)
 {
-    test<char>();
-#ifndef TEST_HAS_NO_WIDE_CHARACTERS
-    test<wchar_t>();
-#endif
+    test();
 
-    return 0;
+  return 0;
 }

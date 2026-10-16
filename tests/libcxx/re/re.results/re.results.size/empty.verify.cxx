@@ -13,9 +13,20 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
 
 void f() {
-    std::match_results<const char*> c;
-    c.empty(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+    match_results<const char*> c;
+    TEST_IGNORE_NODISCARD c.empty(); // expected-warning {{ignoring return value of function declared with 'nodiscard' attribute}}
+}
+int main(int, char**)
+{
+  f();
 }
