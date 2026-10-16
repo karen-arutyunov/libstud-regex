@@ -6717,7 +6717,11 @@ regex_token_iterator<_BidirectionalIterator, _CharT, _Traits>::regex_token_itera
     const regex_type& __re,
     const int (&__submatches)[_Np],
     regex_constants::match_flag_type __m)
+#if 0
     : __position_(__a, __b, __re, __m), __n_(0), __subs_(begin(__submatches), end(__submatches)) {
+#else
+    : __position_(__a, __b, __re, __m), __n_(0), __subs_(std::begin(__submatches), std::end(__submatches)) {
+#endif
   __init(__a, __b);
 }
 
