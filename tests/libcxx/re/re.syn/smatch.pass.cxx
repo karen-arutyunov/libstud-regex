@@ -8,15 +8,26 @@
 
 // <regex>
 
-// typedef regex_token_iterator<string::const_iterator>   sregex_token_iterator;
+// typedef match_results<string::const_iterator>   smatch;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
+using std::string;
 
 int main(int, char**)
 {
-    static_assert((std::is_same<std::regex_token_iterator<std::string::const_iterator>, std::sregex_token_iterator>::value), "");
+    static_assert((is_same<match_results<string::const_iterator>, smatch>::value), "");
 
   return 0;
 }

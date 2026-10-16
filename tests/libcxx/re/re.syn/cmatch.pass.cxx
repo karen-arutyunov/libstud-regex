@@ -8,15 +8,24 @@
 
 // <regex>
 
-// typedef basic_regex<char>    regex;
+// typedef match_results<const char*>   cmatch;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
 
 int main(int, char**)
 {
-    static_assert((std::is_same<std::basic_regex<char>, std::regex>::value), "");
+    static_assert((is_same<match_results<const char*>, cmatch>::value), "");
 
   return 0;
 }

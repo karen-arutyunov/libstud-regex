@@ -8,17 +8,28 @@
 
 // <regex>
 
-// typedef sub_match<wstring::const_iterator>   wssub_match;
+// typedef match_results<wstring::const_iterator>   wsmatch;
 
 // XFAIL: no-wide-characters
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <string>
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
+using std::wstring;
 
 int main(int, char**)
 {
-    static_assert((std::is_same<std::sub_match<std::wstring::const_iterator>, std::wssub_match>::value), "");
+    static_assert((is_same<match_results<wstring::const_iterator>, wsmatch>::value), "");
 
   return 0;
 }

@@ -8,17 +8,26 @@
 
 // <regex>
 
-// typedef regex_token_iterator<wstring::const_iterator>   wsregex_token_iterator;
+// typedef basic_regex<wchar_t> wregex;
 
 // XFAIL: no-wide-characters
 
-#include <regex>
+#include <libstud/regex.hxx>
+
 #include <type_traits>
-#include "test_macros.h"
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::is_same;
 
 int main(int, char**)
 {
-    static_assert((std::is_same<std::regex_token_iterator<std::wstring::const_iterator>, std::wsregex_token_iterator>::value), "");
+    static_assert((is_same<basic_regex<wchar_t>, wregex>::value), "");
 
   return 0;
 }
