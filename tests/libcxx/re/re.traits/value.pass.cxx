@@ -12,14 +12,19 @@
 
 // int value(charT ch, int radix) const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include "test_macros.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
+
+using namespace stud::regex;
 
 int main(int, char**)
 {
     {
-        std::regex_traits<char> t;
+        regex_traits<char> t;
 
         for (char c = 0; c < '0'; ++c)
         {
@@ -72,7 +77,7 @@ int main(int, char**)
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        std::regex_traits<wchar_t> t;
+        regex_traits<wchar_t> t;
 
         for (wchar_t c = 0; c < '0'; ++c)
         {
