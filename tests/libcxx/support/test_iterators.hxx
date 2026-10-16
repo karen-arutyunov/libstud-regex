@@ -137,13 +137,16 @@ public:
 #if 0
     TEST_CONSTEXPR_CXX14 cpp17_input_iterator& operator++() {++it_; return *this;}
     TEST_CONSTEXPR_CXX14 cpp17_input_iterator operator++(int) {return cpp17_input_iterator(it_++);}
-#else
-    cpp17_input_iterator& operator++() {++it_; return *this;}
-    cpp17_input_iterator operator++(int) {return cpp17_input_iterator(it_++);}
-#endif
 
     friend TEST_CONSTEXPR bool operator==(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ == y.it_;}
     friend TEST_CONSTEXPR bool operator!=(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ != y.it_;}
+#else
+    cpp17_input_iterator& operator++() {++it_; return *this;}
+    cpp17_input_iterator operator++(int) {return cpp17_input_iterator(it_++);}
+
+    friend bool operator==(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ == y.it_;}
+    friend bool operator!=(const cpp17_input_iterator& x, const cpp17_input_iterator& y) {return x.it_ != y.it_;}
+#endif
 
     friend TEST_CONSTEXPR It base(const cpp17_input_iterator& i) { return i.it_; }
 
@@ -207,13 +210,16 @@ public:
 #if 0
     TEST_CONSTEXPR_CXX14 forward_iterator& operator++() {++it_; return *this;}
     TEST_CONSTEXPR_CXX14 forward_iterator operator++(int) {return forward_iterator(it_++);}
-#else
-    forward_iterator& operator++() {++it_; return *this;}
-    forward_iterator operator++(int) {return forward_iterator(it_++);}
-#endif
 
     friend TEST_CONSTEXPR bool operator==(const forward_iterator& x, const forward_iterator& y) {return x.it_ == y.it_;}
     friend TEST_CONSTEXPR bool operator!=(const forward_iterator& x, const forward_iterator& y) {return x.it_ != y.it_;}
+#else
+    forward_iterator& operator++() {++it_; return *this;}
+    forward_iterator operator++(int) {return forward_iterator(it_++);}
+
+    friend bool operator==(const forward_iterator& x, const forward_iterator& y) {return x.it_ == y.it_;}
+    friend bool operator!=(const forward_iterator& x, const forward_iterator& y) {return x.it_ != y.it_;}
+#endif
 
     friend TEST_CONSTEXPR It base(const forward_iterator& i) { return i.it_; }
 
