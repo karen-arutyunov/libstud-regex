@@ -1386,7 +1386,20 @@ regex_traits<_CharT>::__lookup_classname(_ForwardIterator __f, _ForwardIterator 
 
 template <class _CharT>
 bool regex_traits<_CharT>::isctype(char_type __c, char_class_type __m) const {
+// Remove the __regex_word bit prior to forwarding the call to the standard
+// library (which knows nothing about it).
+//
+// Note that here we rely on the fact, that according to the standard the char
+// class value can only be the result of the regex_traits::lookup_classname()
+// call (or a bitwise OR of several such values). Also note that for the
+// __regex_word bit the ctype_base::alnum bit is already added by
+// regex_traits::lookup_classname() (see __get_classname() for details).
+//
+#if 0
   if (__ct_->is(__m, __c))
+#else
+  if (__ct_->is(__m & ~__regex_word, __c))
+#endif
     return true;
   return (__c == '_' && (__m & __regex_word));
 }
