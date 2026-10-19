@@ -9,6 +9,8 @@
 #ifndef SUPPORT_TEST_MAKE_STRING_H
 #define SUPPORT_TEST_MAKE_STRING_H
 
+#include <libstud/regex/config.hxx>
+
 #include "test_macros.hxx"
 
 #include <string>

@@ -10,6 +10,8 @@
 #ifndef _CONSTEXPR_CHAR_TRAITS
 #define _CONSTEXPR_CHAR_TRAITS
 
+#include <libstud/regex/config.hxx>
+
 #include <string>
 #include <cassert>
 #include <cstddef>

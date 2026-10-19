@@ -14,33 +14,41 @@
 
 // regex_traits();
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <locale>
+
+#include "test_macros.hxx"
+#include "platform_support.hxx"
+
+#undef NDEBUG
 #include <cassert>
 
-#include "test_macros.h"
-#include "platform_support.h" // locale name macros
+using namespace stud::regex;
+
+using std::locale;
 
 int main(int, char**)
 {
     {
-        std::regex_traits<char> t;
+        regex_traits<char> t;
         assert(t.getloc().name() == "C");
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        std::regex_traits<wchar_t> t;
+        regex_traits<wchar_t> t;
         assert(t.getloc().name() == "C");
     }
 #endif
     {
-        std::locale::global(std::locale(LOCALE_en_US_UTF_8));
-        std::regex_traits<char> t;
+        locale::global(locale(LOCALE_en_US_UTF_8));
+        regex_traits<char> t;
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        std::locale::global(std::locale(LOCALE_en_US_UTF_8));
-        std::regex_traits<wchar_t> t;
+        locale::global(locale(LOCALE_en_US_UTF_8));
+        regex_traits<wchar_t> t;
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);
     }
 #endif

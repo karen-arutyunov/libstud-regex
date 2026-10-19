@@ -40,10 +40,6 @@ using std::is_same;
 using std::forward_iterator_tag;
 using std::input_iterator_tag;
 
-#if TEST_STD_VER >= 20 && defined(__cpp_lib_type_trait_variable_templates)
-using std::is_same_v;
-#endif
-
 template <class CharT>
 void
 test()
@@ -55,9 +51,7 @@ test()
     static_assert((is_same<typename I::pointer, const match_results<const CharT*>*>::value), "");
     static_assert((is_same<typename I::reference, const match_results<const CharT*>&>::value), "");
     static_assert((is_same<typename I::iterator_category, forward_iterator_tag>::value), "");
-#if TEST_STD_VER >= 20 && defined(__cpp_lib_type_trait_variable_templates)
-    static_assert(is_same_v<typename I::iterator_concept, input_iterator_tag>);
-#endif
+    static_assert((is_same<typename I::iterator_concept, input_iterator_tag>::value), "");
 }
 
 int main(int, char**)

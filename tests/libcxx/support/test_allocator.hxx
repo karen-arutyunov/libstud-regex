@@ -9,6 +9,8 @@
 #ifndef TEST_ALLOCATOR_H
 #define TEST_ALLOCATOR_H
 
+#include <libstud/regex/config.hxx>
+
 #include <type_traits>
 #include <new>
 #include <memory>

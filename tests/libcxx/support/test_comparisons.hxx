@@ -23,6 +23,8 @@
 #ifndef TEST_COMPARISONS_H
 #define TEST_COMPARISONS_H
 
+#include <libstud/regex/config.hxx>
+
 #include <cassert>
 
 #ifdef __cpp_lib_three_way_comparison
