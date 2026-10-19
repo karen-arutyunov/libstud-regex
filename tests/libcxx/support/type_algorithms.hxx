@@ -9,6 +9,8 @@
 #ifndef TEST_SUPPORT_TYPE_ALGORITHMS_H
 #define TEST_SUPPORT_TYPE_ALGORITHMS_H
 
+#include <libstud/regex/config.hxx>
+
 #include <type_traits>
 
 #include "test_macros.hxx"

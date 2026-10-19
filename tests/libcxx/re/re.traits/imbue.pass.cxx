@@ -14,18 +14,25 @@
 
 // locale_type imbue(locale_type l);
 
-#include <regex>
+#include <libstud/regex.hxx>
+
 #include <locale>
+
+#include "test_macros.hxx"
+#include "platform_support.hxx"
+
+#undef NDEBUG
 #include <cassert>
 
-#include "test_macros.h"
-#include "platform_support.h" // locale name macros
+using namespace stud::regex;
+
+using std::locale;
 
 int main(int, char**)
 {
     {
-        std::regex_traits<char> t;
-        std::locale loc = t.imbue(std::locale(LOCALE_en_US_UTF_8));
+        regex_traits<char> t;
+        locale loc = t.imbue(locale(LOCALE_en_US_UTF_8));
         assert(loc.name() == "C");
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);
     }

@@ -9,6 +9,8 @@
 #ifndef TEST_SUPPORT_DOUBLE_MOVE_TRACKER_H
 #define TEST_SUPPORT_DOUBLE_MOVE_TRACKER_H
 
+#include <libstud/regex/config.hxx>
+
 #include <cassert>
 
 #include "test_macros.hxx"

@@ -14,12 +14,24 @@
 // match_results() : match_results(Allocator()) {}           // C++20
 // explicit match_results(const Allocator& a);               // C++20
 
-#include <regex>
-#include <cassert>
-#include "test_macros.h"
-#if TEST_STD_VER >= 11
-#include "test_convertible.h"
+#include <libstud/regex.hxx>
 
+#include <memory> // allocator
+
+#include "test_macros.hxx"
+
+#if TEST_STD_VER >= 11
+#include "test_convertible.hxx"
+#endif
+
+#undef NDEBUG
+#include <cassert>
+
+using namespace stud::regex;
+
+using std::allocator;
+
+#if TEST_STD_VER >= 11
 template <typename T>
 void test_implicit() {
   static_assert(test_convertible<T>(), "");
@@ -31,8 +43,8 @@ template <class CharT>
 void
 test()
 {
-    typedef std::match_results<const CharT*> M;
-    typedef std::allocator<std::sub_match<const CharT*> > Alloc;
+    typedef match_results<const CharT*> M;
+    typedef allocator<sub_match<const CharT*> > Alloc;
     M m;
     assert(m.size() == 0);
     assert(!m.ready());

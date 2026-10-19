@@ -18,31 +18,40 @@
 // template <class ForwardIterator>
 //   string_type transform(ForwardIterator first, ForwardIterator last) const;
 
-#include <regex>
+#include <libstud/regex.hxx>
+
+#include <locale>
+
+#include "test_macros.hxx"
+#include "test_iterators.hxx"
+#include "platform_support.hxx"
+
+#undef NDEBUG
 #include <cassert>
-#include "test_macros.h"
-#include "test_iterators.h"
-#include "platform_support.h" // locale name macros
+
+using namespace stud::regex;
+
+using std::locale;
 
 int main(int, char**)
 {
     {
-        std::regex_traits<char> t;
+        regex_traits<char> t;
         const char a[] = "a";
         const char B[] = "B";
         typedef forward_iterator<const char*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-        t.imbue(std::locale(LOCALE_cs_CZ_ISO8859_2));
+        t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
         assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
-        std::regex_traits<wchar_t> t;
+        regex_traits<wchar_t> t;
         const wchar_t a[] = L"a";
         const wchar_t B[] = L"B";
         typedef forward_iterator<const wchar_t*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-        t.imbue(std::locale(LOCALE_cs_CZ_ISO8859_2));
+        t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
         assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
     }
 #endif
