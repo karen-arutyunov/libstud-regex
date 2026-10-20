@@ -19,6 +19,19 @@
 #include "test_macros.hxx"
 
 // locale names
+//
+// Only define the LOCALE_* macros for locales used in regex tests, for
+// clarity.
+//
+// Note that MinGW fails to create any std::locale() object other than "C",
+// since when compiled on Windows libstdc++ falls back to the "generic" C++
+// locale support, which just throws std::runtime_error if the name passed to
+// locale constructor is other than "C". Also not that in contrast to C++
+// locale, setting the en-US.utf8 C locale (for example, via
+// std::setlocale(LC_ALL, "en-US.utf8")) works just fine. Thus, for MinGW, we
+// just disable tests which use C++ locale other that "C".
+//
+#if 0
 #define LOCALE_en_US_UTF_8     "en_US.UTF-8"
 #define LOCALE_fr_FR_UTF_8     "fr_FR.UTF-8"
 #ifdef __linux__
@@ -34,6 +47,18 @@
 #define LOCALE_ja_JP_UTF_8     "ja_JP.UTF-8"
 #define LOCALE_ru_RU_UTF_8     "ru_RU.UTF-8"
 #define LOCALE_zh_CN_UTF_8     "zh_CN.UTF-8"
+
+#else
+
+#define LOCALE_en_US_UTF_8     "en_US.UTF-8"
+#ifdef __linux__
+#    define LOCALE_cs_CZ_ISO8859_2 "cs_CZ.ISO-8859-2"
+#elif defined(_WIN32)
+#    define LOCALE_cs_CZ_ISO8859_2 "cs-CZ"
+#else
+#    define LOCALE_cs_CZ_ISO8859_2 "cs_CZ.ISO8859-2"
+#endif
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -45,7 +45,11 @@ int main(int, char**)
         assert(t.translate_nocase('1') == '1');
         assert(t.translate_nocase('\xDA') == '\xDA');
         assert(t.translate_nocase('\xFA') == '\xFA');
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
         t.imbue(locale(LOCALE_en_US_UTF_8));
+#else
+        t.imbue(locale("C"));
+#endif
         assert(t.translate_nocase(' ') == ' ');
         assert(t.translate_nocase('A') == 'a');
         assert(t.translate_nocase('\x07') == '\x07');
@@ -64,15 +68,21 @@ int main(int, char**)
         assert(t.translate_nocase(L'1') == L'1');
         assert(t.translate_nocase(L'\xDA') == L'\xDA');
         assert(t.translate_nocase(L'\xFA') == L'\xFA');
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
         t.imbue(locale(LOCALE_en_US_UTF_8));
+#else
+        t.imbue(locale("C"));
+#endif
         assert(t.translate_nocase(L' ') == L' ');
         assert(t.translate_nocase(L'A') == L'a');
         assert(t.translate_nocase(L'\x07') == L'\x07');
         assert(t.translate_nocase(L'.') == L'.');
         assert(t.translate_nocase(L'a') == L'a');
         assert(t.translate_nocase(L'1') == L'1');
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
         assert(t.translate_nocase(L'\xDA') == L'\xFA');
         assert(t.translate_nocase(L'\xFA') == L'\xFA');
+#endif
     }
 #endif
 

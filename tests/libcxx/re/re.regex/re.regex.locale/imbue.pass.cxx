@@ -30,6 +30,11 @@ using std::locale;
 
 int main(int, char**)
 {
+  // Note that MinGW doesn't support any locale other than "C" and the older
+  // versions of MSVC runtime don't support UTF8. Here we just assume that
+  // MSVC 16.10 and above links the newer runtime.
+  //
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
     regex r;
     locale loc = r.imbue(locale(LOCALE_en_US_UTF_8));
     assert(loc.name() == "C");
@@ -37,6 +42,15 @@ int main(int, char**)
     loc = r.imbue(locale("C"));
     assert(loc.name() == LOCALE_en_US_UTF_8);
     assert(r.getloc().name() == "C");
+#else
+    regex r;
+    locale loc = r.imbue(locale("C"));
+    assert(loc.name() == "C");
+    assert(r.getloc().name() == "C");
+    loc = r.imbue(locale("C"));
+    assert(loc.name() == "C");
+    assert(r.getloc().name() == "C");
+#endif
 
   return 0;
 }

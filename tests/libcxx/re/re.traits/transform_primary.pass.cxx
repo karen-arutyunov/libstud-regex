@@ -54,14 +54,34 @@ int main(int, char**)
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(BB), F(BB + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
+
+        // Note that on MinGW only the "C" locale can be created (see
+        // support/platform_support.hxx for details).
+        //
+#ifndef __MINGW32__
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
+
+        // Note that regex_traits::transform_primary() always works as if the
+        // "C" locale is imbued (see regex_traits::__transform_primary() for
+        // details).
+        //
+#ifndef _WIN32
         assert(t.transform_primary(F(A), F(A+1)) ==
                t.transform_primary(F(Aacute), F(Aacute+1)));
+#else
+        assert(t.transform_primary(F(A), F(A+1)) !=
+               t.transform_primary(F(Aacute), F(Aacute+1)));
+#endif
         assert(t.transform_primary(F(B), F(B + 1)) != t.transform_primary(F(Aacute), F(Aacute + 1)));
         assert(t.transform_primary(F(A), F(A + 1)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
+#ifndef _WIN32
         assert(t.transform_primary(F(AA), F(AA + 2)) == t.transform_primary(F(AAacute), F(AAacute + 2)));
+#else
+        assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
+#endif
         assert(t.transform_primary(F(BB), F(BB + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
+#endif // __MINGW32__
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
@@ -80,14 +100,25 @@ int main(int, char**)
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(BB), F(BB + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
+#ifndef __MINGW32__
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
+#ifndef _WIN32
         assert(t.transform_primary(F(A), F(A+1)) ==
                t.transform_primary(F(Aacute), F(Aacute+1)));
+#else
+        assert(t.transform_primary(F(A), F(A+1)) !=
+               t.transform_primary(F(Aacute), F(Aacute+1)));
+#endif
         assert(t.transform_primary(F(B), F(B + 1)) != t.transform_primary(F(Aacute), F(Aacute + 1)));
         assert(t.transform_primary(F(A), F(A + 1)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
+#ifndef _WIN32
         assert(t.transform_primary(F(AA), F(AA + 2)) == t.transform_primary(F(AAacute), F(AAacute + 2)));
+#else
+        assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
+#endif
         assert(t.transform_primary(F(BB), F(BB + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
+#endif // __MINGW32__
     }
 #endif
 

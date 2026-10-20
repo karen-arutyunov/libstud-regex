@@ -32,9 +32,15 @@ int main(int, char**)
 {
     {
         regex_traits<char> t;
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
         locale loc = t.imbue(locale(LOCALE_en_US_UTF_8));
         assert(loc.name() == "C");
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);
+#else
+        locale loc = t.imbue(locale("C"));
+        assert(loc.name() == "C");
+        assert(t.getloc().name() == "C");
+#endif
     }
 
   return 0;

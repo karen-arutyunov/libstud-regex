@@ -40,6 +40,7 @@ int main(int, char**)
         assert(t.getloc().name() == "C");
     }
 #endif
+#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
     {
         locale::global(locale(LOCALE_en_US_UTF_8));
         regex_traits<char> t;
@@ -51,6 +52,20 @@ int main(int, char**)
         regex_traits<wchar_t> t;
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);
     }
+#endif
+#else
+    {
+        locale::global(locale("C"));
+        regex_traits<char> t;
+        assert(t.getloc().name() == "C");
+    }
+#ifndef TEST_HAS_NO_WIDE_CHARACTERS
+    {
+        locale::global(locale("C"));
+        regex_traits<wchar_t> t;
+        assert(t.getloc().name() == "C");
+    }
+#endif
 #endif
 
   return 0;
