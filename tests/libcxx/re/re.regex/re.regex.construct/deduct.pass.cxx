@@ -37,6 +37,7 @@ struct A {};
 int main(int, char**)
 {
 
+#ifdef __cpp_deduction_guides
 //  Test the explicit deduction guides
     {
 //  basic_regex(ForwardIterator, ForwardIterator)
@@ -59,6 +60,7 @@ int main(int, char**)
     }
 #endif
 
+#if !defined(__GNUC__) || __GNUC__ >= 13
 //  Test the implicit deduction guides
     {
 //  basic_regex(string);
@@ -76,6 +78,7 @@ int main(int, char**)
     assert(re.flags() == regex_constants::awk);
     assert(re.mark_count() == 2);
     }
+#endif
 #endif
 
     {
@@ -129,6 +132,9 @@ int main(int, char**)
 //                              flag_type f = regex_constants::ECMAScript);
     }
 
+#if TEST_STD_VER >= 23                             && \
+    (!defined(__clang__) || __clang_major__ >= 21) && \
+    (!defined(__GNUC__) || __GNUC__ >= 13)
     {
 //  basic_regex(initializer_list);
     basic_regex re({'A', 'B', 'F', 'E', 'D'});
@@ -145,6 +151,8 @@ int main(int, char**)
     assert(re.flags() == regex_constants::grep);
     assert(re.mark_count() == 0);
     }
+#endif
+#endif
 #endif
 
   return 0;
