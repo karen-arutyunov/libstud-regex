@@ -51,7 +51,9 @@ test()
     static_assert((is_same<typename I::pointer, const sub_match<const CharT*>*>::value), "");
     static_assert((is_same<typename I::reference, const sub_match<const CharT*>&>::value), "");
     static_assert((is_same<typename I::iterator_category, forward_iterator_tag>::value), "");
+#if TEST_STD_VER >= 20
     static_assert((is_same<typename I::iterator_concept, input_iterator_tag>::value), "");
+#endif
 }
 
 int main(int, char**)
