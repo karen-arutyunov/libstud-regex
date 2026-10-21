@@ -32,7 +32,7 @@ int main(int, char**)
 {
     {
         regex_traits<char> t;
-#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
+#if TEST_HAS_EN_US_UTF8_LOCALE
         locale loc = t.imbue(locale(LOCALE_en_US_UTF_8));
         assert(loc.name() == "C");
         assert(t.getloc().name() == LOCALE_en_US_UTF_8);

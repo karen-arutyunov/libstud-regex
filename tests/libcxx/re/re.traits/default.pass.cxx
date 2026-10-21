@@ -40,7 +40,7 @@ int main(int, char**)
         assert(t.getloc().name() == "C");
     }
 #endif
-#if !defined(__MINGW32__) && (!defined(_MSC_VER) || _MSC_VER >= 1929)
+#if TEST_HAS_EN_US_UTF8_LOCALE
     {
         locale::global(locale(LOCALE_en_US_UTF_8));
         regex_traits<char> t;
