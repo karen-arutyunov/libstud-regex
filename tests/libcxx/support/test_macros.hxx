@@ -586,12 +586,49 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 // Align benchmark functions and never inline them to reduce changes in performance in unrelated benchmarks
 #define TEST_ALIGN_BENCHMARK __attribute__((aligned(128), noinline))
 
+/* TEST_MACOS_PREREQ(maj, min)
+ *
+ * Return 1 if the Mac OS version is >= the given version number, or 0
+ * otherwise.
+ *
+ * TEST_MACOS
+ *
+ * Defined if the current platform is MacOS, or undefined otherwise.
+ */
+#if defined(__APPLE__) && defined(__MACH__)
+/* Note that just __APPLE__ covers all the Apple platforms (MacOS, iOS, etc).
+ */
+#  define TEST_MACOS 1
+
+#  if !defined(__MAC_OS_X_VERSION_MIN_REQUIRED)
+#    error __MAC_OS_X_VERSION_MIN_REQUIRED not defined
+#  endif
+#  if __MAC_OS_X_VERSION_MIN_REQUIRED <= 1090
+#    define TEST_MACOS_PREREQ(maj, min) \
+       (__MAC_OS_X_VERSION_MIN_REQUIRED >= (maj)*100 + (min)*10)
+#  else
+#    define TEST_MACOS_PREREQ(maj, min) \
+       (__MAC_OS_X_VERSION_MIN_REQUIRED >= (maj)*10000 + (min)*100)
+#  endif
+#else
+#  undef TEST_MACOS
+
+#  define TEST_MACOS_PREREQ(maj, min) 0
+#endif
+
 // @@
 //
-#if !defined(_WIN32) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145)
-#  define TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT 1
+#if (!defined(_WIN32) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145)) && \
+    (!defined(TEST_MACOS) || TEST_MACOS_PREREQ(26,4))
+#  define TEST_REGEX_TRAITS_CHAR_TRANSFORM_PRIMARY_COMPLIANT 1
 #else
-#  define TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT 0
+#  define TEST_REGEX_TRAITS_CHAR_TRANSFORM_PRIMARY_COMPLIANT 0
+#endif
+
+#if !defined(_WIN32) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145)
+#  define TEST_REGEX_TRAITS_WCHAR_TRANSFORM_PRIMARY_COMPLIANT 1
+#else
+#  define TEST_REGEX_TRAITS_WCHAR_TRANSFORM_PRIMARY_COMPLIANT 0
 #endif
 
 // Note that MinGW and Homebrew runtimes doesn't support any locale other than
