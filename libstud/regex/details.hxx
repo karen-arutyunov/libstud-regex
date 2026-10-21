@@ -1,7 +1,8 @@
 #pragma once
 
-#include <locale>      // ctype_base
-#include <memory>      // pointer_traits
+#include <string>
+#include <locale>
+#include <memory>      // pointer_traits, unique_ptr
 #include <utility>     // declval
 #include <cstdint>     // uint16_t
 #include <iterator>
@@ -19,9 +20,6 @@
 // original libc++ code and complicate the upgrades dramatically (not to
 // mention the amount of work). Thus, let's keep the original names and see
 // how it goes.
-//
-// @@ Should we use the stud::regex-details namespace instead?
-//    Note: stud::regex name is taken.
 //
 namespace stud { namespace regex { namespace details {
 
@@ -645,4 +643,68 @@ static_assert (
   regex_word != ctype_base_blank,
   "regex_word clashes with std::ctype_base::* constants");
 
+// Delegate stud::regex::regex_traits::transform_primary() call to
+// std::regex_traits::transform_primary() (see
+// LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY for details), but make sure
+// that no std::regex classes are exposed to the user.
+//
+#if LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY
+template <typename C>
+struct regex_traits_proxy
+{
+  // Update the internal std::regex_traits object with the new locale.
+  //
+  void
+  imbue (const std::locale&);
+
+  // Delegate to the respective std::regex_traits::transform_primary() call.
+  //
+  std::basic_string<C>
+  transform_primary (const std::basic_string<C>&) const;
+};
+
+template <>
+struct LIBSTUD_REGEX_SYMEXPORT regex_traits_proxy<char>
+{
+  void
+  imbue (const std::locale&);
+
+  std::string
+  transform_primary (const std::string&) const;
+
+  regex_traits_proxy ();
+  ~regex_traits_proxy ();
+
+  regex_traits_proxy (const regex_traits_proxy&);
+  regex_traits_proxy (regex_traits_proxy&&);
+  regex_traits_proxy& operator= (const regex_traits_proxy&);
+  regex_traits_proxy& operator= (regex_traits_proxy&&);
+
+private:
+  struct traits_wrapper;
+  std::unique_ptr<traits_wrapper> wrapper_;
+};
+
+template <>
+struct LIBSTUD_REGEX_SYMEXPORT regex_traits_proxy<wchar_t>
+{
+  void
+  imbue (const std::locale&);
+
+  std::wstring
+  transform_primary (const std::wstring&) const;
+
+  regex_traits_proxy ();
+  ~regex_traits_proxy ();
+
+  regex_traits_proxy (const regex_traits_proxy&);
+  regex_traits_proxy (regex_traits_proxy&&);
+  regex_traits_proxy& operator= (const regex_traits_proxy&);
+  regex_traits_proxy& operator= (regex_traits_proxy&&);
+
+private:
+  struct traits_wrapper;
+  std::unique_ptr<traits_wrapper> wrapper_;
+};
+#endif
 } } } // namespace stud { namespace regex { namespace details {

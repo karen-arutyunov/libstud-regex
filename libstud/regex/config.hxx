@@ -1,5 +1,10 @@
 #pragma once
 
+// Make sure _MSVC_STL_VERSION is defined for MSVC STL, __GLIBCXX__ for
+// libstdc++, etc.
+//
+#include <cstddef>
+
 #include <libstud/regex/export.hxx>
 
 // Note that MSVC 12.0 (VS 2013) added the initial support for C++14 (see the
@@ -37,17 +42,23 @@
 #undef LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS
 
 // Note that some early implementations of C++20 standard libraries didn't
-// provide the <version> header (libstdc++ < 9.0, MSVC < 16.2, etc; see the
-// "Microsoft C/C++ language conformance by Visual Studio version"
+// provide the <version> header (libstdc++ < 9.0, MSVC STL < 14.22, etc; see
+// the "Microsoft C/C++ language conformance by Visual Studio version"
 // documentation for details). So let's always check the header presence for
 // libstdc++ and MSVC runtimes for C++20.
 //
 // Also note that the __has_include() preprocessor operator was introduced in
 // C++17.
 //
+// And yet, _MSVC_STL_VERSION was introduced in MSVC STL 14.12, while
+// _CPPLIB_VER was introduced much earlier but doesn't change since
+// _MSVC_STL_VERSION came into play.
+//
 #if LIBSTUD_REGEX_STD_VER >= 20
-#  if LIBSTUD_REGEX_STD_VER > 20                    || \
-      (!defined(__GLIBCXX__) && !defined(_MSC_VER)) || \
+#  if LIBSTUD_REGEX_STD_VER > 20 ||   \
+      (!defined(__GLIBCXX__)       && \
+       !defined(_MSVC_STL_VERSION) && \
+       !defined(_CPPLIB_VER))    ||   \
       __has_include(<version>)
 #    include <version>
 #  endif
@@ -169,3 +180,15 @@
 
 #define LIBSTUD_REGEX_HAS_TIME_ZONE_DATABASE    1
 #undef  LIBSTUD_REGEX_HAS_NO_TIME_ZONE_DATABASE
+
+// Delegate stud::regex::regex_traits::transform_primary() call to
+// std::regex_traits::transform_primary(), if the latter implementation for
+// the current platform is better than the one provided by libc++, which we
+// fork from (see stud::regex::regex_traits::__transform_primary() for
+// details).
+//
+#if defined(_WIN32) && defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145
+#  define LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY 1
+#else
+#  define LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY 0
+#endif

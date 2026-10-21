@@ -1134,6 +1134,10 @@ public:
 private:
   void __init();
 
+#if LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY
+  details::regex_traits_proxy<char_type> proxy_;
+#endif
+
   template <class _ForwardIterator>
   string_type __transform_primary(_ForwardIterator __f, _ForwardIterator __l, char) const;
 #    if LIBSTUD_REGEX_HAS_WIDE_CHARACTERS
@@ -1203,6 +1207,10 @@ typename regex_traits<_CharT>::locale_type regex_traits<_CharT>::imbue(locale_ty
 #endif
   __loc_     = __l;
   __init();
+
+#if LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY
+  proxy_.imbue (__loc_);
+#endif
   return __r;
 }
 
@@ -1220,14 +1228,14 @@ typename regex_traits<_CharT>::locale_type regex_traits<_CharT>::imbue(locale_ty
 // the primary component of the hierarchical weight from that string.
 //
 // On Windows, these overloads only work correctly for "C" locale and only for
-// a single-character argument, returning the collation key literally.
-// Otherwise, the code is broken, always returning different keys for `A and A
-// and returning empty keys for multi-character strings (making the primary
-// collation weight equivalent for all multi-character strings). While, in the
-// future, we may potentially fix all that using the MSVC's LCMapStringEx()
-// function based implementation of transform_primary(), let's keep it simple
-// for now and just always return the collation key literally. For that, we
-// just wrap the original libc++'s logic into the #ifndef _WIN32 block.
+// a single-character argument, returning the collation key
+// literally. Otherwise, the code is broken, always returning different keys
+// for `A and A and returning empty keys for multi-character strings (making
+// the primary collation weight equivalent for all multi-character strings).
+// Thus, for MSVC STL of version 14.50 and above, which provides a
+// standard-compliant implementation, we delegate the call to
+// std::regex_traits::transform_primary(). Otherwise, we just always return
+// the collation key literally, falling back to the "C" locale behavior.
 //
 template <class _CharT>
 template <class _ForwardIterator>
@@ -1235,7 +1243,10 @@ typename regex_traits<_CharT>::string_type
 regex_traits<_CharT>::__transform_primary(_ForwardIterator __f, _ForwardIterator __l, char) const {
   const string_type __s(__f, __l);
   string_type __d = __col_->transform(__s.data(), __s.data() + __s.size());
-#ifndef _WIN32
+
+#if LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY
+  __d = proxy_.transform_primary(__s);
+#elif !defined(_WIN32)
 #    if defined(__FreeBSD__) || defined(__APPLE__)
   // FreeBSD's (and Darwin's, which shares the same collation code) strxfrm()
   // emits the weights one collation level at a time, separating the levels with
@@ -1278,7 +1289,10 @@ typename regex_traits<_CharT>::string_type
 regex_traits<_CharT>::__transform_primary(_ForwardIterator __f, _ForwardIterator __l, wchar_t) const {
   const string_type __s(__f, __l);
   string_type __d = __col_->transform(__s.data(), __s.data() + __s.size());
-#ifndef _WIN32
+
+#if LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY
+  __d = proxy_.transform_primary(__s);
+#elif !defined(_WIN32)
 #      if defined(__FreeBSD__) || defined(__APPLE__) || defined(__GLIBC__)
   // As in the char overload above, FreeBSD's, Darwin's and glibc's wcsxfrm() all
   // separate the collation levels with a weight (the value 1) that sorts below
