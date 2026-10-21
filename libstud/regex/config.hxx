@@ -172,3 +172,15 @@
 
 #define LIBSTUD_REGEX_HAS_TIME_ZONE_DATABASE    1
 #undef  LIBSTUD_REGEX_HAS_NO_TIME_ZONE_DATABASE
+
+// Delegate stud::regex::regex_traits::transform_primary() call to
+// std::regex_traits::transform_primary(), if the latter implementation for
+// the current platform is better than the one provided by libc++, which we
+// fork from (see stud::regex::regex_traits::__transform_primary() for
+// details).
+//
+#if defined(_WIN32) && defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145
+#  define LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY 1
+#else
+#  define LIBSTUD_REGEX_DELEGATE_TO_STD_TRANSFORM_PRIMARY 0
+#endif
