@@ -65,7 +65,7 @@ int main(int, char**)
         // "C" locale is imbued (see regex_traits::__transform_primary() for
         // details).
         //
-#  if TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT
+#  if TEST_REGEX_TRAITS_CHAR_TRANSFORM_PRIMARY_COMPLIANT
         assert(t.transform_primary(F(A), F(A+1)) ==
                t.transform_primary(F(Aacute), F(Aacute+1)));
 #  else
@@ -74,7 +74,7 @@ int main(int, char**)
 #  endif
         assert(t.transform_primary(F(B), F(B + 1)) != t.transform_primary(F(Aacute), F(Aacute + 1)));
         assert(t.transform_primary(F(A), F(A + 1)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
-#  if TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT
+#  if TEST_REGEX_TRAITS_CHAR_TRANSFORM_PRIMARY_COMPLIANT
         assert(t.transform_primary(F(AA), F(AA + 2)) == t.transform_primary(F(AAacute), F(AAacute + 2)));
 #  else
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
@@ -102,7 +102,7 @@ int main(int, char**)
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
 #  if !TEST_HAS_C_LOCALE_ONLY
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
-#    if TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT
+#    if TEST_REGEX_TRAITS_WCHAR_TRANSFORM_PRIMARY_COMPLIANT
         assert(t.transform_primary(F(A), F(A+1)) ==
                t.transform_primary(F(Aacute), F(Aacute+1)));
 #    else
@@ -111,7 +111,7 @@ int main(int, char**)
 #    endif
         assert(t.transform_primary(F(B), F(B + 1)) != t.transform_primary(F(Aacute), F(Aacute + 1)));
         assert(t.transform_primary(F(A), F(A + 1)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
-#    if TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT
+#    if TEST_REGEX_TRAITS_WCHAR_TRANSFORM_PRIMARY_COMPLIANT
         assert(t.transform_primary(F(AA), F(AA + 2)) == t.transform_primary(F(AAacute), F(AAacute + 2)));
 #    else
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
