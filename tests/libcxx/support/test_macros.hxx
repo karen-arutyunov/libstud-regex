@@ -22,6 +22,11 @@
 #  include <ciso646>
 #endif
 
+// Make sure _MSVC_STL_VERSION is defined for MSVC STL, __GLIBCXX__ for
+// libstdc++, etc.
+//
+#include <cstddef>
+
 #define TEST_STRINGIZE_IMPL(...) #__VA_ARGS__
 #define TEST_STRINGIZE(...) TEST_STRINGIZE_IMPL(__VA_ARGS__)
 
@@ -580,5 +585,31 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 
 // Align benchmark functions and never inline them to reduce changes in performance in unrelated benchmarks
 #define TEST_ALIGN_BENCHMARK __attribute__((aligned(128), noinline))
+
+// @@
+//
+#if !defined(_WIN32) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145)
+#  define TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT 1
+#else
+#  define TEST_REGEX_TRAITS_TRANSFORM_PRIMARY_COMPLIANT 0
+#endif
+
+// Note that MinGW and Homebrew runtimes doesn't support any locale other than
+// "C".
+//
+#if defined(__MINGW32__) || (defined(__APPLE__) && defined(__GLIBCXX__))
+#  define TEST_HAS_C_LOCALE_ONLY 1
+#else
+#  define TEST_HAS_C_LOCALE_ONLY 0
+#endif
+
+// Note that the older versions of Windows C runtime don't support UTF8. Here
+// we just assume that MSVC 16.10 and above link the newer runtime.
+//
+#if !TEST_HAS_C_LOCALE_ONLY && (!defined(_MSC_VER) || _MSC_VER >= 1929)
+#  define TEST_HAS_EN_US_UTF8_LOCALE 1
+#else
+#  define TEST_HAS_EN_US_UTF8_LOCALE 0
+#endif
 
 #endif // SUPPORT_TEST_MACROS_HPP

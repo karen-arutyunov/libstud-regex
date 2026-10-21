@@ -41,7 +41,7 @@ int main(int, char**)
         const char B[] = "B";
         typedef forward_iterator<const char*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-#ifndef __MINGW32__
+#if !TEST_HAS_C_LOCALE_ONLY
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
         assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
 #endif
@@ -53,7 +53,7 @@ int main(int, char**)
         const wchar_t B[] = L"B";
         typedef forward_iterator<const wchar_t*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-#ifndef __MINGW32__
+#if !TEST_HAS_C_LOCALE_ONLY
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
         assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
 #endif
