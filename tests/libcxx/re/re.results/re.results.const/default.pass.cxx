@@ -14,7 +14,7 @@
 // match_results() : match_results(Allocator()) {}           // C++20
 // explicit match_results(const Allocator& a);               // C++20
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <memory> // allocator
 

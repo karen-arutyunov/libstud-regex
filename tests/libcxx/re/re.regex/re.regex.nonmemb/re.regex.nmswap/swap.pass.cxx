@@ -13,7 +13,7 @@
 // template <class charT, class traits>
 //   void swap(basic_regex<charT, traits>& lhs, basic_regex<charT, traits>& rhs);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

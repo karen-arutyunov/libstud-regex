@@ -22,7 +22,7 @@
 //     ...
 // };
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <cstddef>     // ptrdiff_t

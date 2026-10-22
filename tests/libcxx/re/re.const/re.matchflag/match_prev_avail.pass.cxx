@@ -13,7 +13,7 @@
 //     match_not_bol and match_not_bow shall be ignored by the regular
 //     expression algorithms (30.11) and iterators (30.12)
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

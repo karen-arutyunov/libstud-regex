@@ -1,4 +1,4 @@
-lib{stud-regex}: {hxx ixx txx cxx}{** -version} hxx{version} ../hxx{regex}
+lib{stud-regex}: {hxx ixx txx cxx}{** -version} hxx{version}
 
 # Include the generated version header into the distribution (so that we don't
 # pick up an installed one) and don't remove it when cleaning in src (so that
@@ -36,8 +36,8 @@ else
 # Install into the libstud/regex/ subdirectory of, say, /usr/include/
 # recreating subdirectories.
 #
-../{hxx ixx txx}{*}:
+{hxx ixx txx}{*}:
 {
-  install         = include/libstud/
+  install         = include/libstud/regex/
   install.subdirs = true
 }

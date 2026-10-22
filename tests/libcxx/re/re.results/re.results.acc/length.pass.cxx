@@ -12,7 +12,7 @@
 
 // difference_type length(size_type sub = 0) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

@@ -18,7 +18,7 @@
 // template <class ForwardIterator>
 //   string_type transform(ForwardIterator first, ForwardIterator last) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 

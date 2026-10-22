@@ -14,7 +14,7 @@
 
 // locale_type getloc()const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 

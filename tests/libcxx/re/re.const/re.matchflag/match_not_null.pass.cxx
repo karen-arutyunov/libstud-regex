@@ -11,7 +11,7 @@
 // match_not_null:
 //     The regular expression shall not match an empty sequence.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

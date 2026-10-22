@@ -13,7 +13,7 @@
 
 // match_results& operator=(match_results&& m);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <memory>  // allocator, allocator_traits
 #include <utility> // move()

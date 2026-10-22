@@ -12,7 +12,7 @@
 
 // basic_regex(const charT* p, size_t len);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <cstddef> // size_t
 

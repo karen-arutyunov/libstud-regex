@@ -13,7 +13,7 @@
 // bool isctype(charT c, char_class_type f) const;
 
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

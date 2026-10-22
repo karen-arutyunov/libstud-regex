@@ -15,7 +15,7 @@
 //   format(const basic_string<char_type, ST, SA>& fmt,
 //          regex_constants::match_flag_type flags = regex_constants::format_default) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

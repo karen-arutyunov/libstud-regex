@@ -13,7 +13,7 @@
 // template <class ST, class SA>
 //    basic_regex& operator=(const basic_string<charT, ST, SA>& p);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

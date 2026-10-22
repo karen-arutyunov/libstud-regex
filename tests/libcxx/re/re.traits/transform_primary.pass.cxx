@@ -21,7 +21,7 @@
 //   string_type
 //   transform_primary(ForwardIterator first, ForwardIterator last) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 
@@ -55,16 +55,9 @@ int main(int, char**)
         assert(t.transform_primary(F(BB), F(BB + 2)) != t.transform_primary(F(AAacute), F(AAacute + 2)));
         assert(t.transform_primary(F(AA), F(AA + 2)) != t.transform_primary(F(BB), F(BB + 2)));
 
-        // Note that on MinGW only the "C" locale can be created (see
-        // support/platform_support.hxx for details).
-        //
 #if !TEST_HAS_C_LOCALE_ONLY && TEST_HAS_CS_CZ_ISO8859_2_LOCALE
         t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
 
-        // Note that regex_traits::transform_primary() always works as if the
-        // "C" locale is imbued (see regex_traits::__transform_primary() for
-        // details).
-        //
 #  if TEST_REGEX_TRAITS_CHAR_TRANSFORM_PRIMARY_COMPLIANT
         assert(t.transform_primary(F(A), F(A+1)) ==
                t.transform_primary(F(Aacute), F(Aacute+1)));

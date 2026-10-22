@@ -14,7 +14,7 @@
 //
 //  Additionally, the stored Allocator value is move constructed from m.get_allocator().
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <memory>  // allocator
 #include <utility> // move(), declval()

@@ -20,7 +20,7 @@
 
 // XFAIL: FROZEN-CXX03-HEADERS-FIXME
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <iterator>
 

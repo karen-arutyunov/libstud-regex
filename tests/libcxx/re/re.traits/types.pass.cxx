@@ -16,7 +16,7 @@
 //     typedef basic_string<char_type> string_type;
 //     typedef locale                  locale_type;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 #include <string>

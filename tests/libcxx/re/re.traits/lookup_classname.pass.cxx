@@ -15,7 +15,7 @@
 //   lookup_classname(ForwardIterator first, ForwardIterator last,
 //                    bool icase = false) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 

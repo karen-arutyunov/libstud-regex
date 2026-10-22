@@ -20,7 +20,7 @@
 //    operator!=(const match_results<BidirectionalIterator, Allocator>& m1,
 //               const match_results<BidirectionalIterator, Allocator>& m2);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

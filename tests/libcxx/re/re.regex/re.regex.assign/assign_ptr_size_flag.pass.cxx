@@ -12,7 +12,7 @@
 
 // basic_regex& assign(const charT* ptr, size_t len, flag_type f);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

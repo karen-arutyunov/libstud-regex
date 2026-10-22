@@ -10,7 +10,7 @@
 
 // typedef basic_regex<char>    regex;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <type_traits>
 

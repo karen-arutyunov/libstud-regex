@@ -10,7 +10,7 @@
 
 // typedef regex_token_iterator<string::const_iterator>   sregex_token_iterator;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <type_traits>

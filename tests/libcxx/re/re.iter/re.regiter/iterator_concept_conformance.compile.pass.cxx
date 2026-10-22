@@ -10,7 +10,7 @@
 
 // regex_iterator
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <iterator>
 

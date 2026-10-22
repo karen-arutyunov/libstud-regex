@@ -12,7 +12,7 @@
 
 // regex_token_iterator& operator++(int);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <iterator>
 

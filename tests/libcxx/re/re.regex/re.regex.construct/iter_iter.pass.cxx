@@ -13,7 +13,7 @@
 // template <class ForwardIterator>
 //    basic_regex(ForwardIterator first, ForwardIterator last);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <iterator>

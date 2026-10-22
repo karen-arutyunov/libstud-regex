@@ -12,7 +12,7 @@
 
 // static std::size_t length(const char_type* p);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

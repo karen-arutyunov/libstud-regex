@@ -10,7 +10,7 @@
 
 // Test that replacing zero-length matches works correctly.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

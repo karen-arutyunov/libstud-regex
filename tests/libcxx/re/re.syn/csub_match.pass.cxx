@@ -10,7 +10,7 @@
 
 // typedef sub_match<const char*>   csub_match;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <type_traits>
 

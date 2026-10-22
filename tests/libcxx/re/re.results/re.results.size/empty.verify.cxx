@@ -13,7 +13,7 @@
 
 // UNSUPPORTED: c++03, c++11, c++14, c++17
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 
