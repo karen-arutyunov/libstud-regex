@@ -649,4 +649,12 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_HAS_EN_US_UTF8_LOCALE 0
 #endif
 
+// @@ TMP
+//
+#if !defined(__linix__)
+#  define TEST_HAS_CS_CZ_ISO8859_2_LOCALE 1
+#else
+#  define TEST_HAS_CS_CZ_ISO8859_2_LOCALE 0
+#endif
+
 #endif // SUPPORT_TEST_MACROS_HPP
