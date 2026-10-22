@@ -12,7 +12,7 @@
 
 // match_results(const match_results& m);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <memory> // allocator
 

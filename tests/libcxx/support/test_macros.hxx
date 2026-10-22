@@ -616,7 +616,10 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 #  define TEST_MACOS_PREREQ(maj, min) 0
 #endif
 
-// @@
+// Note that stud::regex_traits::transform_primary() implementation is not
+// fully compliant with the standard on Windows, unless built against MSVC STL
+// 14.5 and above, and on MacOS until the version 26.4 (see
+// stud::regex_traits::__transform_primary() for details).
 //
 #if (!defined(_WIN32) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 145)) && \
     (!defined(TEST_MACOS) || TEST_MACOS_PREREQ(26,4))
@@ -651,7 +654,7 @@ inline Tp const& DoNotOptimize(Tp const& value) {
 
 // @@ TMP
 //
-#if !defined(__linix__)
+#if !defined(__linux__)
 #  define TEST_HAS_CS_CZ_ISO8859_2_LOCALE 1
 #else
 #  define TEST_HAS_CS_CZ_ISO8859_2_LOCALE 0

@@ -14,7 +14,7 @@
 //             regex_constants::syntax_option_type = regex_constants::ECMAScript)
 // -> basic_regex<typename iterator_traits<ForwardIterator>::value_type>;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

@@ -14,7 +14,7 @@
 //     Specifies that ^ shall match the beginning of a line and $ shall match
 //     the end of a line, if the ECMAScript engine is selected.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

@@ -14,7 +14,7 @@
 
 // bool operator==(default_sentinel_t) const { return *this == regex_iterator(); } // since C++20
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <iterator>
 

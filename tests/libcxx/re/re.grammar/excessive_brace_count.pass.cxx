@@ -12,7 +12,7 @@
 
 // the "n" in `a{n}` should be within the numeric limits.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

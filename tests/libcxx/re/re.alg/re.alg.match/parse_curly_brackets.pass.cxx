@@ -17,7 +17,7 @@
 
 // https://llvm.org/PR16135
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

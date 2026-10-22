@@ -15,7 +15,7 @@
 //    assign(InputIterator first, InputIterator last,
 //           flag_type f = regex_constants::ECMAScript);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

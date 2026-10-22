@@ -13,7 +13,7 @@
 // const_iterator cbegin() const;
 // const_iterator cend() const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <cstddef> // size_t
 

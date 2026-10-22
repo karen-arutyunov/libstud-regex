@@ -14,7 +14,7 @@
 
 // locale_type imbue(locale_type loc);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 

@@ -10,7 +10,7 @@
 
 // typedef regex_token_iterator<const char*>   cregex_token_iterator;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <type_traits>
 

@@ -14,7 +14,7 @@
 //     basic_ostream<charT, ST>&
 //     operator<<(basic_ostream<charT, ST>& os, const sub_match<BiIter>& m);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <sstream>

@@ -19,7 +19,7 @@
 // returned 0xDA instead of 0xFA.
 // XFAIL: LIBCXX-ANDROID-FIXME && android-device-api={{21|22|23|24|25}}
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale>
 

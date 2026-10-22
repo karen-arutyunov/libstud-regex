@@ -10,7 +10,7 @@
 
 // typedef match_results<string::const_iterator>   smatch;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <type_traits>

@@ -10,7 +10,7 @@
 
 // match_results
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #ifdef __cpp_lib_concepts
 #  include <concepts>

@@ -18,7 +18,7 @@
 // std::regex in ECMAScript mode should not ignore capture groups inside lookahead assertions.
 // For example, matching /(?=(a))(a)/ to "a" should yield two captures: \1 = "a", \2 = "a"
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

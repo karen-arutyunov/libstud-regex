@@ -12,7 +12,7 @@
 
 // constexpr sub_match();
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

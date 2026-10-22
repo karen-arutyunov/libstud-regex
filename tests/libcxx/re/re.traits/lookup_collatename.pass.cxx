@@ -14,7 +14,7 @@
 //   string_type
 //   lookup_collatename(ForwardIterator first, ForwardIterator last) const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <iterator>

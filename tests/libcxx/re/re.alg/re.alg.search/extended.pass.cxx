@@ -16,7 +16,7 @@
 //                  const basic_regex<charT, traits>& e,
 //                  regex_constants::match_flag_type flags = regex_constants::match_default);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>  // char_traits
 #include <cstddef> // size_t, ptrdiff_t

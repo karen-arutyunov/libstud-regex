@@ -19,7 +19,7 @@
 //     typedef regex_constants::syntax_option_type flag_type;
 //     typedef typename traits::locale_type        locale_type;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <locale>

@@ -12,7 +12,7 @@
 
 // size_type max_size() const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

@@ -12,7 +12,7 @@
 
 // string_type str() const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

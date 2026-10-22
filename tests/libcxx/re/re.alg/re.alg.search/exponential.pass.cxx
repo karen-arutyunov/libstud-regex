@@ -19,7 +19,7 @@
 
 // Throw exception after spent too many cycles with respect to the length of the input string.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 

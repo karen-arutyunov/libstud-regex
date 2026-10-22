@@ -24,7 +24,7 @@
 //     typedef typename iterator_traits<BidirectionalIterator>::value_type char_type;
 //     typedef basic_string<char_type>                           string_type;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <string>
 #include <memory>      // allocator

@@ -13,7 +13,7 @@
 // the "n" and "m" in `a{n,m}` should be within the numeric limits.
 // requirement "m >= n" should be checked.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

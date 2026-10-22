@@ -791,7 +791,6 @@ typedef regex_token_iterator<wstring::const_iterator> wsregex_token_iterator;
 
 #include <libstud/regex/config.hxx>
 #include <libstud/regex/details.hxx>
-#include <libstud/regex/version.hxx>
 
 #if __cplusplus < 201103L && defined(LIBSTUD_REGEX_USE_FROZEN_CXX03_HEADERS)
 #  include <__cxx03/regex>

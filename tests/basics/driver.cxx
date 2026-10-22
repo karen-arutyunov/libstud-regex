@@ -1,4 +1,4 @@
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <locale> // std::ctype_base
 

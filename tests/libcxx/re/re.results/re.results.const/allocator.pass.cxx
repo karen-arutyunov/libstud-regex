@@ -12,7 +12,7 @@
 
 // match_results(const Allocator& a = Allocator());
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 #include "test_allocator.hxx"

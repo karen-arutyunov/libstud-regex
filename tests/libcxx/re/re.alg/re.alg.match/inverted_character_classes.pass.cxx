@@ -11,7 +11,7 @@
 
 // Make sure that we correctly match inverted character classes.
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

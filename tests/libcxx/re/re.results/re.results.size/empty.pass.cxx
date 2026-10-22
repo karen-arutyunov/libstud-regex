@@ -13,7 +13,7 @@
 // size_type size() const;
 // bool empty() const;
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

@@ -22,7 +22,7 @@
 //     typedef forward_iterator_tag             iterator_category;
 //     typedef input_iterator_tag               iterator_concept; // since C++20
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <cstddef>     // ptrdiff_t
 #include <iterator>

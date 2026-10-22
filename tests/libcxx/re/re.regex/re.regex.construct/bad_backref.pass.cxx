@@ -14,7 +14,7 @@
 // template <class ST, class SA>
 //    basic_regex(const basic_string<charT, ST, SA>& s);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 

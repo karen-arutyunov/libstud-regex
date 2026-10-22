@@ -16,7 +16,7 @@
 //                      regex_constants::match_flag_type m =
 //                                              regex_constants::match_default);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include <vector>
 #include <iterator>

@@ -12,7 +12,7 @@
 
 // basic_regex& operator=(const basic_regex& e);
 
-#include <libstud/regex.hxx>
+#include <libstud/regex/regex.hxx>
 
 #include "test_macros.hxx"
 
