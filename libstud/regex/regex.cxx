@@ -72,7 +72,11 @@ static const char* make_error_type_string(regex_constants::error_type ecode) {
 regex_error::regex_error(regex_constants::error_type ecode)
     : runtime_error(make_error_type_string(ecode)), __code_(ecode) {}
 
+#if 0
 regex_error::~regex_error() throw() {}
+#else
+regex_error::~regex_error() LIBSTUD_REGEX_NOEXCEPT {}
+#endif
 
 namespace {
 

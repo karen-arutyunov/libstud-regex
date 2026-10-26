@@ -1031,7 +1031,7 @@ public:
   LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error&) LIBSTUD_REGEX_NOEXCEPT = default;
 #else
   LIBSTUD_REGEX_HIDE_FROM_ABI regex_error(const regex_error& e) LIBSTUD_REGEX_NOEXCEPT
-    : runtime_error(e), __code_ (e.__code_) {}
+    : runtime_error (e), __code_ (e.__code_) {}
 #endif
 
   ~regex_error() LIBSTUD_REGEX_NOEXCEPT override;
