@@ -7,14 +7,15 @@ namespace stud
   namespace regex
   {
     template <typename C>
-    std::basic_string<C>
+    typename regex_char_traits<C>::string_type
     regex_replace_match_results (
-      const match_results<typename std::basic_string<C>::const_iterator>& m,
+      const match_results<
+        typename regex_char_traits<C>::string_type::const_iterator>& m,
       const C* fmt, std::size_t n)
     {
       using std::size_t;
 
-      using string_type = std::basic_string<C>;
+      using string_type = typename regex_char_traits<C>::string_type;
       using str_it      = typename string_type::const_iterator;
 
       string_type r;
@@ -31,6 +32,12 @@ namespace stud
       enum class case_conv {none, upper, lower, upper_once, lower_once}
       mode (case_conv::none);
 
+      // Note that to properly support case conversions, we should probably
+      // use the tolower() and alike functions of the ctype facet retrieved
+      // from an object of regex_traits<C>::locale_type type (for example, by
+      // using tolower(CharT,locale) template function). Let's, however, keep
+      // it simple for now.
+      //
       std::locale cl; // Copy of the global C++ locale.
 
       auto conv_chr = [&mode, &cl] (C c) -> C
@@ -185,37 +192,40 @@ namespace stud
     }
 
     template <typename C>
-    std::pair<std::basic_string<C>, bool>
-    regex_replace_match (const std::basic_string<C>& s,
+    std::pair<typename regex_char_traits<C>::string_type, bool>
+    regex_replace_match (const typename regex_char_traits<C>::string_type& s,
                          const basic_regex<C>& re,
-                         const std::basic_string<C>& fmt)
+                         const typename regex_char_traits<C>::string_type& fmt)
     {
-      using string_type = std::basic_string<C>;
+      using string_type = typename regex_char_traits<C>::string_type;
       using str_it      = typename string_type::const_iterator;
 
       match_results<str_it> m;
       bool match (regex_match (s, m, re));
 
       return std::make_pair ((match
-                              ? regex_replace_match_results (m, fmt)
+                              ? regex_replace_match_results<C> (m, fmt)
                               : string_type ()),
                              match);
     }
 
     template <typename C, typename F>
     bool
-    regex_replace_search (const std::basic_string<C>& s,
+    regex_replace_search (const typename regex_char_traits<C>::string_type& s,
                           const basic_regex<C>& re,
-                          const std::basic_string<C>& fmt,
+                          const typename regex_char_traits<C>::string_type& fmt,
                           F&& append,
                           regex_constants::match_flag_type flags)
     {
-      using string_type = std::basic_string<C>;
+      using string_type = typename regex_char_traits<C>::string_type;
       using str_it      = typename string_type::const_iterator;
       using regex_it    = regex_iterator<str_it>;
 
-      bool first_only (static_cast<int> (flags & regex_constants::format_first_only) != 0);
-      bool no_copy (static_cast<int> (flags & regex_constants::format_no_copy) != 0);
+      bool first_only (
+        static_cast<int> (flags & regex_constants::format_first_only) != 0);
+
+      bool no_copy (
+        static_cast<int> (flags & regex_constants::format_no_copy) != 0);
 
       // Note that by default the std::regex_search(), std::regex_replace(),
       // and std::regex_iterator() functions match the empty substrings in
@@ -269,7 +279,7 @@ namespace stud
           // The standard implementation calls m.format() here. We perform our
           // own formatting.
           //
-          string_type r (regex_replace_match_results (m, fmt));
+          string_type r (regex_replace_match_results<C> (m, fmt));
           append (r.begin (), r.end ());
         }
       }
@@ -283,11 +293,11 @@ namespace stud
     }
 
     template <typename C>
-    std::pair<basic_regex<C>, std::basic_string<C>>
+    std::pair<basic_regex<C>, typename regex_char_traits<C>::string_type>
     regex_replace_parse (const C* s, size_t n,
                          regex_constants::syntax_option_type f)
     {
-      using string_type = std::basic_string<C>;
+      using string_type = typename regex_char_traits<C>::string_type;
 
       std::size_t e;
       std::pair<string_type, string_type> r (regex_replace_parse (s, n, e));
@@ -299,12 +309,13 @@ namespace stud
     }
 
     template <typename C>
-    std::pair<std::basic_string<C>, std::basic_string<C>>
+    std::pair<typename regex_char_traits<C>::string_type,
+              typename regex_char_traits<C>::string_type>
     regex_replace_parse (const C* s, size_t n, size_t& e)
     {
       using std::invalid_argument;
 
-      using string_type = std::basic_string<C>;
+      using string_type = typename regex_char_traits<C>::string_type;
 
       if (n == 0)
         throw invalid_argument ("no leading delimiter");

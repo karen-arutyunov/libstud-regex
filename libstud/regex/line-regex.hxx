@@ -258,8 +258,8 @@ namespace stud
     //
     // While not very natural operation for the class we have, we have to
     // provide some meaningfull semantics for such a comparison as it is
-    // required by the char_traits<line_char> specialization. While we could
-    // provide it right in that specialization, let's keep it here for
+    // specified by the CharTraits requirements. While we could provide it
+    // right in the regex_char_traits specialization, let's keep it here for
     // basic_regex implementations that potentially can compare line_chars as
     // they compare them with expressions of other types (see below).
     //
@@ -364,44 +364,74 @@ namespace stud
       return l < r || l == r;
     }
 
-    // It seems that an ability to instantiate std::basic_string with
-    // user-defined character types is on its way out (see the P3681R0
-    // proposal for details). In particular, the later versions of libc++ mark
-    // the char_traits specializations with such types as deprecated, which
-    // ends up with -Wdeprecated-declarations warning. For now, let's just
-    // disable this warning for the line_string definition for Clang and
-    // GCC. Also see GH issue 516 for a wider range of problems with our
-    // line_regex.
-    //
-    // @@ Can we, alternatively, just stop using std::char_traits? Note that
-    //    the latter C++ standards still don't forbid using custom character
-    //    types. C++20 only forbids specialization of std::char_traits<> for
-    //    custom character types.
-    //
-    //    Specifically, instead of specializing std::char_traits for
-    //    build2::script::regex::line_char we can just define our own
-    //    line_char_traits type which satisfies the CharTraits
-    //    requirements. Note that we already provide custom definitions for
-    //    all the required members, so we should be able to turn `template<>
-    //    class char_traits<build2::script::regex::line_char>` info `class
-    //    line_char_traits` easily and define line_string as
-    //    std::basic_string<line_char, line_char_traits>.
-    //
-    //    Note that even after switching to a custom basic_regex
-    //    implementation, we will have to deal with this issue.
-    //
-    // @@ Invent regex_char_traits template and specialize if for line_char.
-    //
-#if defined(__clang__) || defined(__GNUC__)
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
+    template <>
+    struct LIBSTUD_REGEX_SYMEXPORT regex_char_traits<line_char>
+    {
+      // CharTraits requirements.
+      //
+      using char_type  = line_char;
+      using int_type   = char_type;
+      using off_type   = std::char_traits<char>::off_type;
+      using pos_type   = std::char_traits<char>::pos_type;
+      using state_type = std::char_traits<char>::state_type;
 
-    using line_string = std::basic_string<line_char>;
+      static void
+      assign (char_type& c1, const char_type& c2) {c1 = c2;}
 
-#if defined(__clang__) || defined(__GNUC__)
-#  pragma GCC diagnostic pop
-#endif
+      static char_type*
+      assign (char_type*, size_t, char_type);
+
+      // Note that eq() and lt() are not constexpr (as required by C++11)
+      // because == and < operators for char_type are not constexpr.
+      //
+      static bool
+      eq (const char_type& l, const char_type& r) {return l == r;}
+
+      static bool
+      lt (const char_type& l, const char_type& r) {return l < r;}
+
+      static char_type*
+      move (char_type*, const char_type*, size_t);
+
+      static char_type*
+      copy (char_type*, const char_type*, size_t);
+
+      static int
+      compare (const char_type*, const char_type*, size_t);
+
+      static size_t
+      length (const char_type*);
+
+      static const char_type*
+      find (const char_type*, size_t, const char_type&);
+
+      static constexpr char_type
+      to_char_type (const int_type& c) {return c;}
+
+      static constexpr int_type
+      to_int_type (const char_type& c) {return int_type (c);}
+
+      // Note that the following functions are not constexpr (as required by
+      // C++11) because their return expressions are not constexpr.
+      //
+      static bool
+      eq_int_type (const int_type& l, const int_type& r) {return l == r;}
+
+      static int_type eof () {return char_type::eof;}
+
+      static int_type
+      not_eof (const int_type& c)
+      {
+        return c != char_type::eof ? c : char_type::nul;
+      }
+
+      // regex_char_traits<>
+      //
+      using string_type =
+        std::basic_string<char_type, regex_char_traits<char_type>>;
+    };
+
+    using line_string = regex_char_traits<line_char>::string_type;
 
     // Locale that has ctype<line_char> facet installed. Used in the
     // regex_traits<line_char> specialization (see below).
@@ -419,82 +449,21 @@ namespace stud
 // Standard template specializations for line_char that are required for the
 // basic_regex<line_char> instantiation.
 //
-// @@ See above.
-//
 namespace std
 {
-  template <>
-  class LIBSTUD_REGEX_SYMEXPORT char_traits<stud::regex::line_char>
-  {
-  public:
-    using char_type  = stud::regex::line_char;
-    using int_type   = char_type;
-    using off_type   = char_traits<char>::off_type;
-    using pos_type   = char_traits<char>::pos_type;
-    using state_type = char_traits<char>::state_type;
-
-    static void
-    assign (char_type& c1, const char_type& c2) {c1 = c2;}
-
-    static char_type*
-    assign (char_type*, size_t, char_type);
-
-    // Note that eq() and lt() are not constexpr (as required by C++11)
-    // because == and < operators for char_type are not constexpr.
-    //
-    static bool
-    eq (const char_type& l, const char_type& r) {return l == r;}
-
-    static bool
-    lt (const char_type& l, const char_type& r) {return l < r;}
-
-    static char_type*
-    move (char_type*, const char_type*, size_t);
-
-    static char_type*
-    copy (char_type*, const char_type*, size_t);
-
-    static int
-    compare (const char_type*, const char_type*, size_t);
-
-    static size_t
-    length (const char_type*);
-
-    static const char_type*
-    find (const char_type*, size_t, const char_type&);
-
-    static constexpr char_type
-    to_char_type (const int_type& c) {return c;}
-
-    static constexpr int_type
-    to_int_type (const char_type& c) {return int_type (c);}
-
-    // Note that the following functions are not constexpr (as required by
-    // C++11) because their return expressions are not constexpr.
-    //
-    static bool
-    eq_int_type (const int_type& l, const int_type& r) {return l == r;}
-
-    static int_type eof () {return char_type::eof;}
-
-    static int_type
-    not_eof (const int_type& c)
-    {
-      return c != char_type::eof ? c : char_type::nul;
-    }
-  };
-
   // ctype<> must be derived from both ctype_base and locale::facet (the later
   // supports ref-counting used by the std::locale implementation internally).
   //
-  // msvcrt for some reason also derives ctype_base from locale::facet which
-  // produces "already a base-class" warning and effectivelly breaks the
-  // reference counting. So we derive from ctype_base only in this case.
+  // MSVC STL for some reason also derives std::ctype_base from
+  // std::locale::facet which produces "already a base-class" warning and
+  // effectivelly breaks the reference counting. So we derive from
+  // std::ctype_base only in this case.
   //
   template <>
   class LIBSTUD_REGEX_SYMEXPORT ctype<stud::regex::line_char>:
     public ctype_base
-#if !defined(_MSC_VER) || _MSC_VER >= 2000
+#if (!defined(_MSVC_STL_VERSION) && !defined(_CPPLIB_VER)) || \
+    ( defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 150) // Not yet existing.
     , public locale::facet
 #endif
   {
@@ -508,7 +477,8 @@ namespace std
     static locale::id id;
 
 
-#if !defined(_MSC_VER) || _MSC_VER >= 2000
+#if (!defined(_MSVC_STL_VERSION) && !defined(_CPPLIB_VER)) || \
+    ( defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION >= 150) // Not yet existing.
     explicit
     ctype (size_t refs = 0): locale::facet (refs) {}
 #else

@@ -1,6 +1,5 @@
 #include <locale>      // ctype, use_facet()
 #include <vector>
-#include <string>      // char_traits
 #include <utility>     // move()
 #include <type_traits> // is_*
 
@@ -15,7 +14,6 @@ using namespace stud::regex;
 
 using std::is_standard_layout;
 using std::is_array;
-using std::char_traits;
 using std::vector;
 using std::ctype;
 using std::use_facet;
@@ -50,8 +48,8 @@ main ()
       !is_array<lc>::value,
       "line_char must be char-like");
 
-    // Zero-initialed line_char should be the null-char as required by
-    // char_traits<>::length() specification.
+    // Zero-initialized line_char should be the null-char as specified by
+    // CharTraits::length().
     //
     assert (lc () == lc::nul);
 
@@ -154,10 +152,10 @@ main ()
     assert (lc (cr ("a|b"), p) == lc ("a", p));
   }
 
-  // Test char_traits<line_char>.
+  // Test regex_char_traits<line_char>.
   //
   {
-    using ct = char_traits<lc>;
+    using ct = regex_char_traits<lc>;
     using vc = vector<lc>;
 
     lc c;
@@ -338,6 +336,41 @@ main ()
                                            ls ({baz})));
       assert (r.second);
       assert (r.first == ls ({baz, bar, baz}));
+    }
+
+    {
+      {
+        smatch m;
+        std::string s ("fbf");
+
+        bool sr (regex_search (s, m, regex ("f(.)f")));
+
+        assert (sr);
+        assert (m.size () == 2);
+
+        std::string rr (regex_replace_match_results<char> (m, "z\\U\\1z"));
+
+        assert (rr == "zBZ");
+      }
+
+      {
+        match_results<ls::const_iterator> m;
+
+        ls s ({foo, bar, foo});
+        bool sr (regex_search (s, m, lr ({foo, '(', '.', ')', foo})));
+
+        assert (sr);
+        assert (m.size () == 2);
+
+        // Note that \U is not supported by
+        // regex_replace_match_results<line_char>() (see its declaration for
+        // details). Also, line_char('U') would crash on assertion failure
+        // (see line_char constructor for special characters for details).
+        //
+        ls rr (regex_replace_match_results<lc> (m, ls ({baz, '\\', '1', baz})));
+
+        assert (rr == ls ({baz, bar, baz}));
+      }
     }
 
     {

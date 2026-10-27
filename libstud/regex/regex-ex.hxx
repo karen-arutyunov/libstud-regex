@@ -1,11 +1,9 @@
 #pragma once
 
-#include <string>
-#include <utility> // pair
+#include <utility> // pair, make_pair(), move()
 #include <cstddef> // size_t
 
 #include <libstud/regex/regex.hxx>
-#include <libstud/regex/export.hxx>
 
 namespace stud
 {
@@ -27,7 +25,9 @@ namespace stud
     //
     // - The character case conversion is performed according to the global
     //   C++ locale (which is, unless changed, is the same as C locale and
-    //   both default to the POSIX locale aka "C").
+    //   both default to the POSIX locale aka "C"). This, in particular, means
+    //   that for character types other than char, the \u, \l, \U, \L, \E
+    //   sequences are effectively not supported.
     //
 
     // Call specified append() function for non-matched substrings and matched
@@ -35,13 +35,14 @@ namespace stud
     // must be callable with the following signature:
     //
     // void
-    // append(basic_string<C>::iterator begin, basic_string<C>::iterator end);
+    // append(regex_char_traits<C>::string_type::iterator begin,
+    //        regex_char_traits<C>::string_type::iterator end);
     //
     template <typename C, typename F>
     bool
-    regex_replace_search (const std::basic_string<C>&,
+    regex_replace_search (const typename regex_char_traits<C>::string_type&,
                           const basic_regex<C>&,
-                          const std::basic_string<C>& fmt,
+                          const typename regex_char_traits<C>::string_type& fmt,
                           F&& append,
                           regex_constants::match_flag_type =
                             regex_constants::match_default);
@@ -51,33 +52,36 @@ namespace stud
     // succeeded.
     //
     template <typename C>
-    std::pair<std::basic_string<C>, bool>
-    regex_replace_search (const std::basic_string<C>&,
+    std::pair<typename regex_char_traits<C>::string_type, bool>
+    regex_replace_search (const typename regex_char_traits<C>::string_type&,
                           const basic_regex<C>&,
-                          const std::basic_string<C>& fmt,
+                          const typename regex_char_traits<C>::string_type& fmt,
                           regex_constants::match_flag_type =
                             regex_constants::match_default);
 
-    // Match the entire string and, if it matches, return the string replacement.
+    // Match the entire string and, if it matches, return the string
+    // replacement.
     //
     template <typename C>
-    std::pair<std::basic_string<C>, bool>
-    regex_replace_match (const std::basic_string<C>&,
+    std::pair<typename regex_char_traits<C>::string_type, bool>
+    regex_replace_match (const typename regex_char_traits<C>::string_type&,
                          const basic_regex<C>&,
-                         const std::basic_string<C>& fmt);
+                         const typename regex_char_traits<C>::string_type& fmt);
 
     // As above but using match_results.
     //
     template <typename C>
-    std::basic_string<C>
+    typename regex_char_traits<C>::string_type
     regex_replace_match_results (
-      const match_results<typename std::basic_string<C>::const_iterator>&,
-      const std::basic_string<C>& fmt);
+      const match_results<
+        typename regex_char_traits<C>::string_type::const_iterator>&,
+      const typename regex_char_traits<C>::string_type& fmt);
 
     template <typename C>
-    std::basic_string<C>
+    typename regex_char_traits<C>::string_type
     regex_replace_match_results (
-      const match_results<typename std::basic_string<C>::const_iterator>&,
+      const match_results<
+        typename regex_char_traits<C>::string_type::const_iterator>&,
       const C* fmt, std::size_t fmt_n);
 
     // Parse the '/<regex>/<format>/' replacement string into the regex/format
@@ -87,19 +91,19 @@ namespace stud
     // Note: escaping of the delimiter character is not (yet) supported.
     //
     template <typename C>
-    std::pair<basic_regex<C>, std::basic_string<C>>
-    regex_replace_parse (const std::basic_string<C>&,
+    std::pair<basic_regex<C>, typename regex_char_traits<C>::string_type>
+    regex_replace_parse (const typename regex_char_traits<C>::string_type&,
                          regex_constants::syntax_option_type =
                            regex_constants::ECMAScript);
 
     template <typename C>
-    std::pair<basic_regex<C>, std::basic_string<C>>
+    std::pair<basic_regex<C>, typename regex_char_traits<C>::string_type>
     regex_replace_parse (const C*,
                          regex_constants::syntax_option_type =
                            regex_constants::ECMAScript);
 
     template <typename C>
-    std::pair<basic_regex<C>, std::basic_string<C>>
+    std::pair<basic_regex<C>, typename regex_char_traits<C>::string_type>
     regex_replace_parse (const C*, std::size_t,
                          regex_constants::syntax_option_type =
                            regex_constants::ECMAScript);
@@ -108,7 +112,8 @@ namespace stud
     // text after the last delimiter instead returning its position.
     //
     template <typename C>
-    std::pair<std::basic_string<C>, std::basic_string<C>>
+    std::pair<typename regex_char_traits<C>::string_type,
+              typename regex_char_traits<C>::string_type>
     regex_replace_parse (const C*, std::size_t, std::size_t& end);
   }
 }

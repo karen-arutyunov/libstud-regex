@@ -6,14 +6,14 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include <libstud/regex/regex.hxx>
+
 #include <algorithm>
 #include <iterator>
 
 #include <locale>
 #include <string>
 #include <cstring>
-
-#include <libstud/regex/regex.hxx>
 
 LIBSTUD_REGEX_BEGIN_NAMESPACE_STD
 LIBSTUD_REGEX_BEGIN_EXPLICIT_ABI_ANNOTATIONS

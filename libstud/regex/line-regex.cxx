@@ -278,83 +278,104 @@ namespace stud
       //
       assert (std::has_facet<std::ctype<line_char>> (*this));
     }
+
+    // regex_char_traits<line_char>
+    //
+    line_char* regex_char_traits<line_char>::
+    assign (char_type* s, size_t n, char_type c)
+    {
+      for (size_t i (0); i != n; ++i)
+        s[i] = c;
+      return s;
+    }
+
+    line_char* regex_char_traits<line_char>::
+    move (char_type* d, const char_type* s, size_t n)
+    {
+      if (n > 0 && d != s)
+      {
+        // If d < s then it can't be in [s, s + n) range and so using copy()
+        // is safe. Otherwise d + n is out of (s, s + n] range and so using
+        // copy_backward() is safe.
+        //
+        if (d < s)
+        {
+          // Hidden by regex_char_traits<line_char>::copy().
+          //
+          std::copy (s, s + n, d);
+        }
+        else
+          std::copy_backward (s, s + n, d + n);
+      }
+
+      return d;
+    }
+
+    line_char* regex_char_traits<line_char>::
+    copy (char_type* d, const char_type* s, size_t n)
+    {
+      // Hidden by regex_char_traits<line_char>::copy().
+      //
+      std::copy (s, s + n, d);
+      return d;
+    }
+
+    int regex_char_traits<line_char>::
+    compare (const char_type* s1, const char_type* s2, size_t n)
+    {
+      for (size_t i (0); i != n; ++i)
+      {
+        if (s1[i] < s2[i])
+          return -1;
+        else if (s2[i] < s1[i])
+          return 1;
+      }
+
+      return 0;
+    }
+
+    size_t regex_char_traits<line_char>::
+    length (const char_type* s)
+    {
+      size_t i (0);
+      while (s[i] != char_type::nul)
+        ++i;
+
+      return i;
+    }
+
+    const line_char* regex_char_traits<line_char>::
+    find (const char_type* s, size_t n, const char_type& c)
+    {
+      for (size_t i (0); i != n; ++i)
+      {
+        if (s[i] == c)
+          return s + i;
+      }
+
+      return nullptr;
+    }
+
+    // regex_traits<line_char>
+    //
+    int regex_traits<line_char>::
+    value (char_type c, int radix) const
+    {
+      assert (radix == 8 || radix == 10 || radix == 16);
+
+      if (c.type () != line_type::special)
+        return -1;
+
+      const char digits[] = "0123456789ABCDEF";
+      const char* d (string::traits_type::find (digits, radix, c.special ()));
+      return d != nullptr ? static_cast<int> (d - digits) : -1;
+    }
   }
 }
 
 namespace std
 {
   using namespace stud::regex;
-
-  // char_traits<line_char>
-  //
-  line_char* char_traits<line_char>::
-  assign (char_type* s, size_t n, char_type c)
-  {
-    for (size_t i (0); i != n; ++i)
-      s[i] = c;
-    return s;
-  }
-
-  line_char* char_traits<line_char>::
-  move (char_type* d, const char_type* s, size_t n)
-  {
-    if (n > 0 && d != s)
-    {
-      // If d < s then it can't be in [s, s + n) range and so using copy() is
-      // safe. Otherwise d + n is out of (s, s + n] range and so using
-      // copy_backward() is safe.
-      //
-      if (d < s)
-        std::copy (s, s + n, d); // Hidden by char_traits<line_char>::copy().
-      else
-        copy_backward (s, s + n, d + n);
-    }
-
-    return d;
-  }
-
-  line_char* char_traits<line_char>::
-  copy (char_type* d, const char_type* s, size_t n)
-  {
-    std::copy (s, s + n, d); // Hidden by char_traits<line_char>::copy().
-    return d;
-  }
-
-  int char_traits<line_char>::
-  compare (const char_type* s1, const char_type* s2, size_t n)
-  {
-    for (size_t i (0); i != n; ++i)
-    {
-      if (s1[i] < s2[i])
-        return -1;
-      else if (s2[i] < s1[i])
-        return 1;
-    }
-
-    return 0;
-  }
-
-  size_t char_traits<line_char>::
-  length (const char_type* s)
-  {
-    size_t i (0);
-    while (s[i] != char_type::nul)
-      ++i;
-
-    return i;
-  }
-
-  const line_char* char_traits<line_char>::
-  find (const char_type* s, size_t n, const char_type& c)
-  {
-    for (size_t i (0); i != n; ++i)
-    {
-      if (s[i] == c)
-        return s + i;
-    }
-
-    return nullptr;
-  }
 
   // ctype<line_char>
   //
@@ -416,26 +437,5 @@ namespace std
       *c++ = narrow (*b++, def);
 
     return e;
-  }
-}
-
-namespace stud
-{
-  namespace regex
-  {
-    // regex_traits<line_char>
-    //
-    int regex_traits<line_char>::
-    value (char_type c, int radix) const
-    {
-      assert (radix == 8 || radix == 10 || radix == 16);
-
-      if (c.type () != line_type::special)
-        return -1;
-
-      const char digits[] = "0123456789ABCDEF";
-      const char* d (string::traits_type::find (digits, radix, c.special ()));
-      return d != nullptr ? static_cast<int> (d - digits) : -1;
-    }
   }
 }

@@ -1056,6 +1056,31 @@ template <regex_constants::error_type _Ev>
 #    endif
 }
 
+// Use this template instead of std::char_traits throughout the regex
+// implementation.
+//
+// Similar to std::char_traits, the specialization must be compliant with the
+// CharTraits requirements, but should additionally define the nested string
+// type. The original regex implementation is amended to use
+// regex_char_traits<C>::string_type instead of std::basic_string<C,
+// std::char_traits<C>>, since usage of the latter for non-standard character
+// types is now deprecated (see GH issue 516 for details).
+//
+template <typename C>
+struct regex_char_traits;
+
+template <>
+struct regex_char_traits<char>: std::char_traits<char>
+{
+  using string_type = std::basic_string<char>;
+};
+
+template <>
+struct regex_char_traits<wchar_t>: std::char_traits<wchar_t>
+{
+  using string_type = std::basic_string<wchar_t>;
+};
+
 template <class _CharT>
 struct regex_traits {
 public:
@@ -1082,9 +1107,9 @@ public:
 
   static const char_class_type __regex_word = ctype_base::__regex_word;
 #else
-  typedef std::basic_string<char_type> string_type;
-  typedef std::locale locale_type;
-  typedef details::ctype_base_mask_numeric_type char_class_type;
+  using string_type = typename regex_char_traits<char_type>::string_type;
+  using locale_type = std::locale;
+  using char_class_type = details::ctype_base_mask_numeric_type;
 
   static const char_class_type __regex_word = details::regex_word;
 # endif
@@ -1106,7 +1131,7 @@ public:
 # if 0
   LIBSTUD_REGEX_HIDE_FROM_ABI static size_t length(const char_type* __p) { return char_traits<char_type>::length(__p); }
 # else
-  LIBSTUD_REGEX_HIDE_FROM_ABI static size_t length(const char_type* __p) { return std::char_traits<char_type>::length(__p); }
+  LIBSTUD_REGEX_HIDE_FROM_ABI static size_t length(const char_type* __p) { return string_type::traits_type::length(__p); }
 # endif
   LIBSTUD_REGEX_HIDE_FROM_ABI char_type translate(char_type __c) const { return __c; }
   char_type translate_nocase(char_type __c) const;
@@ -2444,7 +2469,7 @@ public:
       if (__b.size() != 1 || __e.size() != 1 || char_traits<typename string_type::value_type>::lt(__e[0], __b[0]))
         std::__throw_regex_error<regex_constants::error_range>();
 #else
-      if (__b.size() != 1 || __e.size() != 1 || std::char_traits<typename string_type::value_type>::lt(__e[0], __b[0]))
+      if (__b.size() != 1 || __e.size() != 1 || string_type::traits_type::lt(__e[0], __b[0]))
         __throw_regex_error<regex_constants::error_range>();
 #endif
       if (__icase_) {
@@ -2634,27 +2659,11 @@ private:
   typedef stud::regex::__node<_CharT> __node;
 #endif
 
-public:
-  // constants:
-  static const regex_constants::syntax_option_type icase      = regex_constants::icase;
-  static const regex_constants::syntax_option_type nosubs     = regex_constants::nosubs;
-  static const regex_constants::syntax_option_type optimize   = regex_constants::optimize;
-  static const regex_constants::syntax_option_type collate    = regex_constants::collate;
-  static const regex_constants::syntax_option_type ECMAScript = regex_constants::ECMAScript;
-  static const regex_constants::syntax_option_type basic      = regex_constants::basic;
-  static const regex_constants::syntax_option_type extended   = regex_constants::extended;
-  static const regex_constants::syntax_option_type awk        = regex_constants::awk;
-  static const regex_constants::syntax_option_type grep       = regex_constants::grep;
-  static const regex_constants::syntax_option_type egrep      = regex_constants::egrep;
-  static const regex_constants::syntax_option_type multiline  = regex_constants::multiline;
-
   using size_t = std::size_t;
   using ptrdiff_t = std::ptrdiff_t;
   using ctype_base = std::ctype_base;
 
-  template <typename C,
-            typename T = std::char_traits<C>,
-            typename A = std::allocator<C>>
+  template <typename C, typename T, typename A>
   using basic_string = std::basic_string<C, T, A>;
 
   template <typename T, typename A = std::allocator<T>>
@@ -2685,6 +2694,20 @@ public:
 
   template <typename I>
   using __wrap_iter = details::__wrap_iter<I>;
+
+public:
+  // constants:
+  static const regex_constants::syntax_option_type icase      = regex_constants::icase;
+  static const regex_constants::syntax_option_type nosubs     = regex_constants::nosubs;
+  static const regex_constants::syntax_option_type optimize   = regex_constants::optimize;
+  static const regex_constants::syntax_option_type collate    = regex_constants::collate;
+  static const regex_constants::syntax_option_type ECMAScript = regex_constants::ECMAScript;
+  static const regex_constants::syntax_option_type basic      = regex_constants::basic;
+  static const regex_constants::syntax_option_type extended   = regex_constants::extended;
+  static const regex_constants::syntax_option_type awk        = regex_constants::awk;
+  static const regex_constants::syntax_option_type grep       = regex_constants::grep;
+  static const regex_constants::syntax_option_type egrep      = regex_constants::egrep;
+  static const regex_constants::syntax_option_type multiline  = regex_constants::multiline;
 
   // construct/copy/destroy:
   LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex()
@@ -2759,7 +2782,11 @@ public:
   template <class _InputIterator, __enable_if_t<__has_exactly_input_iterator_category<_InputIterator>::value, int> = 0>
   LIBSTUD_REGEX_HIDE_FROM_ABI basic_regex&
   assign(_InputIterator __first, _InputIterator __last, flag_type __f = regex_constants::ECMAScript) {
+#if 0
     basic_string<_CharT> __t(__first, __last);
+#else
+    string_type __t(__first, __last);
+#endif
     return assign(__t.begin(), __t.end(), __f);
   }
 
@@ -2877,7 +2904,11 @@ private:
       _ForwardIterator __first, _ForwardIterator __last, __bracket_expression<_CharT, _Traits>* __ml);
   template <class _ForwardIterator>
   _ForwardIterator
+#if 0
   __parse_collating_symbol(_ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>& __col_sym);
+#else
+  __parse_collating_symbol(_ForwardIterator __first, _ForwardIterator __last, string_type& __col_sym);
+#endif
   template <class _ForwardIterator>
   _ForwardIterator __parse_DUP_COUNT(_ForwardIterator __first, _ForwardIterator __last, int& __c);
   template <class _ForwardIterator>
@@ -2910,7 +2941,11 @@ private:
   _ForwardIterator __parse_character_class_escape(_ForwardIterator __first, _ForwardIterator __last);
   template <class _ForwardIterator>
   _ForwardIterator
+#if 0
   __parse_character_escape(_ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>* __str = nullptr);
+#else
+  __parse_character_escape(_ForwardIterator __first, _ForwardIterator __last, string_type* __str = nullptr);
+#endif
   template <class _ForwardIterator>
   _ForwardIterator __parse_pattern_character(_ForwardIterator __first, _ForwardIterator __last);
   template <class _ForwardIterator>
@@ -2921,11 +2956,19 @@ private:
   _ForwardIterator __parse_class_escape(
       _ForwardIterator __first,
       _ForwardIterator __last,
+#if 0
       basic_string<_CharT>& __str,
+#else
+      string_type& __str,
+#endif
       __bracket_expression<_CharT, _Traits>* __ml);
   template <class _ForwardIterator>
   _ForwardIterator
+#if 0
   __parse_awk_escape(_ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>* __str = nullptr);
+#else
+  __parse_awk_escape(_ForwardIterator __first, _ForwardIterator __last, string_type* __str = nullptr);
+#endif
 
   bool __test_back_ref(_CharT);
 
@@ -3842,7 +3885,11 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_expression_term(
     _ForwardIterator __first, _ForwardIterator __last, __bracket_expression<_CharT, _Traits>* __ml) {
   if (__first != __last && *__first != ']') {
     _ForwardIterator __temp = std::next(__first);
+#if 0
     basic_string<_CharT> __start_range;
+#else
+    string_type __start_range;
+#endif
     if (__temp != __last && *__first == '[') {
       if (*__temp == '=')
         return __parse_equivalence_class(++__temp, __last, __ml);
@@ -3873,7 +3920,11 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_expression_term(
       __temp = std::next(__first);
       if (__temp != __last && *__first == '-' && *__temp != ']') {
         // parse a range
+#if 0
         basic_string<_CharT> __end_range;
+#else
+        string_type __end_range;
+#endif
         __first = __temp;
         ++__temp;
         if (__temp != __last && *__first == '[' && *__temp == '.')
@@ -3911,7 +3962,11 @@ template <class _ForwardIterator>
 _ForwardIterator basic_regex<_CharT, _Traits>::__parse_class_escape(
     _ForwardIterator __first,
     _ForwardIterator __last,
+#if 0
     basic_string<_CharT>& __str,
+#else
+    string_type& __str,
+#endif
     __bracket_expression<_CharT, _Traits>* __ml) {
   if (__first == __last)
 #if 0
@@ -3954,7 +4009,11 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_class_escape(
 template <class _CharT, class _Traits>
 template <class _ForwardIterator>
 _ForwardIterator basic_regex<_CharT, _Traits>::__parse_awk_escape(
+#if 0
     _ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>* __str) {
+#else
+    _ForwardIterator __first, _ForwardIterator __last, string_type* __str) {
+#endif
   if (__first == __last)
 #if 0
     std::__throw_regex_error<regex_constants::error_escape>();
@@ -4109,7 +4168,11 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_character_class(
 template <class _CharT, class _Traits>
 template <class _ForwardIterator>
 _ForwardIterator basic_regex<_CharT, _Traits>::__parse_collating_symbol(
+#if 0
     _ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>& __col_sym) {
+#else
+    _ForwardIterator __first, _ForwardIterator __last, string_type& __col_sym) {
+#endif
   // Found [.
   //   This means .] must exist
   value_type __dot_close[2] = {'.', ']'};
@@ -4451,7 +4514,11 @@ basic_regex<_CharT, _Traits>::__parse_character_class_escape(_ForwardIterator __
 template <class _CharT, class _Traits>
 template <class _ForwardIterator>
 _ForwardIterator basic_regex<_CharT, _Traits>::__parse_character_escape(
+#if 0
     _ForwardIterator __first, _ForwardIterator __last, basic_string<_CharT>* __str) {
+#else
+    _ForwardIterator __first, _ForwardIterator __last, string_type* __str) {
+#endif
   if (__first != __last) {
     _ForwardIterator __t;
     unsigned __sum = 0;
@@ -4851,19 +4918,19 @@ class LIBSTUD_REGEX_PREFERRED_NAME(csub_match) LIBSTUD_REGEX_IF_WIDE_CHARACTERS(
 #else
     : public std::pair<_BidirectionalIterator, _BidirectionalIterator> {
 #endif
-public:
-  template <typename C,
-            typename T = std::char_traits<C>,
-            typename A = std::allocator<C>>
-  using basic_string = std::basic_string<C, T, A>;
-
   template <typename T>
   using iterator_traits = std::iterator_traits<T>;
 
+public:
   typedef _BidirectionalIterator iterator;
   typedef typename iterator_traits<iterator>::value_type value_type;
   typedef typename iterator_traits<iterator>::difference_type difference_type;
+
+#if 0
   typedef basic_string<value_type> string_type;
+#else
+  using string_type = typename regex_char_traits<value_type>::string_type;
+#endif
 
   bool matched;
 
@@ -4915,7 +4982,7 @@ using __sub_match_cat LIBSTUD_REGEX_NODEBUG =
 #if 0
     compare_three_way_result_t<basic_string<typename iterator_traits<_BiIter>::value_type>>;
 # else
-    std::compare_three_way_result_t<std::basic_string<typename std::iterator_traits<_BiIter>::value_type>>;
+    std::compare_three_way_result_t<typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type>;
 #endif
 
 template <class _BiIter>
@@ -5233,7 +5300,7 @@ operator==(typename iterator_traits<_BiIter>::value_type const& __x, const sub_m
   typedef basic_string<typename iterator_traits<_BiIter>::value_type> string_type;
 #else
 operator==(typename std::iterator_traits<_BiIter>::value_type const& __x, const sub_match<_BiIter>& __y) {
-  typedef std::basic_string<typename std::iterator_traits<_BiIter>::value_type> string_type;
+  typedef typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type string_type;
 #endif
   return __y.compare(string_type(1, __x)) == 0;
 }
@@ -5255,7 +5322,7 @@ operator<(typename iterator_traits<_BiIter>::value_type const& __x, const sub_ma
   typedef basic_string<typename iterator_traits<_BiIter>::value_type> string_type;
 #else
 operator<(typename std::iterator_traits<_BiIter>::value_type const& __x, const sub_match<_BiIter>& __y) {
-  typedef std::basic_string<typename std::iterator_traits<_BiIter>::value_type> string_type;
+  typedef typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type string_type;
 #endif
   return __y.compare(string_type(1, __x)) > 0;
 }
@@ -5298,7 +5365,7 @@ operator==(const sub_match<_BiIter>& __x, typename iterator_traits<_BiIter>::val
   typedef basic_string<typename iterator_traits<_BiIter>::value_type> string_type;
 #else
 operator==(const sub_match<_BiIter>& __x, typename std::iterator_traits<_BiIter>::value_type const& __y) {
-  typedef std::basic_string<typename std::iterator_traits<_BiIter>::value_type> string_type;
+  typedef typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type string_type;
 #endif
   return __x.compare(string_type(1, __y)) == 0;
 }
@@ -5311,7 +5378,7 @@ operator<=>(const sub_match<_BiIter>& __x, typename iterator_traits<_BiIter>::va
   using string_type = basic_string<typename iterator_traits<_BiIter>::value_type>;
 #else
 operator<=>(const sub_match<_BiIter>& __x, typename std::iterator_traits<_BiIter>::value_type const& __y) {
-  using string_type = std::basic_string<typename std::iterator_traits<_BiIter>::value_type>;
+  using string_type = typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type;
 #endif
   return static_cast<__sub_match_cat<_BiIter>>(__x.compare(string_type(1, __y)) <=> 0);
 }
@@ -5333,7 +5400,7 @@ operator<(const sub_match<_BiIter>& __x, typename iterator_traits<_BiIter>::valu
   typedef basic_string<typename iterator_traits<_BiIter>::value_type> string_type;
 #else
 operator<(const sub_match<_BiIter>& __x, typename std::iterator_traits<_BiIter>::value_type const& __y) {
-  typedef std::basic_string<typename std::iterator_traits<_BiIter>::value_type> string_type;
+  typedef typename regex_char_traits<typename std::iterator_traits<_BiIter>::value_type>::string_type string_type;
 #endif
   return __x.compare(string_type(1, __y)) < 0;
 }
@@ -5402,11 +5469,12 @@ public:
   typedef _Allocator allocator_type;
   typedef sub_match<_BidirectionalIterator> value_type;
 
+private:
   template <typename T, typename A = std::allocator<T>>
   using vector = std::vector<T, A>;
 
   template <typename C,
-            typename T = std::char_traits<C>,
+            typename T,
             typename A = std::allocator<C>>
   using basic_string = std::basic_string<C, T, A>;
 
@@ -5416,13 +5484,9 @@ public:
   template <typename A>
   using allocator_traits = std::allocator_traits<A>;
 
-  template <typename C>
-  using char_traits = std::char_traits<C>;
-
   template <typename T>
   using numeric_limits = std::numeric_limits<T>;
 
-private:
   typedef vector<value_type, allocator_type> __container_type;
 
   __container_type __matches_;
@@ -5440,7 +5504,11 @@ public:
   typedef typename iterator_traits<_BidirectionalIterator>::difference_type difference_type;
   typedef typename allocator_traits<allocator_type>::size_type size_type;
   typedef typename iterator_traits<_BidirectionalIterator>::value_type char_type;
+#if 0
   typedef basic_string<char_type> string_type;
+#else
+  using string_type = typename regex_char_traits<char_type>::string_type;
+#endif
 
   // construct/copy/destroy:
 #    ifndef LIBSTUD_REGEX_CXX03_LANG
@@ -5581,7 +5649,11 @@ public:
 #endif
   format(const char_type* __fmt, regex_constants::match_flag_type __flags = regex_constants::format_default) const {
     string_type __r;
+#if 0
     format(std::back_inserter(__r), __fmt, __fmt + char_traits<char_type>::length(__fmt), __flags);
+#else
+    format(std::back_inserter(__r), __fmt, __fmt + string_type::traits_type::length(__fmt), __flags);
+#endif
     return __r;
   }
 
@@ -6130,7 +6202,7 @@ regex_search(_BidirectionalIterator __first,
 #if 0
   basic_string<_CharT> __s(std::prev(__first, __offset), __last);
 #else
-  std::basic_string<_CharT> __s(std::prev(__first, __offset), __last);
+  typename _Traits::string_type __s(std::prev(__first, __offset), __last);
 #endif
   match_results<const _CharT*> __mc;
   bool __r = __e.__search(__s.data() + __offset, __s.data() + __s.size(), __mc, __flags);
@@ -6181,7 +6253,7 @@ regex_search(_BidirectionalIterator __first,
 #if 0
   basic_string<_CharT> __s(__first, __last);
 #else
-  std::basic_string<_CharT> __s(__first, __last);
+  typename _Traits::string_type __s(__first, __last);
 #endif
   match_results<const _CharT*> __mc;
   return __e.__search(__s.data(), __s.data() + __s.size(), __mc, __flags);
@@ -6234,8 +6306,8 @@ regex_search(const std::basic_string<_CharT, _ST, _SA>& __s,
 
 // Rewrite the function, so it doesn't need to be a friend of the basic_regex
 // class template. Otherwise, MSVC 17 and later fails with the 'ambiguous call
-// to overloaded function', considering this function definition and this
-// function in-class friend declaration as distinct overloads.
+// to overloaded function', considering this function definition and its
+// in-class friend declaration as distinct overloads.
 //
 #if 0
 template <class _ST, class _SA, class _Allocator, class _CharT, class _Traits>
@@ -6415,10 +6487,10 @@ template <class _BidirectionalIterator, class _CharT, class _Traits>
 class LIBSTUD_REGEX_PREFERRED_NAME(cregex_iterator) LIBSTUD_REGEX_IF_WIDE_CHARACTERS(LIBSTUD_REGEX_PREFERRED_NAME(wcregex_iterator))
     LIBSTUD_REGEX_PREFERRED_NAME(sregex_iterator)
         LIBSTUD_REGEX_IF_WIDE_CHARACTERS(LIBSTUD_REGEX_PREFERRED_NAME(wsregex_iterator)) regex_iterator {
-public:
   using ptrdiff_t = std::ptrdiff_t;
   using forward_iterator_tag = std::forward_iterator_tag;
 
+public:
   typedef basic_regex<_CharT, _Traits> regex_type;
   typedef match_results<_BidirectionalIterator> value_type;
   typedef ptrdiff_t difference_type;
@@ -6589,7 +6661,6 @@ class LIBSTUD_REGEX_PREFERRED_NAME(cregex_token_iterator)
     LIBSTUD_REGEX_IF_WIDE_CHARACTERS(LIBSTUD_REGEX_PREFERRED_NAME(wcregex_token_iterator))
         LIBSTUD_REGEX_PREFERRED_NAME(sregex_token_iterator)
             LIBSTUD_REGEX_IF_WIDE_CHARACTERS(LIBSTUD_REGEX_PREFERRED_NAME(wsregex_token_iterator)) regex_token_iterator {
-public:
   using ptrdiff_t = std::ptrdiff_t;
   using forward_iterator_tag = std::forward_iterator_tag;
 
@@ -6599,6 +6670,7 @@ public:
   template <typename T>
   using initializer_list = std::initializer_list<T>;
 
+public:
   typedef basic_regex<_CharT, _Traits> regex_type;
   typedef sub_match<_BidirectionalIterator> value_type;
   typedef ptrdiff_t difference_type;
@@ -6888,7 +6960,7 @@ LIBSTUD_REGEX_HIDE_FROM_ABI _OutputIterator regex_replace(
 #if 0
     for (size_t __len = char_traits<_CharT>::length(__fmt); __i != __eof; ++__i) {
 #else
-    for (size_t __len = std::char_traits<_CharT>::length(__fmt); __i != __eof; ++__i) {
+    for (size_t __len = regex_char_traits<_CharT>::length(__fmt); __i != __eof; ++__i) {
 #endif
       if (!(__flags & regex_constants::format_no_copy))
         __output_iter = std::copy(__i->prefix().first, __i->prefix().second, __output_iter);
@@ -6972,13 +7044,13 @@ regex_replace(const _CharT* __s,
   basic_string<_CharT> __r;
   std::regex_replace(std::back_inserter(__r), __s, __s + char_traits<_CharT>::length(__s), __e, __fmt.c_str(), __flags);
 #else
-inline LIBSTUD_REGEX_HIDE_FROM_ABI std::basic_string<_CharT>
+inline LIBSTUD_REGEX_HIDE_FROM_ABI typename _Traits::string_type
 regex_replace(const _CharT* __s,
               const basic_regex<_CharT, _Traits>& __e,
               const std::basic_string<_CharT, _ST, _SA>& __fmt,
               regex_constants::match_flag_type __flags = regex_constants::match_default) {
-  std::basic_string<_CharT> __r;
-  regex_replace(std::back_inserter(__r), __s, __s + std::char_traits<_CharT>::length(__s), __e, __fmt.c_str(), __flags);
+  typename _Traits::string_type __r;
+  regex_replace(std::back_inserter(__r), __s, __s + regex_char_traits<_CharT>::length(__s), __e, __fmt.c_str(), __flags);
 #endif
   return __r;
 }
@@ -6993,13 +7065,13 @@ regex_replace(const _CharT* __s,
   basic_string<_CharT> __r;
   std::regex_replace(std::back_inserter(__r), __s, __s + char_traits<_CharT>::length(__s), __e, __fmt, __flags);
 #else
-inline LIBSTUD_REGEX_HIDE_FROM_ABI std::basic_string<_CharT>
+inline LIBSTUD_REGEX_HIDE_FROM_ABI typename _Traits::string_type
 regex_replace(const _CharT* __s,
               const basic_regex<_CharT, _Traits>& __e,
               const _CharT* __fmt,
               regex_constants::match_flag_type __flags = regex_constants::match_default) {
-  std::basic_string<_CharT> __r;
-  regex_replace(std::back_inserter(__r), __s, __s + std::char_traits<_CharT>::length(__s), __e, __fmt, __flags);
+  typename _Traits::string_type __r;
+  regex_replace(std::back_inserter(__r), __s, __s + regex_char_traits<_CharT>::length(__s), __e, __fmt, __flags);
 #endif
   return __r;
 }
