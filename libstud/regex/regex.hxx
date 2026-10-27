@@ -1061,10 +1061,13 @@ template <regex_constants::error_type _Ev>
 //
 // Similar to std::char_traits, the specialization must be compliant with the
 // CharTraits requirements, but should additionally define the nested string
-// type. The original regex implementation is amended to use
-// regex_char_traits<C>::string_type instead of std::basic_string<C,
-// std::char_traits<C>>, since usage of the latter for non-standard character
-// types is now deprecated (see GH issue 516 for details).
+// type and the is_newline() predicate. The original regex implementation is
+// amended to use regex_char_traits<C>::string_type instead of
+// std::basic_string<C, std::char_traits<C>>, since usage of the latter for
+// non-standard character types is now deprecated (see GH issue 516 for
+// details). Also the original implementation is amended in such a way, that
+// is_newline() function needs now be provided instead of specializing
+// __match_any_but_newline<C> class template.
 //
 template <typename C>
 struct regex_char_traits;
@@ -1073,12 +1076,24 @@ template <>
 struct regex_char_traits<char>: std::char_traits<char>
 {
   using string_type = std::basic_string<char>;
+
+  static bool
+  is_newline (char c)
+  {
+    return c == '\n' || c == '\r';
+  }
 };
 
 template <>
 struct regex_char_traits<wchar_t>: std::char_traits<wchar_t>
 {
   using string_type = std::basic_string<wchar_t>;
+
+  static bool
+  is_newline (wchar_t c)
+  {
+    return c == L'\n' || c == L'\r' || c == 0x2028 || c == 0x2029;
+  }
 };
 
 template <class _CharT>
@@ -2266,12 +2281,34 @@ public:
   void __exec(__state&) const override;
 };
 
+#if 0
 template <>
 LIBSTUD_REGEX_EXPORTED_FROM_ABI void __match_any_but_newline<char>::__exec(__state&) const;
 #    if LIBSTUD_REGEX_HAS_WIDE_CHARACTERS
 template <>
 LIBSTUD_REGEX_EXPORTED_FROM_ABI void __match_any_but_newline<wchar_t>::__exec(__state&) const;
 #    endif
+#else
+template <class _CharT>
+void __match_any_but_newline<_CharT>::__exec(__state& __s) const {
+  if (__s.__current_ != __s.__last_) {
+    if (regex_char_traits<_CharT>::is_newline (*__s.__current_))
+    {
+      __s.__do_   = __state::__reject;
+      __s.__node_ = nullptr;
+    }
+    else
+    {
+      __s.__do_ = __state::__accept_and_consume;
+      ++__s.__current_;
+      __s.__node_ = this->first();
+    }
+  } else {
+    __s.__do_   = __state::__reject;
+    __s.__node_ = nullptr;
+  }
+}
+#endif
 
 // __match_char
 

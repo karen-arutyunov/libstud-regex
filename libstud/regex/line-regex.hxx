@@ -429,6 +429,14 @@ namespace stud
       //
       using string_type =
         std::basic_string<char_type, regex_char_traits<char_type>>;
+
+      // Note: no notion of a newline character.
+      //
+      static bool
+      is_newline (char_type)
+      {
+        return false;
+      }
     };
 
     using line_string = regex_char_traits<line_char>::string_type;
@@ -630,27 +638,6 @@ namespace stud
 
       locale_type
       getloc () const {return locale_type ();}
-    };
-
-    // When used with libc++ the linker complains that it can't find
-    // __match_any_but_newline<line_char>::__exec() function. The problem is
-    // that the function is only specialized for char and wchar_t
-    // (llvm-project GH issue #30757). As line_char has no notion of the
-    // newline character we specialize the class template to behave as the
-    // __match_any<line_char> instantiation does (that luckily has all the
-    // functions in place).
-    //
-    // @@ We should probably add to regex_char_traits is_newline() function,
-    //    in specialization for line_char it should always return false. Move
-    //    __match_any_but_newline to regex.hxx and implement the template to
-    //    use this function.
-    //
-    template <>
-    class __match_any_but_newline<line_char>: public __match_any<line_char>
-    {
-    public:
-      using base = __match_any<line_char>;
-      using base::base;
     };
 
     class line_regex: public basic_regex<line_char>

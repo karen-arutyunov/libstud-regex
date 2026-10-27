@@ -372,6 +372,7 @@ regex_traits<char>::char_class_type __get_classname(const char* s, bool __icase)
   return r;
 }
 
+#if 0
 template <>
 void __match_any_but_newline<char>::__exec(__state& __s) const {
   if (__s.__current_ != __s.__last_) {
@@ -415,6 +416,7 @@ void __match_any_but_newline<wchar_t>::__exec(__state& __s) const {
     __s.__node_ = nullptr;
   }
 }
+#endif
 
 LIBSTUD_REGEX_END_EXPLICIT_ABI_ANNOTATIONS
 LIBSTUD_REGEX_END_NAMESPACE_STD
