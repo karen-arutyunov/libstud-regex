@@ -119,31 +119,10 @@ namespace stud
               static_cast<int16_t> (c))) << 2) |
           static_cast <uintptr_t> (line_type::special))
     {
-      // @@ How can we allow anything for basic_regex but only subset
-      //    for our own code?
-      //
-      const char ex[] = "pn\n\r";
-      const size_t exn (4);
-
       assert (c == 0  || // Null character.
+              c == -1 || // EOF.
 
-              // EOF. Note that is also passed by msvcrt as _Meta_eos
-              // enum value.
-              //
-              c == -1 ||
-
-              // libstdc++ line/paragraph separators.
-              //
-              c == u'\u2028' || c == u'\u2029' ||
-
-              (c > 0 && c <= 255 && (
-                // Supported regex special characters.
-                //
-                syntax (c) ||
-
-                // libstdc++ look-ahead tokens, newline chars.
-                //
-                string::traits_type::find (ex, exn, c) != nullptr)));
+              (c > 0 && c <= 255 && syntax (c)));
     }
 
     template <typename S>

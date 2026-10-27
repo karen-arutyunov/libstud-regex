@@ -58,37 +58,28 @@ main ()
     assert (lc::eof == -1);
     assert (lc::nul == 0);
 
-    enum meta {mn = 'n', mp = 'p'};
-
     // Special roundtrip.
     //
     assert (lc ('0').special ()       == '0');
     assert (lc (0).special ()         == 0);
     assert (lc (-1).special ()        == -1);
-    assert (lc ('p').special ()       == 'p');
-    assert (lc (u'\u2028').special () == u'\u2028');
 
     // Special comparison.
     //
     assert (lc ('0') == lc ('0'));
     assert (lc ('0') == '0');
-    assert (lc ('n') == mn);
-    assert (mn       == static_cast<meta> (lc ('n')));
 
     assert (lc ('0') != lc ('1'));
     assert (lc ('0') != '1');
-    assert (lc ('n') != mp);
     assert (lc ('0') != lc ("0", p));
     assert (lc ('0') != lc (cr ("0"), p));
 
     assert (lc ('0') < lc ('1'));
     assert (lc ('0') < '1');
     assert (lc ('1') < lc ("0", p));
-    assert (lc ('n') < mp);
 
     assert (lc ('0') <= '1');
     assert (lc ('0') <= lc ('1'));
-    assert (lc ('n') <= mn);
     assert (lc ('1') <= lc ("0", p));
 
     // Literal roundtrip.
@@ -132,13 +123,10 @@ main ()
     assert (regex_match  ("a", cr ("\\.", cf::idot)));
     assert (!regex_match ("a", cr ("\\.")));
 
-    // regex::transform()
+    // stud::regex::details::transform_regex()
     //
-    // The function is static and we can't test it directly. So we will test
-    // it indirectly via regex matches.
-    //
-    // @@ Would be nice to somehow address the inability to test internals (not
-    //    exposed via headers). As a part of utility library support?
+    // Let's test the implementation details transform_regex() function
+    // indirectly, via the regex matches.
     //
     assert (regex_match  (".a[.", cr (".\\.\\[[.]",   cf::idot)));
     assert (regex_match  (".a[.", cr (".\\.\\[[\\.]", cf::idot)));

@@ -142,22 +142,8 @@ namespace stud
       //
       // Note that the constructor is implicit to allow basic_regex to
       // implicitly construct line_chars from special char literals (in
-      // particular libstdc++ appends them to an internal line_string).
-      //
-      // Also note that we extend the valid characters set (see above) with
-      // 'p', 'n' (used by libstdc++ for positive/negative look-ahead tokens
-      // representation), and '\n', '\r', u'\u2028', u'\u2029' (used by
-      // libstdc++ for newline/newparagraph matching).
-      //
-      // Also, we accept '\a' to support "round-tripping" through the
-      // implementation-specific numeric values returned by the cast operator
-      // (see operator T() below for details). Note that such a
-      // "round-tripping" applied to a non-special character results in a
-      // special character but is relied upon by msvcrt (see GH PR #478 for
-      // details).
-      //
-      // @@ Try to make it explicit now. And get rid of all that libstdc++ and
-      //    MSVC related hacks.
+      // particular the basic_regex implementation appends them to some
+      // internal line_string).
       //
       line_char (int);
 
