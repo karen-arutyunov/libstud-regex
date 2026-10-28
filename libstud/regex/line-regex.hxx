@@ -393,13 +393,14 @@ namespace stud
 
     using line_string = regex_char_traits<line_char>::string_type;
 
-    // Locale that has ctype<line_char> facet installed. Used in the
+    // "C" locale that has std::ctype<line_char> facet installed. Used in the
     // regex_traits<line_char> specialization (see below).
     //
     class LIBSTUD_REGEX_SYMEXPORT line_char_locale: public std::locale
     {
     public:
-      // Create a copy of the global C++ locale.
+      // Create a copy of the C++ locale that implements the classic "C"
+      // locale semantics and install the std::ctype<line_char> facet into it.
       //
       line_char_locale ();
     };
@@ -411,8 +412,9 @@ namespace stud
 //
 namespace std
 {
-  // ctype<> must be derived from both ctype_base and locale::facet (the later
-  // supports ref-counting used by the std::locale implementation internally).
+  // std::ctype<> must be derived from both std::ctype_base and
+  // std::locale::facet (the later supports ref-counting used by the
+  // std::locale implementation internally).
   //
   // MSVC STL for some reason also derives std::ctype_base from
   // std::locale::facet which produces "already a base-class" warning and
@@ -511,11 +513,18 @@ namespace stud
 {
   namespace regex
   {
-    // Note: the current application locale must be POSIX. Otherwise the
-    // behavior is undefined.
+    // Since line_regex doesn't support case-insensitive matching and bracket
+    // expressions, this specialization doesn't implement the related
+    // functions (transform_primary(), etc), checking that they are not
+    // called. For this reason, the imbued locale is never used by this
+    // specialization itself, but can potentially be returned (for example, to
+    // regex implementation) on request. Note, however, that the current regex
+    // implementation, specialized for line_char, doesn't use this locale
+    // either (not directly nor indirectly via regex_traits) for the same
+    // reason.
     //
     template <>
-    class LIBSTUD_REGEX_SYMEXPORT regex_traits<stud::regex::line_char>
+    class LIBSTUD_REGEX_SYMEXPORT regex_traits<line_char>
     {
     public:
       using char_type       = line_char;
@@ -543,9 +552,9 @@ namespace stud
       string_type
       transform (I b, I e) const {return string_type (b, e);}
 
-      // Return a case-insensitive sort-key. Case-insensitive matching is not
-      // supported by line_regex. So there is no reason for the function to be
-      // called.
+      // Return a case-insensitive sort-key. Case-insensitive matching and
+      // equivalence classes are not supported by line_regex. So there is no
+      // reason for the function to be called.
       //
       template <typename I>
       string_type
@@ -583,7 +592,8 @@ namespace stud
       value (char_type, int) const;
 
       // Return the locale passed as an argument as we do not expect anything
-      // other than POSIX locale, that we also assume to be imbued by default.
+      // other than "C" (POSIX) locale, that we also assume to be imbued by
+      // default.
       //
       locale_type
       imbue (locale_type l) {return l;}
@@ -618,16 +628,6 @@ namespace stud
     public:
       line_pool pool;
     };
-
-    // Initialize the line regex global state. Should be called once prior
-    // to creating objects of types defined in this header file.
-    //
-    // Note: not thread-safe.
-    //
-    // @@ Try to get rid of it.
-    //
-    LIBSTUD_REGEX_SYMEXPORT void
-    init_line_regex ();
   }
 }
 

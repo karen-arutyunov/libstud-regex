@@ -28,8 +28,6 @@ main ()
   using cf = char_flags;
   using cr = char_regex;
 
-  init_line_regex (); // Initializes the script regex global state.
-
   // Test line_char.
   //
   {

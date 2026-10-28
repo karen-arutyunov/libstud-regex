@@ -226,32 +226,38 @@ namespace stud
 
     // line_char_locale
     //
-    // An exemplar locale with the std::ctype<line_char> facet. It is used for
-    // the subsequent line char locale objects creation (see below) which
-    // normally ends up with a shallow copy of a reference-counted object.
+    // Return a reference to the exemplar locale (copy of "C" locale with the
+    // std::ctype<line_char> facet installed). It is used for the subsequent
+    // line char locale objects creation (see below) which normally ends up
+    // with a shallow copy of a reference-counted object.
     //
     // Note that creating the line char locales from the exemplar is not
     // merely an optimization: there is a data race in the libstdc++ (at least
     // as of GCC 9.1) implementation of the locale(const locale&, Facet*)
     // constructor (bug #91057).
     //
-    // Also note that we install the facet in init() rather than during the
-    // object creation to avoid a race with the std::locale-related global
+    // Also note that we create the exemplar object by demand at the program
+    // execution phase to avoid a race with the std::locale-related global
     // variables initialization.
     //
-    static std::locale line_char_locale_exemplar;
-
-    void
-    init_line_regex ()
+    static inline const locale&
+    line_char_locale_exemplar ()
     {
-      line_char_locale_exemplar = locale (locale (), new ctype<line_char> ());
+      // Note that since line_regex doesn't use this locale itself (see
+      // regex_traits<line_char> specialization for details), the static block
+      // variable locking shouldn't cause any performance concerns here. It,
+      // actually, won't be even initialized in the common case.
+      //
+      static locale exemplar (locale::classic (),       // "C" locale.
+                              new ctype<line_char> ());
+      return exemplar;
     }
 
     line_char_locale::
     line_char_locale ()
-        : locale (line_char_locale_exemplar)
+        : locale (line_char_locale_exemplar ())
     {
-      // Make sure init() has been called.
+      // For good measure, make sure that the facet is installed.
       //
       // Note: has_facet() is hidden by a private function in libc++.
       //
