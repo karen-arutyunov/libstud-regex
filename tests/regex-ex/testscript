@@ -1,6 +1,3 @@
-# file      : tests/regex/testscript
-# license   : MIT; see accompanying LICENSE file
-
 : replace-search
 :
 {{
@@ -69,10 +66,9 @@
   : Note that the regex search-based replacement with the match_not_null flag
   : is broken for older versions of libstdc++ and libc++ (may ignore
   : match_not_null for the former and may hang for some string/pattern for the
-  : latter).
+  : latter). Let's make sure that our implementation doesn't inherit any of
+  : that.
   :
-  if (($cxx.id != 'gcc'   || $cxx.version.major >= 7) && \
-      ($cxx.id != 'clang' || $cxx.version.major >= 6))
   {{
     $* '' '/.*/x/' >'x'      : empty
     $* a  '/a*/x/' >'x'      : match

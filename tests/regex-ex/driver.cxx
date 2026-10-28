@@ -1,21 +1,23 @@
-// file      : tests/regex/driver.cxx -*- C++ -*-
-// license   : MIT; see accompanying LICENSE file
-
-#include <regex>
 #include <string>
 #include <utility>   // pair
 #include <iostream>
 #include <stdexcept> // invalid_argument
 #include <exception>
 
-#include <libbutl/regex.hxx>
-#include <libbutl/utility.hxx> // operator<<(ostream, exception)
+#include <libstud/regex/regex.hxx>
+#include <libstud/regex/regex-ex.hxx>
+#include <libstud/regex/regex-io.hxx>
 
 #undef NDEBUG
 #include <cassert>
 
-using namespace std;
-using namespace butl;
+using namespace stud::regex;
+
+using std::string;
+using std::pair;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 // Usage: argv[0] [-ffo] [-fnc] [-m] <string> "/<regex>/<format>/"
 //
@@ -75,15 +77,15 @@ try
 }
 catch (const regex_error& e)
 {
-  cerr << "invalid regex" << e << endl; // Print sanitized.
+  cerr << "invalid regex: " << e << endl; // Print sanitized.
   return 2;
 }
-catch (const invalid_argument& e)
+catch (const std::invalid_argument& e)
 {
-  cerr << e << endl;
+  cerr << e.what () << endl;
   return 2;
 }
-catch (const exception&)
+catch (const std::exception&)
 {
   assert (false);
   return 2;

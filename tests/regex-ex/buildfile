@@ -1,6 +1,3 @@
-# file      : tests/regex/buildfile
-# license   : MIT; see accompanying LICENSE file
-
-import libs = libbutl%lib{butl}
+import libs = libstud-regex%lib{stud-regex}
 
 exe{driver}: {hxx cxx}{*} $libs testscript
