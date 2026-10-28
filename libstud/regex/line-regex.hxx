@@ -1,14 +1,13 @@
 #pragma once
 
 #include <list>
-#include <string>  // basic_string
+#include <string>  // basic_string, char_traits
 #include <cctype>  // isdigit()
 #include <locale>
 #include <utility> // move()
 #include <cstdint> // uintptr_t, uint16_t
 #include <cstddef> // size_t
 #include <cassert>
-#include <type_traits> // enable_if, is_*
 
 #include <libstud/regex/regex.hxx>
 #include <libstud/regex/export.hxx>
@@ -138,7 +137,7 @@ namespace stud
       //
       // 0 (nul character)
       // -1 (EOF)
-      // [()|.*+?{}\0123456789,=!] (excluding [])
+      // [()|.*+?{}\0123456789,=!] (syntax characters excluding [])
       //
       // Note that the constructor is implicit to allow basic_regex to
       // implicitly construct line_chars from special char literals (in
@@ -183,17 +182,11 @@ namespace stud
                    static_cast <std::uintptr_t> (line_type::regex)) {}
 
       // Provide basic_regex with the ability to use line_char in a context
-      // where a char value is expected (e.g., as a function argument).
-      //
-      // libstdc++ seems to cast special line_chars only (and such a
-      // conversion is meanigfull).
-      //
-      // msvcrt casts line_chars of arbitrary types instead. The only
-      // reasonable strategy is to return a value that differs from any other
-      // that can be encountered in a regex expression and so will unlikelly
-      // be misinterpreted.
-      //
-      // @@ Can we get rid of this hack now?
+      // where a char value is expected (e.g., as a switch() expression). For
+      // special line_chars return the stored special character. For other
+      // character types the only reasonable strategy is to return a value
+      // that differs from any other that can be encountered in a regex
+      // expression and so will unlikelly be misinterpreted.
       //
       operator char () const
       {
@@ -204,25 +197,6 @@ namespace stud
       //
       static bool
       syntax (char);
-
-      // Provide basic_regex (such as from msvcrt) with the ability to
-      // explicitly cast line_chars to implementation-specific numeric
-      // types (enums, msvcrt's _Uelem, etc).
-      //
-      // Similar to operator char(), return '\a' for the line characters of
-      // types other than special (see above for the reasoning; also see GH
-      // PR #478 for details).
-      //
-      // @@ Can we get rid of this hack now?
-      //
-      template <typename T>
-      explicit
-      operator T () const
-      {
-        return static_cast<T> (type () == line_type::special
-                               ? special ()
-                               : '\a'); // BELL.
-      }
     };
 
     // Perform "deep" characters comparison (for example match literal
@@ -264,12 +238,10 @@ namespace stud
       return l < r || l == r;
     }
 
-    // Provide basic_regex (such as from msvcrt) with the ability to compare
-    // line_char to a value of an integral or implementation-specific enum
-    // type. In the absense of the following template operators, such a
-    // comparisons would be ambigious for integral types (given that there are
-    // implicit conversions int->line_char and line_char->char) and impossible
-    // for enums.
+    // Provide basic_regex with the ability to compare line_char to a syntax
+    // character. In the absense of the following operators, such comparisons
+    // would be ambigious (given that there are implicit conversions
+    // int->line_char and line_char->char).
     //
     // Note that these == and < operators can succeed only for a line_char of
     // the special type. For other types they always return false. That in
@@ -278,76 +250,70 @@ namespace stud
     // (lc != c) != (lc < c || c < lc).
     //
     // Note that we can not assert line_char is of the special type as
-    // basic_regex (such as from libc++) may need the ability to check if
-    // arbitrary line_char belongs to some special characters range (like
-    // ['0', '9']).
+    // basic_regex may need the ability to check if arbitrary line_char
+    // belongs to some special characters range (like ['0', '9']).
     //
-    // @@ Can we get rid of this hack now?
+    inline bool
+    operator== (const line_char& l, char c)
+    {
+      return l.type () == line_type::special && l.special () == c;
+    }
+
+    inline bool
+    operator== (char c, const line_char& l)
+    {
+      return l == c;
+    }
+
+    inline bool
+    operator!= (const line_char& l, char c)
+    {
+      return !(l == c);
+    }
+
+    inline bool
+    operator!= (char c, const line_char& l)
+    {
+      return !(l == c);
+    }
+
+    inline bool
+    operator< (const line_char& l, char c)
+    {
+      return l.type () == line_type::special && l.special () < c;
+    }
+
+    inline bool
+    operator< (char c, const line_char& l)
+    {
+      return l.type () == line_type::special && c < l.special ();
+    }
+
+    inline bool
+    operator<= (const line_char& l, char c)
+    {
+      return l < c || l == c;
+    }
+
+    inline bool
+    operator<= (char c, const line_char& l)
+    {
+      return c < l || c == l;
+    }
+
+    // Similar to the above, provide basic_regex with the ability to compare
+    // line_char to a special non-syntax value (0, etc).
     //
-    template <typename T>
-    struct line_char_cmp
-      : public std::enable_if<std::is_integral<T>::value ||
-          (std::is_enum<T>::value &&
-           !std::is_same<T, char_flags>::value)> {};
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator== (const line_char& l, const T& r)
-    {
-      return l.type () == line_type::special &&
-        static_cast<T> (l.special ()) == r;
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator== (const T& l, const line_char& r)
-    {
-      return r.type () == line_type::special &&
-        static_cast<T> (r.special ()) == l;
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator!= (const line_char& l, const T& r)
-    {
-      return !(l == r);
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator!= (const T& l, const line_char& r)
-    {
-      return !(l == r);
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator< (const line_char& l, const T& r)
-    {
-      return l.type () == line_type::special &&
-        static_cast<T> (l.special ()) < r;
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
-    bool
-    operator< (const T& l, const line_char& r)
-    {
-      return r.type () == line_type::special &&
-        l < static_cast<T> (r.special ());
-    }
-
-    template <typename T, typename = typename line_char_cmp<T>::type>
     inline bool
-    operator<= (const line_char& l, const T& r)
+    operator== (const line_char& l, int v)
     {
-      return l < r || l == r;
+      return l.type () == line_type::special && l.special () == v;
     }
 
-    template <typename T, typename = typename line_char_cmp<T>::type>
     inline bool
-    operator<= (const T& l, const line_char& r)
+    operator!= (const line_char& l, int v)
     {
-      return l < r || l == r;
+      return !(l == v);
     }
 
     template <>
