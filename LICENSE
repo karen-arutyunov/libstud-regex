@@ -1,3 +1,9 @@
+libstud/regex/regex.*:
+
+  Apache License v2.0 with LLVM Exceptions; see the file headers for details.
+
+The rest:
+
 MIT License
 
 Copyright (c) 2026 the libstud authors (see the AUTHORS file).
