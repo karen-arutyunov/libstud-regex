@@ -36,11 +36,10 @@ namespace stud
       return regex_replace_parse (s, regex_char_traits<C>::length (s), f);
     }
 
-    template <typename C>
+    template <typename I, typename C>
     inline typename regex_char_traits<C>::string_type
     regex_replace_match_results (
-      const match_results<
-        typename regex_char_traits<C>::string_type::const_iterator>& m,
+      const match_results<I>& m,
       const typename regex_char_traits<C>::string_type& fmt)
     {
       return regex_replace_match_results (m, fmt.c_str (), fmt.size ());

@@ -334,7 +334,7 @@ main ()
         assert (sr);
         assert (m.size () == 2);
 
-        std::string rr (regex_replace_match_results<char> (m, "z\\U\\1z"));
+        std::string rr (regex_replace_match_results (m, "z\\U\\1z"));
 
         assert (rr == "zBZ");
       }
@@ -353,7 +353,7 @@ main ()
         // details). Also, line_char('U') would crash on assertion failure
         // (see line_char constructor for special characters for details).
         //
-        ls rr (regex_replace_match_results<lc> (m, ls ({baz, '\\', '1', baz})));
+        ls rr (regex_replace_match_results (m, ls ({baz, '\\', '1', baz})));
 
         assert (rr == ls ({baz, bar, baz}));
       }

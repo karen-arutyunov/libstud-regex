@@ -1,7 +1,8 @@
 #pragma once
 
-#include <utility> // pair, make_pair(), move()
-#include <cstddef> // size_t
+#include <utility>  // pair, make_pair(), move()
+#include <cstddef>  // size_t
+#include <iterator> // iterator_traits
 
 #include <libstud/regex/regex.hxx>
 
@@ -70,19 +71,18 @@ namespace stud
 
     // As above but using match_results.
     //
-    template <typename C>
+    template <typename I,
+              typename C = typename std::iterator_traits<I>::value_type>
     typename regex_char_traits<C>::string_type
     regex_replace_match_results (
-      const match_results<
-        typename regex_char_traits<C>::string_type::const_iterator>&,
+      const match_results<I>&,
       const typename regex_char_traits<C>::string_type& fmt);
 
-    template <typename C>
+    template <typename I,
+              typename C = typename std::iterator_traits<I>::value_type>
     typename regex_char_traits<C>::string_type
-    regex_replace_match_results (
-      const match_results<
-        typename regex_char_traits<C>::string_type::const_iterator>&,
-      const C* fmt, std::size_t fmt_n);
+    regex_replace_match_results (const match_results<I>&,
+                                 const C* fmt, std::size_t fmt_n);
 
     // Parse the '/<regex>/<format>/' replacement string into the regex/format
     // pair. Other character can be used as a delimiter instead of '/'. Throw

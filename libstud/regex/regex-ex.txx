@@ -6,12 +6,10 @@ namespace stud
 {
   namespace regex
   {
-    template <typename C>
+    template <typename I, typename C>
     typename regex_char_traits<C>::string_type
-    regex_replace_match_results (
-      const match_results<
-        typename regex_char_traits<C>::string_type::const_iterator>& m,
-      const C* fmt, std::size_t n)
+    regex_replace_match_results (const match_results<I>& m,
+                                 const C* fmt, std::size_t n)
     {
       using std::size_t;
 
@@ -204,7 +202,7 @@ namespace stud
       bool match (regex_match (s, m, re));
 
       return std::make_pair ((match
-                              ? regex_replace_match_results<C> (m, fmt)
+                              ? regex_replace_match_results (m, fmt)
                               : string_type ()),
                              match);
     }
@@ -279,7 +277,7 @@ namespace stud
           // The standard implementation calls m.format() here. We perform our
           // own formatting.
           //
-          string_type r (regex_replace_match_results<C> (m, fmt));
+          string_type r (regex_replace_match_results (m, fmt));
           append (r.begin (), r.end ());
         }
       }
