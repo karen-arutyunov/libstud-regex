@@ -1781,7 +1781,11 @@ private:
 
 template <class _CharT>
 void __loop<_CharT>::__exec(__state& __s) const {
+#if 0
   if (__s.__do_ == __state::__repeat) {
+#else
+  if (__s.__do_ == static_cast<int> (__state::__repeat)) {
+#endif
     bool __do_repeat = ++__s.__loop_data_[__loop_id_].first < __max_;
     bool __do_alt    = __s.__loop_data_[__loop_id_].first >= __min_;
     if (__do_repeat && __do_alt && __s.__loop_data_[__loop_id_].second == __s.__current_)
@@ -3141,7 +3145,11 @@ void __lookahead<_CharT, _Traits>::__exec(__state& __s) const {
 template <class _CharT, class _Traits>
 template <class _ForwardIterator>
 void basic_regex<_CharT, _Traits>::__init(_ForwardIterator __first, _ForwardIterator __last) {
+#if 0
   if (__get_grammar(__flags_) == 0)
+#else
+  if (static_cast<int> (__get_grammar(__flags_)) == 0)
+#endif
     __flags_ |= regex_constants::ECMAScript;
   _ForwardIterator __temp = __parse(__first, __last);
   if (__temp != __last)
@@ -3649,7 +3657,11 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_ERE_dupl_symbol(
     unsigned __mexp_begin,
     unsigned __mexp_end) {
   if (__first != __last) {
+#if 0
     unsigned __grammar = __get_grammar(__flags_);
+#else
+    regex_constants::syntax_option_type __grammar = __get_grammar(__flags_);
+#endif
     switch (*__first) {
     case '*':
       ++__first;
@@ -3839,7 +3851,13 @@ _ForwardIterator basic_regex<_CharT, _Traits>::__parse_expression_term(
       else if (*__temp == '.')
         __first = __parse_collating_symbol(++__temp, __last, __start_range);
     }
+
+#if 0
     unsigned __grammar = __get_grammar(__flags_);
+#else
+    regex_constants::syntax_option_type __grammar = __get_grammar(__flags_);
+#endif
+
     if (__start_range.empty()) {
       if ((__grammar == ECMAScript || __grammar == awk) && *__first == '\\') {
         if (__grammar == ECMAScript)

@@ -214,8 +214,8 @@ namespace stud
       using str_it      = typename string_type::const_iterator;
       using regex_it    = regex_iterator<str_it>;
 
-      bool first_only ((flags & regex_constants::format_first_only) != 0);
-      bool no_copy ((flags & regex_constants::format_no_copy) != 0);
+      bool first_only (static_cast<int> (flags & regex_constants::format_first_only) != 0);
+      bool no_copy (static_cast<int> (flags & regex_constants::format_no_copy) != 0);
 
       // Note that by default the std::regex_search(), std::regex_replace(),
       // and std::regex_iterator() functions match the empty substrings in

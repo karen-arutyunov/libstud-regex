@@ -1,32 +1,36 @@
-// file      : libbuild2/script/regex.test.cxx -*- C++ -*-
-// license   : MIT; see accompanying LICENSE file
-
-#include <regex>
+#include <locale>      // ctype, use_facet()
+#include <vector>
+#include <string>      // char_traits
+#include <utility>     // move()
 #include <type_traits> // is_*
 
-#include <libbuild2/types.hxx>
-#include <libbuild2/utility.hxx>
-
-#include <libbuild2/script/regex.hxx>
+#include <libstud/regex/regex.hxx>
+#include <libstud/regex/regex-ex.hxx>
+#include <libstud/regex/line-regex.hxx>
 
 #undef NDEBUG
 #include <cassert>
 
-using namespace std;
-using namespace build2::script::regex;
+using namespace stud::regex;
+
+using std::is_standard_layout;
+using std::is_array;
+using std::char_traits;
+using std::vector;
+using std::ctype;
+using std::use_facet;
+using std::move;
 
 int
 main ()
 {
-  build2::init_process ();
-
   using lc = line_char;
   using ls = line_string;
   using lr = line_regex;
   using cf = char_flags;
   using cr = char_regex;
 
-  init (); // Initializes the script regex global state.
+  init_line_regex (); // Initializes the script regex global state.
 
   // Test line_char.
   //
@@ -37,10 +41,10 @@ main ()
     //
     static_assert (
 #if __cplusplus > 202302
-      is_trivially_default_constructible<lc>::value &&
-      is_trivially_copyable<lc>::value &&
+      std::is_trivially_default_constructible<lc>::value &&
+      std::is_trivially_copyable<lc>::value &&
 #else
-      is_trivial<lc>::value &&
+      std::is_trivial<lc>::value &&
 #endif
       is_standard_layout<lc>::value &&
       !is_array<lc>::value,
@@ -317,5 +321,34 @@ main ()
 
     assert (regex_match  (ls ({foo}), lr ({'(', '?', '=', foo, ')', foo})));
     assert (regex_match  (ls ({foo}), lr ({'(', '?', '!', bar, ')', foo})));
+  }
+
+  // Test line_regex replace.
+  //
+  {
+    line_pool p;
+
+    const lc foo ("foo", p);
+    const lc bar ("bar", p);
+    const lc baz ("baz", p);
+
+    {
+      const auto& r (regex_replace_search (ls ({foo, bar, foo}),
+                                           lr ({foo}),
+                                           ls ({baz})));
+      assert (r.second);
+      assert (r.first == ls ({baz, bar, baz}));
+    }
+
+    {
+      const auto& r (
+        regex_replace_search (
+          ls ({foo, bar, foo, bar}),
+          lr ({'(', foo, ')', '(', lc (cr ("b.r"), p), ')'}),
+          ls ({'\\', '2', baz, '\\', '1'})));
+
+      assert (r.second);
+      assert (r.first == ls ({bar, baz, foo, bar, baz, foo}));
+    }
   }
 }
