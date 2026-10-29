@@ -2290,7 +2290,7 @@ LIBSTUD_REGEX_EXPORTED_FROM_ABI void __match_any_but_newline<wchar_t>::__exec(__
 #    endif
 #else
 template <class _CharT>
-void __match_any_but_newline<_CharT>::__exec(__state& __s) const {
+inline void __match_any_but_newline<_CharT>::__exec(__state& __s) const {
   if (__s.__current_ != __s.__last_) {
     if (regex_char_traits<_CharT>::is_newline (*__s.__current_))
     {
