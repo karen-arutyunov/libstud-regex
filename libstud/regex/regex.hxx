@@ -1064,9 +1064,9 @@ template <regex_constants::error_type _Ev>
 // type and the is_newline() predicate. The original regex implementation is
 // amended to use regex_char_traits<C>::string_type instead of
 // std::basic_string<C, std::char_traits<C>>, since usage of the latter for
-// non-standard character types is now deprecated (see GH issue 516 for
-// details). Also the original implementation is amended in such a way, that
-// is_newline() function needs now be provided instead of specializing
+// non-standard character types is now deprecated (see build2 GH issue #516
+// for details). Also the original implementation is amended in such a way,
+// that is_newline() function needs now be provided instead of specializing
 // __match_any_but_newline<C> class template.
 //
 template <typename C>
