@@ -21,6 +21,7 @@
 #include <libstud/regex/regex.hxx>
 
 #include <locale>
+#include <stdexcept>
 
 #include "test_macros.hxx"
 #include "test_iterators.hxx"
@@ -32,19 +33,35 @@
 using namespace stud::regex;
 
 using std::locale;
+using std::runtime_error;
 
 int main(int, char**)
 {
+    // Load the LOCALE_cs_CZ_ISO8859_2 locale, if present.
+    //
+    // Note that if it is not, then cz_loc stays "C", in which case it is
+    // equal to locale::classic().
+    //
+    locale cz_loc;
+
+    try
+    {
+      cz_loc = locale (LOCALE_cs_CZ_ISO8859_2);
+    }
+    catch (const runtime_error&) {}
+
     {
         regex_traits<char> t;
         const char a[] = "a";
         const char B[] = "B";
         typedef forward_iterator<const char*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-#if !TEST_HAS_C_LOCALE_ONLY && TEST_HAS_CS_CZ_ISO8859_2_LOCALE
-        t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
-        assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
-#endif
+
+        if (cz_loc != locale::classic ()) // Not "C" locale?
+        {
+          t.imbue(cz_loc);
+          assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
+        }
     }
 #ifndef TEST_HAS_NO_WIDE_CHARACTERS
     {
@@ -53,10 +70,12 @@ int main(int, char**)
         const wchar_t B[] = L"B";
         typedef forward_iterator<const wchar_t*> F;
         assert(t.transform(F(a), F(a+1)) > t.transform(F(B), F(B+1)));
-#if !TEST_HAS_C_LOCALE_ONLY && TEST_HAS_CS_CZ_ISO8859_2_LOCALE
-        t.imbue(locale(LOCALE_cs_CZ_ISO8859_2));
-        assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
-#endif
+
+        if (cz_loc != locale::classic ()) // Not "C" locale?
+        {
+          t.imbue(cz_loc);
+          assert(t.transform(F(a), F(a+1)) < t.transform(F(B), F(B+1)));
+        }
     }
 #endif
 
