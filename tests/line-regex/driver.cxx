@@ -1,6 +1,7 @@
 #include <locale>      // ctype, use_facet()
 #include <vector>
 #include <utility>     // move()
+#include <cstddef>     // size_t
 #include <type_traits> // is_*
 
 #include <libstud/regex/regex.hxx>
@@ -18,6 +19,7 @@ using std::vector;
 using std::ctype;
 using std::use_facet;
 using std::move;
+using std::size_t;
 
 int
 main ()
@@ -273,7 +275,14 @@ main ()
     const lc baz ("baz", p);
     const lc blank ("", p);
 
-    assert (regex_match  (ls ({foo, bar}), lr ({foo, bar})));
+    // While at it, test 2 regex_match() overloads.
+    //
+    {
+      match_results<ls::const_iterator> m;
+      ls s ({foo, bar});
+      assert (regex_match  (s, m, lr ({foo, bar})));
+    }
+
     assert (!regex_match (ls ({foo, baz}), lr ({foo, bar})));
 
     assert (regex_match (ls ({bar, foo}),
@@ -305,6 +314,22 @@ main ()
 
     assert (regex_match  (ls ({foo}), lr ({'(', '?', '=', foo, ')', foo})));
     assert (regex_match  (ls ({foo}), lr ({'(', '?', '!', bar, ')', foo})));
+
+    // Test that line_regex is capable of matching very long strings.
+    //
+    {
+      size_t n (1024 * 1024 * 10);
+
+      ls s;
+      s.reserve (n);
+
+      const lc cs[] = {foo, bar, baz};
+
+      for (size_t i (0); i != n; ++i)
+        s.push_back (cs[i % 3]);
+
+      assert (regex_match (s, lr ({'(', foo, '|', bar, '|', baz, ')', '+'})));
+    }
   }
 
   // Test line_regex replace.
